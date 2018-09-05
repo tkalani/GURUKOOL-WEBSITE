@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<title>Sign Up</title>
+	</head>
+	<body>
+Professor Sign Up
+<br><br>
+<form action="{% url 'UserAuth:signup-professor' %}" method="POST" onsubmit="return validateForm('professor')">
+	{% csrf_token %}
+	First Name : <input type="text" name="professor_signup_first_name" required>
+	Middle Name : <input type="text" name="professor_signup_middle_name">
+	Last Name : <input type="text" name="professor_signup_last_name" required>
+	<br>
+	Email : <input type="email" name="professor_signup_email" required>
+	<br>
+	Mobile No : <input type="number" name="professor_signup_mobile_no" required>
+	<br>
+	Date of Birth : <input type="date" name="professor_signup_date_of_birth" required>
+	<br>
+	Gender :
+		<br>
+		{% for gender in gender_choices %}
+			<input type="radio" name="professor_signup_gender" value="{{ gender.name }}"> {{ gender.name }} &nbsp; &nbsp;
+		{% endfor %}
+	<br>
+	Password : <input type="password" name="professor_signup_password" required id="professor_signup_password"><br>
+	Confirm Password : <input type="password" name="professor_signup_confirm_password" required id="professor_signup_confirm_password">
+	<input type="submit" value="SUBMIT">
+</form>
+
+<br><br>
+
+Student Sign Up
+<br><br>
+<form action="{% url 'UserAuth:signup-student' %}" method="POST" onsubmit="return validateForm('student')">
+	First Name : <input type="text" name="student_signup_first_name" required>
+	Middle Name : <input type="text" name="student_signup_middle_name">
+	Last Name : <input type="text" name="student_signup_last_name" required>
+	<br>
+	Email : <input type="email" name="student_signup_email" required>
+	<br>
+	Mobile No : <input type="number" name="student_signup_mobile_no" required>
+	<br>
+	Date of Birth : <input type="date" name="student_signup_date_of_birth" required>
+	<br>
+	Gender :
+		<br>
+		{% for gender in gender_choices %}
+			<input type="radio" name="professor_signup_gender" value="{{ gender.name }}"> {{ gender.name }} &nbsp; &nbsp;
+		{% endfor %}
+	<br>
+	Password : <input type="password" name="student_signup_password" required><br>
+	Confirm Password : <input type="password" name="student_signup_confirm_password" required>
+</form>
+	</body>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+		function validateForm(type)
+		{
+			if(type == 'professor')
+				if($('#professor_signup_password').val() == $('#professor_signup_confirm_password').val())
+					return true;
+				else
+				{
+					alert('Passwords Do Not Match');
+					return false;
+				}
+			else if(type == 'student')
+				if($('$student_signup_password').val() == $('#student_signup_confirm_password').val())
+					return true;
+				else
+				{
+					alert('Passwords Do Not Match');
+					return false;
+				}
+		}
+	</script>
+</html>
