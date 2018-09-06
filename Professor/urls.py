@@ -6,5 +6,5 @@ app_name = 'Professor'
 
 urlpatterns = [
 		url(r'^$', views.dashboard, name='dashboard'),
-		url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+		url(r'^logout/$', logout, {'next_page': '/'}, name='logout')
 	]

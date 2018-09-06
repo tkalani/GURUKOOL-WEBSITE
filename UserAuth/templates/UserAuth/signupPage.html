@@ -33,6 +33,7 @@ Professor Sign Up
 Student Sign Up
 <br><br>
 <form action="{% url 'UserAuth:signup-student' %}" method="POST" onsubmit="return validateForm('student')">
+	{% csrf_token %}
 	First Name : <input type="text" name="student_signup_first_name" required>
 	Middle Name : <input type="text" name="student_signup_middle_name">
 	Last Name : <input type="text" name="student_signup_last_name" required>
@@ -46,11 +47,12 @@ Student Sign Up
 	Gender :
 		<br>
 		{% for gender in gender_choices %}
-			<input type="radio" name="professor_signup_gender" value="{{ gender.name }}"> {{ gender.name }} &nbsp; &nbsp;
+			<input type="radio" name="student_signup_gender" value="{{ gender.name }}"> {{ gender.name }} &nbsp; &nbsp;
 		{% endfor %}
 	<br>
 	Password : <input type="password" name="student_signup_password" required><br>
 	Confirm Password : <input type="password" name="student_signup_confirm_password" required>
+	<input type="submit" value="SUBMIT">
 </form>
 	</body>
 
