@@ -29,8 +29,10 @@ class ProfessorAuthProfile(models.Model):
 	date_of_birth = models.DateField(blank=False, null=False)
 	email_address = models.CharField(max_length=100, null=False, blank=False)
 
+	email_verification_link = models.CharField(max_length=100, null=True, blank=True)
+	email_verification_link_sent = models.BooleanField(default=False)
+	email_verfied = models.BooleanField(default=False)
 	otp = models.IntegerField(default=0)
-	otp_sent_to_email = models.BooleanField(default=False)
 	otp_sent_to_mobile_no = models.BooleanField(default=False)
 	otp_verified = models.BooleanField(default=False)
 
@@ -44,8 +46,10 @@ class StudentAuthProfile(models.Model):
 	date_of_birth = models.DateField(blank=False, null=False)
 	email_address = models.CharField(max_length=100, null=False, blank=False)
 
+	email_verification_link = models.CharField(max_length=100, null=True, blank=True)
+	email_verification_link_sent = models.BooleanField(default=False)
+	email_verfied = models.BooleanField(default=False)
 	otp = models.IntegerField(default=0)
-	otp_sent_to_email = models.BooleanField(default=False)
 	otp_sent_to_mobile_no = models.BooleanField(default=False)
 	otp_verified = models.BooleanField(default=False)
 

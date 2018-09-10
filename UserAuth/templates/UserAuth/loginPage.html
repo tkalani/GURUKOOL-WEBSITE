@@ -1,8 +1,8 @@
-{% include 'UserAuth/error.html' %}
+{% include 'UserAuth/message.html' %}
 
 Professor Login
 
-<form action="{% url 'UserAuth:login-professor' %}" method="POST">
+<form action="{% url 'UserAuth:login-user' 'professor' %}" method="POST">
 	{% csrf_token %}
 	Email : <input type="text" placeholder="email or phone no" name="professor_login_username" required><br>
 	Password : <input type="password" name="professor_login_password" required><br>
@@ -14,7 +14,7 @@ Professor Login
 
 Student Login
 
-<form action="{% url 'UserAuth:login-student' %}" method="POST">
+<form action="{% url 'UserAuth:login-user' 'student' %}" method="POST">
 	{% csrf_token %}
 	Email : <input type="text" placeholder="email or phone no" name="student_login_username" required><br>
 	Password : <input type="password" name="student_login_password" required><br>
