@@ -4,11 +4,11 @@
 	</head>
 	<body>
 
-		{% include 'UserAuth/error.html' %}
+		{% include 'UserAuth/message.html' %}
 
 		Professor Sign Up
 		<br><br>
-		<form action="{% url 'UserAuth:signup-professor' %}" method="POST" onsubmit="return validateForm('professor')">
+		<form action="{% url 'UserAuth:signup-user' 'professor' %}" method="POST" onsubmit="return validateForm('professor')">
 			{% csrf_token %}
 			First Name : <input type="text" name="professor_signup_first_name" required>
 			Middle Name : <input type="text" name="professor_signup_middle_name">
@@ -35,7 +35,7 @@
 
 		Student Sign Up
 		<br><br>
-		<form action="{% url 'UserAuth:signup-student' %}" method="POST" onsubmit="return validateForm('student')">
+		<form action="{% url 'UserAuth:signup-user' 'student' %}" method="POST" onsubmit="return validateForm('student')">
 			{% csrf_token %}
 			First Name : <input type="text" name="student_signup_first_name" required>
 			Middle Name : <input type="text" name="student_signup_middle_name">
