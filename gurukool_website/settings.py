@@ -86,8 +86,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'gurukool_db',
-        'USER': 'root',
+        'USER': 'bhavi',
         'PASSWORD': 'bhavi',
+        'HOST': '139.59.86.57',
     }
 }
 
