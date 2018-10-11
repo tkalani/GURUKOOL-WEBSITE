@@ -1,10 +1,10 @@
 from django.conf.urls import include, url
 from . import views
-from django.contrib.auth.views import logout
 
 app_name = 'Professor'
 
 urlpatterns = [
 		url(r'^$', views.dashboard, name='dashboard'),
-		url(r'^logout/$', logout, {'next_page': '/'}, name='logout')
+		url(r'^create-poll/$', views.create_poll, name='create-poll'),
+		url(r'^poll/(?P<poll_id>\d+)/$', views.show_poll, name='poll'),
 	]

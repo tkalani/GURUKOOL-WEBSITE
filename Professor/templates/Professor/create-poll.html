@@ -1,0 +1,53 @@
+{% extends 'Professor/main.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Create Couse
+{% endblock %}
+
+{% block body %}
+    {% include 'UserAuth/message.html' %}
+        Create Poll
+        <br><br>
+        <form action="{% url 'Professor:create-poll' %}" method="POST">
+            {% csrf_token %}
+            Course : 
+            <select name="course" required>
+                {% for course in course_list %}
+                    <option value="{{ course.id }}">{{ course.course.name }} ( {{ course.course.code }} )</option>
+                {% endfor %}
+            </select>
+            <br>
+            Poll Title : <input type="text" name="title" required placeholder="Poll-Title">
+            <br>
+            Poll Question : <input type="text" name="question" required placeholder="Poll-Question">
+            <br>
+            Poll Options :
+            <div id="option-list">
+                <div id="poll-option-1"><input type="text" name="poll_options[]" required><span onclick="delete_option(1)">&#x2715;</span><br></div>
+                <div id="poll-option-2"><input type="text" name="poll_options[]" required><span onclick="delete_option(2)">&#x2715;</span><br></div>
+            </div>
+            <input type="button" onclick="add_option()" value="Add Option">
+            <br>
+            <input type="submit" value="SUBMIT">
+        </form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var number_of_options = 2;
+        function add_option()
+        {
+            html = '<div id="poll-option-'+ number_of_options +'"><input type="text" name="poll_options[]" required><span onclick="delete_option('+ number_of_options +')">&#x2715;</span><br></div>';
+            $('#option-list').append(html);
+            number_of_options++;
+            
+        }
+
+        function delete_option(id)
+        {
+            $('#poll-option-'+id).remove();
+        }
+    </script>
+{% endblock %}

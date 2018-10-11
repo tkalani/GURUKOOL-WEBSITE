@@ -14,9 +14,12 @@ from Professor.models import *
 from django.contrib import messages
 from django.views import View
 from .utils import *
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 SHOW_MESSAGE_URL = 'UserAuth:show-message'
 EMAIL_VERIFICATION_LINK_LENGTH = 50
+LOGIN_URL = 'UserAuth:landingPage'
 
 class landingPage(View):
 	get_login_page = 'UserAuth/landingPage.html'
@@ -36,13 +39,13 @@ class Login(View):
 		if request.user.is_authenticated:
 			if request.user.groups.filter(name='Professor').exists():
 				return HttpResponseRedirect(reverse('Professor:dashboard'))
-			elif request.user.group.filter(name='student').exists():
+			elif request.user.groups.filter(name='Student').exists():
 				return HttpResponseRedirect(reverse('Student:dashboard'))
 		return render(request, self.get_login_template)
 
 	def post(self, request, *args, **kwargs):
 		messages.error(request, 'BAD REQUEST')
-		return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+		return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 
 class LoginUser(View):
 	def post(self, request, *args, **kwargs):
@@ -64,7 +67,6 @@ class LoginUser(View):
 						username = instance.user.username
 						user = authenticate(username=username, password=password)
 						if user is not None:
-							print('user exists')
 							login(request, user)
 							return HttpResponseRedirect(reverse('Professor:dashboard'))
 						messages.warning(request, "Phone No and password doesn't match with any GURUKOOL PROFESSOR account.")
@@ -91,7 +93,7 @@ class LoginUser(View):
 						return HttpResponseRedirect(reverse('UserAuth:login'))
 					except:
 						messages.error(request, 'BAD REQUEST')
-						return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+						return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 			elif type_of_user == 'student':
 				if request.method == 'POST':
 					username = request.POST.get('student_login_username')
@@ -135,17 +137,17 @@ class LoginUser(View):
 							return HttpResponseRedirect(reverse('UserAuth:login'))
 						except:
 							messages.error(request, 'BAD REQUEST')
-							return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+							return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 				else:
 					messages.error(request, 'BAD REQUEST')
-					return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+					return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 			else:
 				messages.error(request, 'BAD REQUEST')
-				return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+				return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 		except Exception as e:
 			print(e)
 			messages.error(request, 'BAD REQUEST')
-			return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+			return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 
 
 class SignUp(View):
@@ -162,12 +164,12 @@ class SignUp(View):
 
 	def post(self, request, *args, **kwargs):
 		messages.error(request, 'BAD REQUEST')
-		return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+		return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 
 class signupUser(View):
 	def get(self, request, *args, **kwargs):
 		messages.error(request, 'BAD REQUEST')
-		return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+		return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 
 	def post(self, request, *args, **kwargs):
 		try:
@@ -226,7 +228,7 @@ class signupUser(View):
 						login(request, user)
 						return HttpResponseRedirect(reverse('Professor:dashboard'))
 					messages.error(request, 'BAD REQUEST')
-					return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+					return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 			elif type_of_user == 'student':
 				first_name = request.POST.get('student_signup_first_name')
 				middle_name = request.POST.get('student_signup_middle_name')
@@ -280,11 +282,36 @@ class signupUser(View):
 						login(request, user)
 						return HttpResponseRedirect(reverse('Student:dashboard'))
 					messages.error(request, 'BAD REQUEST')
-					return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+					return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 			else:
 				messages.error(request, 'BAD REQUEST')
-				return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+				return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
 		except Exception as e:
-			print(e)
 			messages.error(request, 'BAD REQUEST')
-			return HttpResponseRedirect(reverse(SHOW_MESSAGE_URL))
+			return HttpResponseRedirect(reverse(settings.MESSAGE_URL))
+
+@login_required(login_url=LOGIN_URL)
+def send_verification_data(request, user_group, send_to):
+	# if request.user.groups.filter(name=user_group).exists():
+	# 	try:
+	# 		verification_link = ProfessorAuthProfile.objects.get(user__username=request.user).email_verification_link
+	# 		subject = 'GURUKOOL ACCOUNT VERIFICATION'
+	# 		# body = 'Verify your GURUKOOL %s ACCOUNT.\nVerify Account Here.\n\n %s' %(user_group, verification_link)
+	# 		body = 'SCNKSJNCSJKDC'
+	# 		recipient = request.user.email
+	# 		print(request, recipient, subject, body, None)
+	# 		sendEmail(request, recipient, subject, body, None)
+	# 	except Exception as e:
+	# 		print(e)
+	# 		messages.error(request, 'EMAIL NOT SENT. PLEASE TRY LATER')
+	# 		if user_group == 'Professor':
+	# 			return HttpResponseRedirect(reverse('Professor:dashboard'))
+	# 		elif user_group == 'Student':
+	# 			return HttpResponseRedirect(reverse('Student:dashboard'))
+	# else:
+	# 	messages.error(request, 'EMAIL NOT SENT. PLEASE TRY LATER')
+	# 	if user_group == 'Professor':
+	# 		return HttpResponseRedirect(reverse('Professor:dashboard'))
+	# 	elif user_group == 'Student':
+	# 		return HttpResponseRedirect(reverse('Student:dashboard'))
+	sendEmail(request, 'tanmay.k16@iiits.in', 'sbdcnsbcmsc', 'asbcnsc nsdc ', None)

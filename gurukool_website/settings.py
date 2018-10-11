@@ -15,6 +15,8 @@ from django.contrib.messages import constants as message_constants
 
 MESSAGE_LEVEL = message_constants.DEBUG
 
+MESSAGE_URL = 'UserAuth:show-message'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,7 +35,12 @@ ALLOWED_HOSTS = ['*']
 #EMAIL
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'k1998.tanmay@gmail.com'
+EMAIL_HOST_PASSWORD = 'kalani@1998'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # Application definition
 
 INSTALLED_APPS = [
@@ -88,6 +95,8 @@ DATABASES = {
         'NAME': 'gurukool_db',
         'USER': 'root',
         'PASSWORD': 'bhavi',
+        'HOST': '139.59.86.57',
+        'PORT': '3306'
     }
 }
 
@@ -109,6 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
 
 
 # Internationalization

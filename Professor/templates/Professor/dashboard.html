@@ -1,2 +1,19 @@
+{% include 'UserAuth/message.html' %}
+
 professor dashboard
-<a href="{% url 'Professor:logout' %}">LOGOUT</a>
+<br><br>
+
+<a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
+Polls:
+{% if poll_list %}
+    {% for poll in poll_list %}
+        <ul>
+            <li><a href="{% url 'Professor:poll' poll.id %}"> {{ poll.title }} </a></li>
+        </ul>
+    {% endfor %}
+{% else %}
+    No Poll Created Yet.
+{% endif %}
+<br>
+<br><br>
+<a href="{% url 'UserAuth:logout' %}">LOGOUT</a>
