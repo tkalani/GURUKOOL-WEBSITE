@@ -29,10 +29,9 @@ def dashboard(request):
         # else:
         #     # return render(request, 'Professor/verify_account.html')
         #     return render(request, 'Professor/dashboard.html')
-        # poll_list = Poll.objects.filter(professor__user__user__username=request.user.username)
+        poll_list = Poll.objects.filter(professor__user__user__username=request.user.username)
         # print(poll_list)
-        # return render(request, 'Professor/dashboard.html', {"poll_list": poll_list})
-        return render(request, 'Professor/dashboard.html')
+        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
@@ -66,8 +65,8 @@ def create_poll(request):
         except Exception as e:
             print(e)
 
-# def show_poll(request, poll_id):
-#     if request.method == 'GET':
-#         poll_details = Poll.objects.get(id=poll_id)
-#         poll_options = PollOption.objects.filter(poll__id=poll_id)
-#         return render(request, 'Professor/poll-detail.html', {"poll_details": poll_details, 'poll_options': poll_options})
+def show_poll(request, poll_id):
+    if request.method == 'GET':
+        poll_details = Poll.objects.get(id=poll_id)
+        poll_options = PollOption.objects.filter(poll__id=poll_id)
+        return render(request, 'Professor/poll-detail.html', {"poll_details": poll_details, 'poll_options': poll_options})

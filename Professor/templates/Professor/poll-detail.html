@@ -1,0 +1,26 @@
+{% extends 'Professor/main.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Poll Detail
+{% endblock %}
+
+{% block body %}
+    {% include 'UserAuth/message.html' %}
+    Poll Detail Here<br><br>
+
+    Course : {{ poll_details.course.name }} - {{ poll_details.course.code }}<br>
+    Title : {{ poll_details.title }}<br>
+    Question : {{ poll_details.question }}<br>
+    {% for option in poll_options %}
+        <ul>
+            <li>{{ option.option }} </a></li>
+        </ul>
+    {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+    </script>
+{% endblock %}
