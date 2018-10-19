@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from UserAuth.models import *
 
+from Professor.models import Course
+
 def get_student_profile_pic_path(instance, filename):
 	ext = filename.split('.')[-1]
 	filename = "%s.%s" % (instance.user.id, ext)
@@ -25,3 +27,10 @@ class StudentProfile(models.Model):
 
 	def __str__(self):
 		return str(self.user.user.username) + ' --> ' + str(self.mobile_no)
+
+class CourseStudent(models.Model):
+	student = models.ForeignKey(StudentProfile, on_delete=models.SET_NULL, null=True, blank=True)
+	course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
+
+	def __str__(self):
+		return str(self.student.user.user.username) + ' --> ' + str(self.course.name)
