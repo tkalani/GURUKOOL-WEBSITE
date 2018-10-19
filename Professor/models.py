@@ -56,3 +56,35 @@ class PollOption(models.Model):
 
 	def __str__(self):
 		return str(self.poll.id) + ' --> ' + str(self.option)
+
+class Quiz(models.Model):
+	professor = models.ForeignKey(ProfessorProfile, on_delete=models.SET_NULL, null=True, blank=True)
+	course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
+	unique_quiz_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
+	title = models.CharField(max_length=100, null=False, blank=False)
+	description = models.TextField(null=True, blank=True)
+	pass_marks = models.IntegerField(default=0)
+	max_marks = models.IntegerField(default=0)
+	no_of_questions = models.IntegerField(default=0)
+
+	def __str__(self):
+		return str(self.professor) + ' --> ' + str(self.course) + ' --> ' + str(self.title)
+
+class QuizQuestion(models.Model):
+	quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True)
+	question = models.CharField(max_length=100, null=False, blank=False)
+	question_file = models.ImageField(null=True, blank=True)
+	marks = models.IntegerField(default=0)
+	time = models.IntegerField(default=0)
+
+	def __str__(self):
+		return str(self.quiz.id) + ' --> ' + str(self.id)
+
+class QuizOptions(models.Model):
+	quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True)
+	question = models.ForeignKey(QuizQuestion, on_delete=models.CASCADE, null=True, blank=True)
+	option = models.TextField(null=False, blank=False)
+	is_correct = models.BooleanField(default=False)
+
+	def __str__(self):
+		return str(self.option) + ' --> ' + str(self.quiz.id) + ' --> ' + str(self.question.id) + ' --> ' + str(self.is_correct)

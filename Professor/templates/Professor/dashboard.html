@@ -16,4 +16,17 @@ Polls:
 {% endif %}
 <br>
 <br><br>
+<a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
+Quizzes:
+{% if quiz_list %}
+    {% for quiz in quiz_list %}
+        <ul>
+            <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
+        </ul>
+    {% endfor %}
+{% else %}
+    No Quiz Created Yet.
+{% endif %}
+<br>
+<br><br>
 <a href="{% url 'UserAuth:logout' %}">LOGOUT</a>
