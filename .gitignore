@@ -1,1 +1,4 @@
 sendgrid.env
+*.pyc
+__pycache__
+migrations
