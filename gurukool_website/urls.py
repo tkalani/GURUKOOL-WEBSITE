@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^professor/', include('Professor.urls', namespace="Professor")),
 	url(r'^student/', include('Student.urls', namespace="Student")),
     url(r'^api/', include('Api.urls', namespace="Api")),
+    url(r'^doubt/', include('Doubt.urls', namespace="Doubt")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

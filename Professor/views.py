@@ -135,12 +135,3 @@ def show_quiz(request, quiz_id):
     if request.method == 'GET':
         quiz_data = QuizOptions.objects.filter(quiz__id=quiz_id)
         return render(request, 'Professor/quiz-detail.html', {"quiz_data": quiz_data})
-
-@login_required(login_url=login_url)
-@group_required(group_name, login_url=login_url)
-def show_doubt(request, course_id):
-    if request.method == 'GET':
-        doubts = Doubt.objects.filter(course__id=course_id)
-        course = Course.objects.get(id=course_id)
-        # print(doubts)
-        return render(request, 'Professor/doubt.html', {"doubt_list": doubts, "course":course})

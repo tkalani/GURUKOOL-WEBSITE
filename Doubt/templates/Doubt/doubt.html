@@ -12,30 +12,34 @@
     <h2>All Doubts:</h2><br><br>
 
     {% if doubt_list %}
-      {% for doubt in doubt_list %}
       <ul>
+      {% for doubt in doubt_list %}
         <li>
           <h4>{{doubt.title}}</h4>
           <h5>{{doubt.description}}</h5>
           Posted by: {{doubt.student.user.user.first_name}} {{doubt.student.user.user.last_name}}
           Last updated: {{doubt.last_updated}}
           <br>
-          <form action="#" method="POST">
-            <textarea name="comment" rows="3" cols="50" placeholder="Write your comment here" required></textarea>
+
+          <form action="#" id="comment-submit"  method="POST">
+            {% csrf_token %}
+            <textarea name="text" rows="3" cols="50" placeholder="Write your comment here and make post request to {% url 'Api:comment' doubt.id %}" required></textarea>
             <input type="submit" value="SUBMIT">
           </form>
+          To get all comments for the doubt post, make a get request to {% url 'Api:comment' doubt.id %}
           <br><br>
         </li>
-      </ul>
       {% endfor %}
+      </ul>
     {% else %}
       No doubts posted
     {% endif %}
 {% endblock %}
 
 
+
+
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-    </script>
 {% endblock %}
