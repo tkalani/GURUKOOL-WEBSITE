@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import *
+from Doubt.models import *
 import hashlib
 
 group_name = 'Professor'
@@ -32,8 +33,9 @@ def dashboard(request):
         #     return render(request, 'Professor/dashboard.html')
         poll_list = Poll.objects.filter(professor__user__user__username=request.user.username)
         quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username)
+        course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id)
         # print(poll_list)
-        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list})
+        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
@@ -126,10 +128,19 @@ def create_quiz(request):
             print('error is ', e)
             messages.warning(request, "There was an error creating Quiz. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:create-quiz'))
-            
+
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
 def show_quiz(request, quiz_id):
     if request.method == 'GET':
         quiz_data = QuizOptions.objects.filter(quiz__id=quiz_id)
         return render(request, 'Professor/quiz-detail.html', {"quiz_data": quiz_data})
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def show_doubt(request, course_id):
+    if request.method == 'GET':
+        doubts = Doubt.objects.filter(course__id=course_id)
+        course = Course.objects.get(id=course_id)
+        # print(doubts)
+        return render(request, 'Professor/doubt.html', {"doubt_list": doubts, "course":course})

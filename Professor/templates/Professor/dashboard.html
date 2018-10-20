@@ -29,4 +29,15 @@ Quizzes:
 {% endif %}
 <br>
 <br><br>
+Doubts:
+{% if course_list %}
+    {% for course in course_list %}
+        <ul>
+          <li><a href="{% url 'Professor:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
+        </ul>
+    {% endfor %}
+{% else %}
+    No courses to select for Doubts
+{% endif %}
+
 <a href="{% url 'UserAuth:logout' %}">LOGOUT</a>
