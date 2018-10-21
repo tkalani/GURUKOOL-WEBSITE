@@ -8,6 +8,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import *
 from Doubt.models import *
+from Meeting.models import Meeting
 import hashlib
 
 group_name = 'Professor'
@@ -34,8 +35,9 @@ def dashboard(request):
         poll_list = Poll.objects.filter(professor__user__user__username=request.user.username)
         quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username)
         course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id)
+        meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id)
         # print(poll_list)
-        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list})
+        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)

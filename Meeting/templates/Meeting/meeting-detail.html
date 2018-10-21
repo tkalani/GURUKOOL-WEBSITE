@@ -1,0 +1,38 @@
+{% extends 'Professor/main.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Meetings
+{% endblock %}
+
+{% block body %}
+    {% include 'UserAuth/message.html' %}
+    <h1>Meeting: {{meeting.title}}</h1>
+    <br>
+    <h3>Body: {{meeting.body}}</h3>
+    <br>
+    <h4>Current Status: {{meeting.status}}</h4>
+    <h4> Requested By: {{meeting.student.user.user.first_name}} {{meeting.student.user.user.last_name}}</h4>
+    <br><br>
+
+      <h3>My Response</h3>
+      <br>
+    <form action="#" id="meeting-response"  method="PUT">
+      {% csrf_token %}
+      <input type="text" value="{{meeting.id}}" name="id" readonly><br>
+      <textarea name="prof_response" rows="4" cols="50" placeholder="Write your response and make PUT request to {% url 'Api:meeting-create' 'professor' %}" required></textarea>
+      <select name="status" required>
+              <option value="APPROVED">APPROVED</option>
+              <option value="REJECTED">REJECTED</option>
+      </select><br>
+      <input type="submit" value="SUBMIT">
+    </form>
+{% endblock %}
+
+
+
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+{% endblock %}
