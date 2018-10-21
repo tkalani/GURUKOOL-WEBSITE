@@ -24,14 +24,14 @@ class InstituteProfile(models.Model):
 
 class ProfessorAuthProfile(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	mobile_no = models.IntegerField(blank=True, null=True)
+	mobile_no = models.CharField(max_length=1000,blank=True, null=True)
 	gender = models.ForeignKey(GenderChoice, on_delete=models.SET_NULL, null=True, blank=True)
 	date_of_birth = models.DateField(blank=False, null=False)
 	email_address = models.CharField(max_length=100, null=False, blank=False)
 
 	email_verification_link = models.CharField(max_length=100, null=True, blank=True)
 	email_verification_link_sent = models.BooleanField(default=False)
-	email_verfied = models.BooleanField(default=False)
+	email_verified = models.BooleanField(default=False)
 	otp = models.IntegerField(default=0)
 	otp_sent_to_mobile_no = models.BooleanField(default=False)
 	otp_verified = models.BooleanField(default=False)
@@ -41,14 +41,14 @@ class ProfessorAuthProfile(models.Model):
 
 class StudentAuthProfile(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-	mobile_no = models.IntegerField(blank=True, null=True)
+	mobile_no = models.CharField(max_length=1000,blank=True, null=True)
 	gender = models.ForeignKey(GenderChoice, on_delete=models.SET_NULL, null=True, blank=True)
 	date_of_birth = models.DateField(blank=False, null=False)
 	email_address = models.CharField(max_length=100, null=False, blank=False)
 
 	email_verification_link = models.CharField(max_length=100, null=True, blank=True)
 	email_verification_link_sent = models.BooleanField(default=False)
-	email_verfied = models.BooleanField(default=False)
+	email_verified = models.BooleanField(default=False)
 	otp = models.IntegerField(default=0)
 	otp_sent_to_mobile_no = models.BooleanField(default=False)
 	otp_verified = models.BooleanField(default=False)

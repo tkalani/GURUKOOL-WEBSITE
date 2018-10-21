@@ -1,0 +1,88 @@
+{% extends 'Professor/main.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Create Couse
+{% endblock %}
+
+{% block body %}
+    {% include 'UserAuth/message.html' %}
+        Create Poll
+        <br><br>
+        <form action="{% url 'Professor:create-quiz' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="question-option" id="question-option" value="2">
+            Course : 
+            <select name="course" required>
+                {% for course in course_list %}
+                    <option value="{{ course.id }}">{{ course.course.name }} ( {{ course.course.code }} )</option>
+                {% endfor %}
+            </select><br>
+            Quiz Title : <input type="text" name="title" required placeholder="Quiz-Title"><br>
+            Description : <input type="text" name="description" required placeholder="Description"><br>
+            Maximum Marks: <input type="number" name="max_marks" required placeholder="Max Marks"><br>
+            Pass Marks: <input type="number" name="pass_marks" required placeholder="Pass Marks"><br>
+
+            <div id="question-list">
+                <div id="question-1">
+                    Question 1 : <input type="text" name="question_1" required placeholder="Question"><br>
+                    Marks : <input type="text" name="marks_1" required placeholder="Marks"><br>
+                    Time : <input type="number" name="time_1" required placeholder="Time (in seconds)"><br>
+                    Options :
+                        <div id="option-list-1">
+                            <div id="poll-option-1-1"><input type="text" name="poll_options_1[]" required><input type="checkbox" id="option-checkbox-1-1" name="option_checkbox_1_1"><br></div>
+                            <div id="poll-option-1-2"><input type="text" name="poll_options_1[]" required><input type="checkbox" id="option-checkbox-1-2" name="option_checkbox_1_2"><br></div>
+                        </div>
+                    <input type="button" onclick="add_option(1)" value="Add Option"><br>
+                </div>
+            </div>
+            <input type="button" onclick="add_question()" value="Add Question"><br>
+            <input type="submit" value="SUBMIT">
+        </form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var question_option_array = [2];
+        function add_option(question_id)
+        {
+            html = '<div id="poll-option-'+ question_id + '-' + (question_option_array[question_id-1]+1) +'"><input type="text" name="poll_options_'+question_id+'[]" required><input type="checkbox" id="option-checkbox-'+question_id+'-'+(question_option_array[question_id-1]+1)+'" name="option_checkbox_'+question_id+'_'+(question_option_array[question_id-1]+1)+'"><span onclick="delete_option('+ question_id +', ' + (question_option_array[question_id-1]+1) + ')">&#x2715;</span><br></div>';
+            $('#option-list-'+question_id).append(html);
+            question_option_array[question_id-1]++;
+            $('#question-option').val(question_option_array);
+        }
+
+        function delete_question(question_id)
+        {
+            $('#question-'+question_id).remove();
+            question_option_array[question_id-1] = 0;
+            $('#question-option').val(question_option_array);
+        }
+
+        function add_question()
+        {
+            html = '<div id="question-'+(question_option_array.length+1)+'">';
+            html += 'Question '+(question_option_array.length+1)+' : <input type="text" name="question_'+(question_option_array.length+1)+'" required placeholder="Question"><span onclick="delete_question('+(question_option_array.length+1)+')">&#x2715;</span><br>';
+            html += 'Marks : <input type="text" name="marks_'+(question_option_array.length+1)+'" required placeholder="Marks"><br>'
+            html += 'Time : <input type="number" name="time_'+(question_option_array.length+1)+'" required placeholder="Time (in seconds)"><br>';
+            html += 'Options :';
+            html += '<div id="option-list-'+(question_option_array.length+1)+'">';
+            html += '<div id="poll-option-'+(question_option_array.length+1)+'-1"><input type="text" name="poll_options_'+(question_option_array.length+1)+'[]" required><input type="checkbox" id="option-checkbox-'+(question_option_array.length+1)+'-1" name="option_checkbox_'+(question_option_array.length+1)+'_1"><br></div>';
+            html += '<div id="poll-option-'+(question_option_array.length+1)+'-2"><input type="text" name="poll_options_'+(question_option_array.length+1)+'[]" required><input type="checkbox" id="option-checkbox-'+(question_option_array.length+1)+'-2" name="option_checkbox_'+(question_option_array.length+1)+'_2"><br></div>';
+            html == '</div>';
+            html += '</div>';
+            html += '<input type="button" onclick="add_option('+(question_option_array.length+1)+')" value="Add Option"><br>';
+            $('#question-list').append(html);
+            question_option_array.push(2);
+            $('#question-option').val(question_option_array);
+        }
+
+        function delete_option(question_id, option_id)
+        {
+            $('#poll-option-'+question_id+'-'+option_id).remove();
+            question_option_array[question_id-1]--;
+            $('#question-option').val(question_option_array);
+        }
+    </script>
+{% endblock %}

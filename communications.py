@@ -9,8 +9,8 @@ from email.utils import COMMASPACE, formatdate
 from email.mime.base import MIMEBase
 from email import encoders
 
-EmailAccount = 'donotreplyacadsea@gmail.com'
-EmailPassword = 'acadseatushar'
+EmailAccount = 'donotreplygurukool@gmail.com'
+EmailPassword = 'gurukool'
 # fdbztwseduujgnmk
 
 def EmailThread(request, recipient, subject, body, files):

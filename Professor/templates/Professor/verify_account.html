@@ -1,0 +1,31 @@
+{% extends 'Professor/main.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Verify account
+{% endblock %}
+
+{% block body %}
+    {% include 'UserAuth/message.html' %}
+
+    {{ request.user }}<br>
+    verify account
+    <br><br>
+
+    Verify Email account<br>
+        <a href="{% url 'UserAuth:send-verification-data' 'Professor' 'email' %}">Click Here...</a>
+    <br><br>
+    Verify Phone No.<br>
+        <a href="{% url 'UserAuth:send-verification-data' 'Professor' 'mobile_no' %}">Click Here...</a>
+    <br><br>
+    <a href="{% url 'UserAuth:logout' %}">LOGOUT</a>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function send_for_verification(send_to)
+        {
+            console.log(send_to);
+        }
+    </script>
+{% endblock %}
