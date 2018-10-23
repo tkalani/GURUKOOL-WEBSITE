@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
@@ -7,12 +7,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view
 
 from Professor.models import Course, CourseProfessor
 from Doubt.models import Doubt, Comment
 from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer
 from Student.models import CourseStudent, StudentProfile
+from django.views.decorators.csrf import csrf_exempt
+from django.views import View
 
+import json
+# import requests
 import traceback
 
 student_group = 'Student'
@@ -30,12 +35,16 @@ def group_required(*group_names, login_url=None):
 
 class CourseList(APIView):
     serializer_class = CourseSerializer
-
-    def get(self, request, type, format=None):    #get courses stduent is registed for
+    def get(self, request, type, menu, format=None):    #get courses stduent is registed for
         if type == 'student':
-            courses = CourseStudent.objects.filter(student__user__user__id=request.user.id)
+            if menu == 'quiz':
+                courses = CourseStudent.objects.all()
         elif type == 'professor':
+            print ("request", request, request.user.id)
+
             courses = CourseProfessor.objects.filter(professor__user__user__id=request.user.id)
+            print (courses, "courses")
+
         else:
             return Response(status=500)
         serializer = self.serializer_class(courses, many=True)
@@ -158,3 +167,35 @@ class CommentCreate(APIView):
         except Exception:
             print(traceback.format_exc())
             return Response(status=500)
+
+# @csrf_exempt
+# def Test(request):
+#     if request.method == "GET":
+#         return HttpResponse("Get success")
+#     if request.method == "POST":
+#         print ("done")
+#         jsonResponse=json.loads(request.body.decode('utf-8'))
+#         print(jsonResponse['email'])
+#         print(jsonResponse['email'])
+#         return "done"
+'''
+class Test(View):
+    @method_decorator(csrf_exempt)
+    def get(self, request):
+        print('get success')
+        return HttpResponse("Get success")
+    def post(self, request):       #text
+        print ("done")
+        jsonResponse=json.loads(request.body.decode('utf-8'))
+        print(jsonResponse['email'])
+        print(jsonResponse['email'])
+        return "done"
+'''
+@api_view(['GET'])
+@csrf_exempt
+def Test(request):
+    if request.method == 'GET':
+        print ("nigga shit")
+        # posts = Post.objects.all()
+        # serializer = PostSerializer(posts, many=True)
+        # return Response(serializer.data)
