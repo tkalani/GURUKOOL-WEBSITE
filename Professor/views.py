@@ -88,13 +88,16 @@ def create_quiz(request):
 
     if request.method == 'POST':
         try:
-            print(request.POST['course'])
+            # print(request.POST)
+            # print(request.POST['course'])
             question_option_array = list(map(int, request.POST['question-option'].split(',')))
             # print(question_option_array)
 
             quiz = Quiz()
             quiz.professor = ProfessorProfile.objects.get(user__user__username=request.user.username)
-            quiz.course = Course.objects.get(id=int(request.POST['course']))
+            course = CourseProfessor.objects.get(id=int(request.POST['course']))
+            # print(course.course.id)
+            quiz.course = Course.objects.get(id=int(course.course.id))
             quiz.title = request.POST['title']
             quiz.description = request.POST['description']
             quiz.max_marks = request.POST['max_marks']
@@ -113,9 +116,9 @@ def create_quiz(request):
                     ques_inst.save()
 
                     option_list = request.POST.getlist('poll_options_'+str(i+1)+'[]')
-                    print(option_list)
+                    # print(option_list)
                     for j in range(len(option_list)):
-                        print(option_list[j])
+                        # print(option_list[j])
                         opt_inst = QuizOptions()
                         opt_inst.quiz = quiz
                         opt_inst.question = ques_inst
