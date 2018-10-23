@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'Student',
     'Doubt',
     'corsheaders',
+    'Meeting',
 ]
 
 MIDDLEWARE = [

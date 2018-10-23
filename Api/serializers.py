@@ -2,8 +2,9 @@ from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 
 from Student.models import CourseStudent, StudentProfile
-from Professor.models import Course
+from Professor.models import Course, ProfessorProfile, Quiz, QuizOptions, QuizQuestion
 from Doubt.models import Doubt, Comment
+from Meeting.models import Meeting
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -60,3 +61,48 @@ class CommentSerializer(serializers.ModelSerializer):
         instance.text = validated_data.get('text', instance.text)
         instance.save()
         return instance
+
+
+class MeetingSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='student.user.user.username', read_only=True)
+    first_name = serializers.CharField(source='student.user.user.first_name', read_only=True)
+    last_name = serializers.CharField(source='student.user.user.last_name', read_only=True)
+    professor = serializers.CharField(source='professor.user.user.username')
+    created_time = serializers.DateTimeField(read_only=True)
+    id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Meeting
+        fields = ("username", "first_name", "last_name", "professor", "id", "title", "body", "status", "prof_response", "created_time")
+
+    def create(self, validated_data):
+        professor_username = validated_data.pop('professor')['user']['user']['username']
+        professor = get_object_or_404(ProfessorProfile, user__user__username=professor_username)
+        return Meeting.objects.create(professor=professor, **validated_data)
+
+    def update(self, instance, validated_data):
+        # instance.title = validated_data.get('title', instance.title)
+        # instance.body = validated_data.get('body', instance.body)
+        instance.status = validated_data.get('status', instance.status)
+        instance.prof_response = validated_data.get('prof_response', instance.prof_response)
+        instance.save()
+        return instance
+
+class QuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = '__all__'
+
+class QuizQuestionSerializer(serializers.ModelSerializer):
+    quiz = QuizSerializer(many=False)
+    class Meta:
+        model = QuizQuestion
+        fields = '__all__'
+
+class QuizOptionsSerializer(serializers.ModelSerializer):
+    quiz = QuizSerializer(many=False)
+    question = QuizQuestionSerializer(many=False)
+    class Meta:
+        model = QuizOptions
+        fields = '__all__'
+

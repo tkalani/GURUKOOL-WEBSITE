@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,9 +10,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view
 
-from Professor.models import Course, CourseProfessor
+from Professor.models import Course, CourseProfessor, Quiz, QuizOptions
 from Doubt.models import Doubt, Comment
-from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer
+from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer
 from Student.models import CourseStudent, StudentProfile
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
@@ -168,16 +169,23 @@ class CommentCreate(APIView):
             print(traceback.format_exc())
             return Response(status=500)
 
-# @csrf_exempt
-# def Test(request):
-#     if request.method == "GET":
-#         return HttpResponse("Get success")
-#     if request.method == "POST":
-#         print ("done")
-#         jsonResponse=json.loads(request.body.decode('utf-8'))
-#         print(jsonResponse['email'])
-#         print(jsonResponse['email'])
-#         return "done"
+
+class QuizDetails(APIView):
+    def get(self, request, quiz_id):
+        quiz = Quiz.objects.all()[1]
+        questions = quiz.quizquestion_set.all()
+        fullQuiz = {}
+        value = []
+        for question in questions:
+            options = question.quizoptions_set.all()
+            answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False} for opt in options]
+            value.append({"questionText":question.question, "answers":answers})
+        fullQuiz["questions"] = value
+        print (fullQuiz)
+        return JsonResponse(fullQuiz, status=200, safe=False)
+
+
+
 '''
 class Test(View):
     @method_decorator(csrf_exempt)
@@ -191,11 +199,3 @@ class Test(View):
         print(jsonResponse['email'])
         return "done"
 '''
-@api_view(['GET'])
-@csrf_exempt
-def Test(request):
-    if request.method == 'GET':
-        print ("nigga shit")
-        # posts = Post.objects.all()
-        # serializer = PostSerializer(posts, many=True)
-        # return Response(serializer.data)
