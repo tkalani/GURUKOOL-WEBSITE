@@ -88,7 +88,7 @@ def create_quiz(request):
 
     if request.method == 'POST':
         try:
-            # print(request.POST)
+            print(request.POST)
             # print(request.POST['course'])
             question_option_array = list(map(int, request.POST['question-option'].split(',')))
             # print(question_option_array)
@@ -128,11 +128,11 @@ def create_quiz(request):
                         else:
                             opt_inst.is_correct = False
                         opt_inst.save()
-            return HttpResponseRedirect(reverse('Professor:dashboard'))
+            # return HttpResponseRedirect(reverse('Professor:dashboard'))
         except Exception as e:
             print('error is ', e)
             messages.warning(request, "There was an error creating Quiz. Please Try Again.")
-            return HttpResponseRedirect(reverse('Professor:create-quiz'))
+            # return HttpResponseRedirect(reverse('Professor:create-quiz'))
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
