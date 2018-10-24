@@ -43,14 +43,5 @@ Doubts:
 <br>
 <br><br>
 Meetings:
-{% if meeting_list %}
-    {% for meeting in meeting_list %}
-        <ul>
-          <li><a href="{% url 'Meeting:meeting-detail' meeting.id %}"> {{meeting.title}}: {{ meeting.student.user.user.first_name }} {{ meeting.student.user.user.last_name }} </a></li>
-        </ul>
-    {% endfor %}
-{% else %}
-    No meetings requested
-{% endif %}
 
 <a href="{% url 'UserAuth:logout' %}">LOGOUT</a>
