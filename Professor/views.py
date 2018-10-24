@@ -10,6 +10,7 @@ from .models import *
 from Doubt.models import *
 from Meeting.models import Meeting
 import hashlib
+import time
 
 group_name = 'Professor'
 login_url = 'UserAuth:login'
@@ -128,11 +129,11 @@ def create_quiz(request):
                         else:
                             opt_inst.is_correct = False
                         opt_inst.save()
-            # return HttpResponseRedirect(reverse('Professor:dashboard'))
+            return HttpResponseRedirect(reverse('Professor:dashboard'))
         except Exception as e:
             print('error is ', e)
             messages.warning(request, "There was an error creating Quiz. Please Try Again.")
-            # return HttpResponseRedirect(reverse('Professor:create-quiz'))
+            return HttpResponseRedirect(reverse('Professor:create-quiz'))
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
@@ -141,7 +142,58 @@ def show_quiz(request, quiz_id):
         quiz_data = QuizOptions.objects.filter(quiz__id=quiz_id)
         return render(request, 'Professor/quiz-detail.html', {"quiz_data": quiz_data})
 
-def conduct_quiz(request):
+def conduct_quiz(request, quiz_id):
     if request.method == 'GET':
-        quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username)
-        return render(request, 'Professor/conduct-quiz.html', {"quiz_list": quiz_list})
+        try:
+            quiz = Quiz.objects.get(id=quiz_id)
+            unique_quiz_id = str('_'.join(quiz.title.split(' ')))+str(hashlib.sha224((str(quiz.title)+str(time.strftime("%Y-%m-%d"))+str(time.strftime("%H:%i:%s"))+str(quiz.id)).encode('utf-8')).hexdigest())[:5]
+            
+            conduct_quiz_inst = ConductQuiz()
+            conduct_quiz_inst.quiz = quiz
+            conduct_quiz_inst.unique_quiz_id = unique_quiz_id
+            conduct_quiz_inst.active = True
+            conduct_quiz_inst.save()
+
+            messages.warning(request, "Successfully started quiz")
+            return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':quiz_id}))
+        except Exception as e:
+            print(e)
+            messages.warning(request, "There was an error conducting Quiz. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':quiz_id}))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

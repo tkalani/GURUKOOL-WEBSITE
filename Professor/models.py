@@ -92,8 +92,7 @@ class ConductQuiz(models.Model):
 	quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, blank=False)
 	unique_quiz_id = models.CharField(max_length=100, null=False, blank=False)
 	active = models.BooleanField(default=False)
-	conduction_date = models.DateField(default=False)
-	conduction_time = models.BooleanField(default=False)
+	conduction_date = models.DateTimeField(auto_now_add=True, null=True)
 
 	def __str__(self):
 		return str(self.quiz) + '-->' + str(self.unique_quiz_id)

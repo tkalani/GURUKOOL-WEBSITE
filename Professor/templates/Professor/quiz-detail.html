@@ -8,7 +8,7 @@
 
 {% block body %}
     {% include 'UserAuth/message.html' %}
-    Quiz Detail Here<br><br>
+    Quiz Detail Here {{ quiz_data.0.quiz.id }}<br><br>
 
     Course : {{ quiz_data.0.quiz.course.name }} - {{ quiz_data.0.quiz.course.code }}<br>
     Title : {{ quiz_data.0.quiz.title }}<br>
@@ -36,6 +36,10 @@
         {% endfor %}
     {% endwith %}
     {% endwith %}
+<!-- 
+    <button type="button">Conduct Quiz</button>
+    <button type="button">Conduct Quiz</button> -->
+    <a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button type="button">Conduct Quiz</button></a>
 
 
 {% endblock %}
