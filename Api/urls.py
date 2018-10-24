@@ -1,5 +1,5 @@
 from django.conf.urls import include, url
-from .views import CourseList, DoubtCreate, CommentCreate, CourseDoubt, Test, QuizDetails
+from .views import CourseList, DoubtCreate, CommentCreate, CourseDoubt, QuizDetails, CheckQuiz	
 from . import views
 
 app_name = 'Api'
@@ -10,5 +10,6 @@ urlpatterns = [
 		url(r'^courses/(?P<course_id>\d+)/doubts/$', CourseDoubt.as_view(), name='course-doubt'),
 		url(r'^comments/(?P<doubt_id>\d+)/$', CommentCreate.as_view(), name='comment'),
 		url(r'^quiz-details/(?P<quiz_id>[\w\-]+)/$', QuizDetails.as_view(), name='quiz-details'),
-		url(r'^test/$', views.Test, name='test'),
+		url(r'^check-quiz/(?P<quiz_id>[\w\-]+)/(?P<course_id>[\w\-]+)/$', CheckQuiz.as_view(), name='check-quiz'),
+		# url(r'^test/$', views.Test, name='test'),
 	]

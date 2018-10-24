@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
@@ -169,6 +169,16 @@ class CommentCreate(APIView):
             print(traceback.format_exc())
             return Response(status=500)
 
+class CheckQuiz(APIView):
+    def get(self, request, quiz_id, course_id):
+        print ("checking quiz")
+        try:
+            check_quiz = get_object_or_404(Quiz, course__id=course_id, unique_quiz_id=quiz_id)
+            return JsonResponse({"check":True}, status=200)
+        except Exception as e:
+            return JsonResponse({"check":False}, status=200)        
+
+
 
 class QuizDetails(APIView):
     def get(self, request, quiz_id):
@@ -179,9 +189,9 @@ class QuizDetails(APIView):
         for question in questions:
             options = question.quizoptions_set.all()
             answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False} for opt in options]
-            value.append({"questionText":question.question, "answers":answers})
+            value.append({"questionText":question.question,"questionTime":question.time,"questionMarks":question.marks, "answers":answers})
         fullQuiz["questions"] = value
-        print (fullQuiz)
+        # print (fullQuiz)
         return JsonResponse(fullQuiz, status=200, safe=False)
 
 
