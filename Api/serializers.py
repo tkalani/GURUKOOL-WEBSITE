@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 
 from Student.models import CourseStudent, StudentProfile
-from Professor.models import Course, ProfessorProfile
+from Professor.models import Course, ProfessorProfile, Quiz, QuizOptions, QuizQuestion
 from Doubt.models import Doubt, Comment
 from Meeting.models import Meeting
 
@@ -87,3 +87,22 @@ class MeetingSerializer(serializers.ModelSerializer):
         instance.prof_response = validated_data.get('prof_response', instance.prof_response)
         instance.save()
         return instance
+
+class QuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = '__all__'
+
+class QuizQuestionSerializer(serializers.ModelSerializer):
+    quiz = QuizSerializer(many=False)
+    class Meta:
+        model = QuizQuestion
+        fields = '__all__'
+
+class QuizOptionsSerializer(serializers.ModelSerializer):
+    quiz = QuizSerializer(many=False)
+    question = QuizQuestionSerializer(many=False)
+    class Meta:
+        model = QuizOptions
+        fields = '__all__'
+
