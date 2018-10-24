@@ -150,7 +150,7 @@ def conduct_quiz(request, quiz_id):
         try:
             quiz = Quiz.objects.get(id=quiz_id)
             unique_quiz_id = str('_'.join(quiz.title.split(' ')))+str(hashlib.sha224((str(quiz.title)+str(time.strftime("%Y-%m-%d"))+str(time.strftime("%H:%i:%s"))+str(quiz.id)).encode('utf-8')).hexdigest())[:5]
-            
+
             conduct_quiz_inst = ConductQuiz()
             conduct_quiz_inst.quiz = quiz
             conduct_quiz_inst.unique_quiz_id = unique_quiz_id
@@ -178,39 +178,3 @@ def stop_quiz(request, quiz_id):
             print(e)
             messages.warning(request, "There was an error stopping Quiz. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':conduct_quiz_inst.quiz.id}))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
