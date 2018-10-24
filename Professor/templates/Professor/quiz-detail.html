@@ -10,38 +10,26 @@
     {% include 'UserAuth/message.html' %}
     Quiz Detail Here<br><br>
 
-    <!-- {% for quiz in quiz_data|slice:":1" %}
-        kjsdbkjsbj
-        {{quiz.quiz.course.name}}
-    {% endfor %} -->
     Course : {{ quiz_data.0.quiz.course.name }} - {{ quiz_data.0.quiz.course.code }}<br>
     Title : {{ quiz_data.0.quiz.title }}<br>
     Description : {{ quiz_data.0.quiz.description }}<br>
 
     <br><br>
-    <!-- Question : {{ poll_details.question }}<br>
-    {% for option in poll_options %}
-        <ul>
-            <li>{{ option.option }} </a></li>
-        </ul>
-    {% endfor %} -->
     {% with count=0 %}
-    {{count}}<br>
     {% with question_id=quiz_data.0.question.id %}
         {% for option in quiz_data %}
             {% if count == 0 %} QUESTION : {{option.question.question}} {% endif %}<br>
-            {% update_variable count as 1 %}
-            {{count}}
+            {% update_variable 1 as count %}
             {% if option.question.id is question_id %}
-                option {{option.id}} : {{option.option}}
+                option : {{option.option}}
                 {% if option.is_correct %} YES {% else %} NO {% endif %}
                 <br>
             {% else %}
-                {{count}}
-                {% update_variable count as 0 %}
+                {% update_variable option.question.id as question_id %}
+                {% update_variable 0 as count %}
                 {% if count == 0 %} QUESTION : {{option.question.question}} {% endif %}<br>
-                {% update_variable count as 1 %}
-                option {{option.id}} : {{option.option}}
+                {% update_variable 1 as count %}
+                option : {{option.option}}
                 {% if option.is_correct %} YES {% else %} NO {% endif %}
                 <br>
             {% endif %}

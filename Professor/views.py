@@ -139,7 +139,6 @@ def create_quiz(request):
 def show_quiz(request, quiz_id):
     if request.method == 'GET':
         quiz_data = QuizOptions.objects.filter(quiz__id=quiz_id)
-        print(quiz_data)
         return render(request, 'Professor/quiz-detail.html', {"quiz_data": quiz_data})
 
 def conduct_quiz(request):
