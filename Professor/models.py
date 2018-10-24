@@ -60,7 +60,6 @@ class PollOption(models.Model):
 class Quiz(models.Model):
 	professor = models.ForeignKey(ProfessorProfile, on_delete=models.SET_NULL, null=True, blank=True)
 	course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
-	unique_quiz_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
 	title = models.CharField(max_length=100, null=False, blank=False)
 	description = models.TextField(null=True, blank=True)
 	pass_marks = models.IntegerField(default=0)
@@ -88,3 +87,13 @@ class QuizOptions(models.Model):
 
 	def __str__(self):
 		return str(self.option) + ' --> ' + str(self.quiz.id) + ' --> ' + str(self.question.id) + ' --> ' + str(self.is_correct)
+
+class ConductQuiz(models.Model):
+	quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=False, blank=False)
+	unique_quiz_id = models.CharField(max_length=100, null=False, blank=False)
+	active = models.BooleanField(default=False)
+	conduction_date = models.DateField(default=False)
+	conduction_time = models.BooleanField(default=False)
+
+	def __str__(self):
+		return str(self.quiz) + '-->' + str(self.unique_quiz_id)

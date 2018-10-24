@@ -1,1 +1,45 @@
-QUIZ DETAIL HERE
+{% extends 'Professor/main.html' %}
+{% load tags %}
+{% load staticfiles %}
+
+{% block title %}
+    Quiz Detail
+{% endblock %}
+
+{% block body %}
+    {% include 'UserAuth/message.html' %}
+    Quiz Detail Here<br><br>
+
+    Course : {{ quiz_data.0.quiz.course.name }} - {{ quiz_data.0.quiz.course.code }}<br>
+    Title : {{ quiz_data.0.quiz.title }}<br>
+    Description : {{ quiz_data.0.quiz.description }}<br>
+
+    <br><br>
+    {% with count=0 %}
+    {% with question_id=quiz_data.0.question.id %}
+        {% for option in quiz_data %}
+            {% if count == 0 %} QUESTION : {{option.question.question}} {% endif %}<br>
+            {% update_variable 1 as count %}
+            {% if option.question.id is question_id %}
+                option : {{option.option}}
+                {% if option.is_correct %} YES {% else %} NO {% endif %}
+                <br>
+            {% else %}
+                {% update_variable option.question.id as question_id %}
+                {% update_variable 0 as count %}
+                {% if count == 0 %} QUESTION : {{option.question.question}} {% endif %}<br>
+                {% update_variable 1 as count %}
+                option : {{option.option}}
+                {% if option.is_correct %} YES {% else %} NO {% endif %}
+                <br>
+            {% endif %}
+        {% endfor %}
+    {% endwith %}
+    {% endwith %}
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+{% endblock %}
