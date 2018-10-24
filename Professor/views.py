@@ -140,8 +140,11 @@ def create_quiz(request):
 def show_quiz(request, quiz_id):
     if request.method == 'GET':
         quiz_data = QuizOptions.objects.filter(quiz__id=quiz_id)
-        return render(request, 'Professor/quiz-detail.html', {"quiz_data": quiz_data})
+        is_quiz_active = ConductQuiz.objects.filter(active=True, quiz__id=quiz_id)
+        return render(request, 'Professor/quiz-detail.html', {"quiz_data": quiz_data, "is_quiz_active": is_quiz_active})
 
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
 def conduct_quiz(request, quiz_id):
     if request.method == 'GET':
         try:
@@ -161,6 +164,20 @@ def conduct_quiz(request, quiz_id):
             messages.warning(request, "There was an error conducting Quiz. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':quiz_id}))
 
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def stop_quiz(request, quiz_id):
+    if request.method == 'GET':
+        try:
+            conduct_quiz_inst = ConductQuiz.objects.get(id=quiz_id)
+            conduct_quiz_inst.active = False
+            conduct_quiz_inst.save()
+            messages.warning(request, "Successfully stopped quiz")
+            return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':conduct_quiz_inst.quiz.id}))
+        except Exception as e:
+            print(e)
+            messages.warning(request, "There was an error stopping Quiz. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':conduct_quiz_inst.quiz.id}))
 
 
 
