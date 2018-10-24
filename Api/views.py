@@ -184,9 +184,6 @@ class QuizDetails(APIView):
         print (fullQuiz)
         return JsonResponse(fullQuiz, status=200, safe=False)
 
-
-
-'''
 class Test(View):
     @method_decorator(csrf_exempt)
     def get(self, request):
@@ -198,4 +195,3 @@ class Test(View):
         print(jsonResponse['email'])
         print(jsonResponse['email'])
         return "done"
-'''

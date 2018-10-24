@@ -102,7 +102,7 @@ def create_quiz(request):
             quiz.description = request.POST['description']
             quiz.max_marks = request.POST['max_marks']
             quiz.pass_marks = request.POST['pass_marks']
-            quiz.unique_quiz_id = Course.objects.get(id=int(request.POST['course'])).code + '_' + request.POST['title'] + '_' + str(hashlib.sha224((request.POST['title']).encode('utf-8')).hexdigest())[:5]
+            # quiz.unique_quiz_id = Course.objects.get(id=int(request.POST['course'])).code + '_' + request.POST['title'] + '_' + str(hashlib.sha224(((request.POST['title'])).encode('utf-8')).hexdigest())[:5]
             quiz.save()
 
             for i in range(len(question_option_array)):
@@ -139,4 +139,10 @@ def create_quiz(request):
 def show_quiz(request, quiz_id):
     if request.method == 'GET':
         quiz_data = QuizOptions.objects.filter(quiz__id=quiz_id)
+        print(quiz_data)
         return render(request, 'Professor/quiz-detail.html', {"quiz_data": quiz_data})
+
+def conduct_quiz(request):
+    if request.method == 'GET':
+        quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username)
+        return render(request, 'Professor/conduct-quiz.html', {"quiz_list": quiz_list})
