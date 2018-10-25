@@ -36,6 +36,7 @@ def dashboard(request):
         poll_list = Poll.objects.filter(professor__user__user__username=request.user.username)
         quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username)
         course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id)
+        # doubt_list = Doubts.objects.filter(course=)
         meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id)
         active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True)
         # print(poll_list)
