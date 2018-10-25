@@ -7,20 +7,19 @@
 {% endblock %}
 
 {% block body %}
-
-    {% include 'UserAuth/message.html' %}
     <!-- Quiz Detail Here {{ quiz_data.0.quiz.id }}<br><br> -->
 
     <header id="main-header" class="py-2 bg-success text-white">
     <div class="container">
       <div class="row">
         <div class="col-md-6">
-          <h1>
-           </i> Quiz Detail</h1>
+          <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Quiz Detail</h1>
         </div>
       </div>
     </div>
   </header>
+
+  {% include 'UserAuth/message.html' %}
 
   <section id="categories">
     <div class="container">
@@ -30,13 +29,13 @@
             <div class="card-header">
                 <h4>
                     <div class="row">
-                        <div class="col-md-10">{{ quiz_data.0.quiz.course.name }} - {{ quiz_data.0.quiz.course.code }}</div>
+                        <div class="col-md-8">{{ quiz_data.0.quiz.course.name }} - {{ quiz_data.0.quiz.course.code }}</div>
                         {% if is_quiz_active %}
-                            <div class="col-md-1"><a href="{% url 'Professor:stop-quiz' is_quiz_active.0.id %}"><button class="button" style="background-color: #008CBA;">End</button></a></div>
+                            <div class="col-md-2"><a href="{% url 'Professor:stop-quiz' is_quiz_active.0.id %}"><button class="btn btn-success btn-block" style="background-color: rgb(226, 34, 28);"><i class="fa fa-stop"></i> &nbsp; &nbsp;End</button></a></div>
                         {% else %}
-                            <div class="col-md-1"><a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button class="button" style="background-color: #008CBA;">Start</button></a></div>
+                            <div class="col-md-2"><a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button class="btn btn-success btn-block" style="background-color: rgb(0, 217, 255);"> <i class="fa fa-play"></i> &nbsp; &nbsp;Start</button></a></div>
                         {% endif %}
-                        <div class="col-md-1"><button class="button" style="background-color: #555555;">Edit</button></div>
+                        <div class="col-md-2"><button class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Edit</button></div>
                     </div>
             </h4>
             <table class="table table-striped">
@@ -60,7 +59,7 @@
                     <div class="row">
                     {% for option in quiz_data %}
                         {% if count == 0 %}
-                          <div class="col-md-6">
+                          <div class="container col-md-6">
                           <h4 class="quiz-question">Q: {{ option.question.question }}</h4>
                           <ul data-quiz-question="1">
                         {% endif %}

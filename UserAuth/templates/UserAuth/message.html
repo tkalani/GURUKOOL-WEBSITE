@@ -1,7 +1,24 @@
-{% if messages %}
-	<ul class="messages">
-	{% for message in messages %}
-		<li class="{{ message.tags }}">{{ message }}</li>
-	{% endfor %}
-	</ul>
-{% endif %}
+<html>
+	<head>
+		<style>
+			.warning{
+				background-color: #ECADAD;
+				border-color: red;
+				border: 5px;
+			}
+
+			.success{
+				background-color: #B6ECAD;
+				border-color: green;
+				border: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		{% if messages %}
+			{% for message in messages %}
+				<div class="{{ message.tags }}">{{ message }} {{ message.tags }}</div>
+			{% endfor %}
+		{% endif %}
+	</body>
+</html>
