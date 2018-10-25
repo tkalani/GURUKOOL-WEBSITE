@@ -10,4 +10,5 @@ urlpatterns = [
 		url(r'^create-quiz/$', views.create_quiz, name='create-quiz'),
 		url(r'^quiz/(?P<quiz_id>\d+)/$', views.show_quiz, name='quiz'),
 		url(r'^conduct-quiz/(?P<quiz_id>\d+)/$', views.conduct_quiz, name='conduct-quiz'),
+		url(r'^stop-quiz/(?P<quiz_id>\d+)/$', views.stop_quiz, name='stop-quiz'),
 	]

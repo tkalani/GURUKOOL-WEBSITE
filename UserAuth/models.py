@@ -6,6 +6,18 @@ class GenderChoice(models.Model):
 	def __str__(self):
 		return str(self.name)
 
+class AuthID(models.Model):
+	client_id = models.CharField(max_length=200)
+	clientSecret = models.CharField(max_length=200)
+	def __str__(self):
+		return self.client_id + " " + self.clientSecret
+
+# class Token(models.Model):
+# 	username = models.CharField(max_length=100)
+# 	token = models.CharField(max_length=200)
+# 	def __str__(self):
+# 		return self.username + " " + self.token
+
 class InstituteProfile(models.Model):
 	institute_id = models.CharField(unique=True, null=False, blank=False, max_length=100)
 	name = models.CharField(max_length=200)

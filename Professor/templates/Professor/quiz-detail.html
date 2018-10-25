@@ -39,7 +39,12 @@
 <!-- 
     <button type="button">Conduct Quiz</button>
     <button type="button">Conduct Quiz</button> -->
-    <a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button type="button">Conduct Quiz</button></a>
+    {% if is_quiz_active %}
+        <a href="{% url 'Professor:stop-quiz' is_quiz_active.0.id %}"><button type="button">Stop Quiz</button></a>
+    {% else %}
+        <a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button type="button">Conduct Quiz</button></a>
+    {% endif %}
+    <button type="button">Edit Quiz</button>
 
 
 {% endblock %}
