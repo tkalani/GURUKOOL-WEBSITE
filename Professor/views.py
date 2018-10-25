@@ -33,13 +33,13 @@ def dashboard(request):
         # else:
         #     # return render(request, 'Professor/verify_account.html')
         #     return render(request, 'Professor/dashboard.html')
-        poll_list = Poll.objects.filter(professor__user__user__username=request.user.username)
-        quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username)
-        course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id)
+        poll_list = Poll.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
+        quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
+        course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id).order_by('-id')
         # doubt_list = Doubts.objects.filter(course=)
-        meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id)
-        active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True)
-        active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True)
+        meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id).order_by('-id')
+        active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True).order_by('-id')
+        active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
         # print(poll_list)
         return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
 
@@ -56,7 +56,7 @@ def create_poll(request):
         question = request.POST.get('question')
         option_list = request.POST.getlist('poll_options[]')
 
-        print(option_list)
+        # print(option_list)
 
         try:
             poll_inst = Poll()
@@ -93,7 +93,7 @@ def create_quiz(request):
 
     if request.method == 'POST':
         try:
-            print(request.POST)
+            # print(request.POST)
             # print(request.POST['course'])
             question_option_array = list(map(int, request.POST['question-option'].split(',')))
             # print(question_option_array)
@@ -219,3 +219,27 @@ def stop_poll(request, poll_id):
             print(e)
             messages.warning(request, "There was an error stopping Poll. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:poll', kwargs={'poll_id':conduct_poll_inst.poll.id}))
+
+def show_all_polls(request):
+    if request.method == 'GET':
+        try:
+            all_poll_list = Poll.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
+            finished_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=False).order_by('-id')
+            active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True).order_by('-id')
+            return render(request, 'Professor/polls.html', {"all_poll_list": all_poll_list, "finished_poll_list": finished_poll_list, "active_poll_list": active_poll_list})
+        except Exception as e:
+            print('error is', e)
+            messages.warning(request, "There was an error displaying Polls. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+def show_all_quiz(request):
+    if request.method == 'GET':
+        try:
+            all_quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
+            finished_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=False).order_by('-id')
+            active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
+            return render(request, 'Professor/quiz.html', {"all_quiz_list": all_quiz_list, "finished_quiz_list": finished_quiz_list, "active_quiz_list": active_quiz_list})
+        except Exception as e:
+            print('error is', e)
+            messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:dashboard'))

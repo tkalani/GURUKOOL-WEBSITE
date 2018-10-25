@@ -11,51 +11,74 @@
         
     
     <header id="main-header" class="py-2 bg-success text-white">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-6">
-                  <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Create Poll</h1>
-                </div>
-              </div>
+        <div class="container">
+            <div class="row">
+            <div class="col-md-6">
+                <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Create Poll</h1>
             </div>
-          </header>
+            </div>
+        </div>
+    </header>
+
+        <form action="{% url 'Professor:create-poll' %}" method="POST">
+            {% csrf_token %}
+          <section id="details">
+                <div class="container">
+                  <div class="row">
+                    <div class="col">
+                      <div class="card">
+                        <div class="card-header">
+                          <h4>
+                            <div class="row">
+                                <div class="col-md-8">Create Poll</div>
+                                <div class="col-md-2"><button type="button" onclick="add_option()" class="btn btn-success btn-block" style="background-color: rgb(53, 180, 102);"><i class="fa fa-plus"></i> &nbsp; &nbsp;Add Option</button></a></div>
+                                <div class="col-md-2"><button type="submit" class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Create</button></div>
+                            </div>
+                          </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                              <label for="category">Course</label>
+                              <select class="form-control" name="course" required>
+                                    {% for course in course_list %}
+                                        <option value="{{ course.id }}">{{ course.course.name }} ( {{ course.course.code }} )</option>
+                                    {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Poll Title</label>
+                                <input type="text" class="form-control" placeholder="Poll Title" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Poll Question</label>
+                                <input type="text" class="form-control" placeholder="Poll Question" name="question" required>
+                            </div>
+                            Poll Options :
+                            <div id="option-list" class="row">
+                                <div id="poll-option-1" class="col-md-6"><input class="form-control" type="text" name="poll_options[]" required></div>
+                                <div id="poll-option-2" class="col-md-6"><input class="form-control" type="text" name="poll_options[]" required></div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </form>
 
 
         <br><br>
-        <form action="{% url 'Professor:create-poll' %}" method="POST">
-            {% csrf_token %}
-            Course : 
-            <select name="course" required>
-                {% for course in course_list %}
-                    <option value="{{ course.id }}">{{ course.course.name }} ( {{ course.course.code }} )</option>
-                {% endfor %}
-            </select>
-            <br>
-            Poll Title : <input type="text" name="title" required placeholder="Poll-Title">
-            <br>
-            Poll Question : <input type="text" name="question" required placeholder="Poll-Question">
-            <br>
-            Poll Options :
-            <div id="option-list">
-                <div id="poll-option-1"><input type="text" name="poll_options[]" required><span onclick="delete_option(1)">&#x2715;</span><br></div>
-                <div id="poll-option-2"><input type="text" name="poll_options[]" required><span onclick="delete_option(2)">&#x2715;</span><br></div>
-            </div>
-            <input type="button" onclick="add_option()" value="Add Option">
-            <br>
-            <input type="submit" value="SUBMIT">
-        </form>
 {% endblock %}
 
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-        var number_of_options = 2;
+        var number_of_options = 3;
         function add_option()
         {
-            html = '<div id="poll-option-'+ number_of_options +'"><input type="text" name="poll_options[]" required><span onclick="delete_option('+ number_of_options +')">&#x2715;</span><br></div>';
+            html = '<div id="poll-option-'+ number_of_options +'" class="col-md-6"><input type="text" class="form-control" name="poll_options[]" required><span onclick="delete_option('+ number_of_options +')">&#x2715;</span><br></div>';
             $('#option-list').append(html);
             number_of_options++;
-            
         }
 
         function delete_option(id)
