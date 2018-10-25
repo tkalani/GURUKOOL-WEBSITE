@@ -35,7 +35,7 @@ class CourseStudent(models.Model):
 	def __str__(self):
 		return str(self.student.user.user.username) + ' --> ' + str(self.course.name)
 
-class QuizResults(models.Model):
+class QuizResult(models.Model):
 	student = models.OneToOneField(StudentProfile, on_delete=models.SET_NULL, null=True, blank=True)
 	conduct_quiz = models.OneToOneField(ConductQuiz, on_delete=models.SET_NULL, null=True, blank=True)
 	marks_obtained = models.IntegerField(null=True, blank=True)
@@ -43,10 +43,10 @@ class QuizResults(models.Model):
 	def __str__(self):
 		return str(self.student.user.user.username) + '-->' +str(self.conduct_quiz.quiz.title)
 
-class QuestionWiseResults(models.Model):
+class QuestionWiseResult(models.Model):
 	quiz_result = models.OneToOneField(QuizResults, null=True, blank=True)
 	question = models.OneToOneField(QuizQuestion, null=True, blank=True)
-	marks_obtained = models.IntegerField(null=True, blank=True)
+	answer = models.CharField(max_length=100, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.quiz_result.student.user.user.username) + '-->' +str(self.question.question)
