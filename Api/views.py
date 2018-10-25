@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view
 
-from Professor.models import Course, CourseProfessor, Quiz, QuizOptions
+from Professor.models import Course, CourseProfessor, Quiz, QuizOptions, ConductQuiz
 from Doubt.models import Doubt, Comment
 from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer
 from Student.models import CourseStudent, StudentProfile
@@ -173,9 +173,10 @@ class CheckQuiz(APIView):
     def get(self, request, quiz_id, course_id):
         print ("checking quiz")
         try:
-            check_quiz = get_object_or_404(Quiz, course__id=course_id, unique_quiz_id=quiz_id)
+            check_quiz = get_object_or_404(ConductQuiz, quiz__course__id=course_id, unique_quiz_id=quiz_id)
             return JsonResponse({"check":True}, status=200)
         except Exception as e:
+            print (e)
             return JsonResponse({"check":False}, status=200)        
 
 
