@@ -1,7 +1,7 @@
 import string
 import re
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect 
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from .models import *
 from communications import *
@@ -21,6 +21,10 @@ SHOW_MESSAGE_URL = 'UserAuth:show-message'
 EMAIL_VERIFICATION_LINK_LENGTH = 50
 LOGIN_URL = 'UserAuth:landingPage'
 
+def redirectPage(request, user_token):
+	request.session['token'] = user_token
+	return HttpResponseRedirect(reverse('Student:dashboard'))
+	
 class landingPage(View):
 	get_login_page = 'UserAuth/landingPage.html'
 
@@ -54,7 +58,7 @@ class LoginUser(View):
 			if type_of_user == 'professor':
 				username = request.POST.get('professor_login_username')
 				password = request.POST.get('professor_login_password')
-				
+
 				if username.isdigit():
 					try:
 						instance = ProfessorAuthProfile.objects.filter(mobile_no=username)
