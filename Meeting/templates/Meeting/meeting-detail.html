@@ -17,6 +17,9 @@
 
       <h3>My Response</h3>
       <br>
+    {% if meeting.prof_response %}
+        <h5>{{meeting.prof_response}}</h5>
+    {% else %}
     <form action="#" id="meeting-response"  method="PUT">
       {% csrf_token %}
       <input type="text" value="{{meeting.id}}" name="id" readonly><br>
@@ -27,6 +30,8 @@
       </select><br>
       <input type="submit" value="SUBMIT">
     </form>
+    {% endif %}
+
 {% endblock %}
 
 
