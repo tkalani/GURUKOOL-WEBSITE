@@ -23,7 +23,7 @@
     <form action="#" id="meeting-response"  method="PUT">
       {% csrf_token %}
       <input type="text" value="{{meeting.id}}" name="id" readonly><br>
-      <textarea name="prof_response" rows="4" cols="50" placeholder="Write your response and make PUT request" required></textarea>
+      <textarea name="prof_response" rows="4" cols="50" placeholder="Write your response and make PUT request {% url 'Api:meeting-create' 'professor' %}" required></textarea>
       <select name="status" required>
               <option value="APPROVED">APPROVED</option>
               <option value="REJECTED">REJECTED</option>
@@ -39,5 +39,4 @@
 
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script>
 {% endblock %}

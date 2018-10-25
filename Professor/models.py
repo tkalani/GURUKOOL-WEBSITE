@@ -57,6 +57,12 @@ class PollOption(models.Model):
 	def __str__(self):
 		return str(self.poll.id) + ' --> ' + str(self.option)
 
+class ConductPoll(models.Model):
+	poll = models.ForeignKey(Poll, on_delete=models.CASCADE, null=False, blank=False)
+	unique_poll_id = models.CharField(max_length=100, null=False, blank=False)
+	active = models.BooleanField(default=False)
+	conduction_date = models.DateTimeField(auto_now_add=True, null=True)
+
 class Quiz(models.Model):
 	professor = models.ForeignKey(ProfessorProfile, on_delete=models.SET_NULL, null=True, blank=True)
 	course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True)
