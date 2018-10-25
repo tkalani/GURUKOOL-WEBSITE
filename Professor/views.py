@@ -37,8 +37,9 @@ def dashboard(request):
         quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username)
         course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id)
         meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id)
+        active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True)
         # print(poll_list)
-        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list})
+        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
@@ -129,6 +130,7 @@ def create_quiz(request):
                         else:
                             opt_inst.is_correct = False
                         opt_inst.save()
+            messages.success(request, "Successfully Created Quiz")
             return HttpResponseRedirect(reverse('Professor:dashboard'))
         except Exception as e:
             print('error is ', e)
@@ -157,7 +159,7 @@ def conduct_quiz(request, quiz_id):
             conduct_quiz_inst.active = True
             conduct_quiz_inst.save()
 
-            messages.warning(request, "Successfully started quiz")
+            messages.success(request, "Successfully started quiz")
             return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':quiz_id}))
         except Exception as e:
             print(e)
@@ -172,7 +174,7 @@ def stop_quiz(request, quiz_id):
             conduct_quiz_inst = ConductQuiz.objects.get(id=quiz_id)
             conduct_quiz_inst.active = False
             conduct_quiz_inst.save()
-            messages.warning(request, "Successfully stopped quiz")
+            messages.success(request, "Successfully stopped quiz")
             return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':conduct_quiz_inst.quiz.id}))
         except Exception as e:
             print(e)
