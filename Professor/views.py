@@ -38,9 +38,10 @@ def dashboard(request):
         course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id)
         # doubt_list = Doubts.objects.filter(course=)
         meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id)
+        active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True)
         active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True)
         # print(poll_list)
-        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list})
+        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
@@ -80,7 +81,8 @@ def show_poll(request, poll_id):
     if request.method == 'GET':
         poll_details = Poll.objects.get(id=poll_id)
         poll_options = PollOption.objects.filter(poll__id=poll_id)
-        return render(request, 'Professor/poll-detail.html', {"poll_details": poll_details, 'poll_options': poll_options})
+        is_poll_active = ConductPoll.objects.filter(active=True, poll__id=poll_id)
+        return render(request, 'Professor/poll-detail.html', {"poll_details": poll_details, 'poll_options': poll_options, "is_poll_active": is_poll_active})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
@@ -181,3 +183,39 @@ def stop_quiz(request, quiz_id):
             print(e)
             messages.warning(request, "There was an error stopping Quiz. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':conduct_quiz_inst.quiz.id}))
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def conduct_poll(request, poll_id):
+    if request.method == 'GET':
+        try:
+            poll = Poll.objects.get(id=poll_id)
+            unique_poll_id = str('_'.join(poll.title.split(' ')))+str(hashlib.sha224((str(poll.title)+str(time.strftime("%Y-%m-%d"))+str(time.strftime("%H:%i:%s"))+str(poll.id)).encode('utf-8')).hexdigest())[:5]
+
+            conduct_poll_inst = ConductPoll()
+            conduct_poll_inst.poll = poll
+            conduct_poll_inst.unique_poll_id = unique_poll_id
+            conduct_poll_inst.active = True
+            conduct_poll_inst.save()
+
+            messages.success(request, "Successfully started Poll")
+            return HttpResponseRedirect(reverse('Professor:poll', kwargs={'poll_id':poll_id}))
+        except Exception as e:
+            print(e)
+            messages.warning(request, "There was an error conducting Poll. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:poll', kwargs={'poll_id':poll_id}))
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def stop_poll(request, poll_id):
+    if request.method == 'GET':
+        try:
+            conduct_poll_inst = ConductPoll.objects.get(id=poll_id)
+            conduct_poll_inst.active = False
+            conduct_poll_inst.save()
+            messages.success(request, "Successfully stopped Poll")
+            return HttpResponseRedirect(reverse('Professor:poll', kwargs={'poll_id':conduct_poll_inst.poll.id}))
+        except Exception as e:
+            print(e)
+            messages.warning(request, "There was an error stopping Poll. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:poll', kwargs={'poll_id':conduct_poll_inst.poll.id}))

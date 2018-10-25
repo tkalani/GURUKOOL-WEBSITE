@@ -21,24 +21,28 @@
                       <th></th>
                         <th></th>
                         <th></th>
-                      <th style="text-align: right;"><i class="fa fa-plus" aria-hidden="true"></i></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-poll' %}"><i class="fa fa-plus" aria-hidden="true" style="color: black;"></i></a></th>
                     </tr>
                   </thead>
                   <tbody>
-                        {% if poll_list %}
-                            {% for poll in poll_list %}
+                        {% if active_poll_list %}
+                            {% for poll in active_poll_list %}
                                 <tr>
-                                <td>1</td>
-                                <td>Post One</td>
-                                <td>Web Development</td>
-                                <td>May 10 2018</td>
+                                <td>{{ poll.unique_poll_id }}</td>
+                                <td>{{ poll.poll.course.code }}</td>
+                                <td>{{ poll.poll.title }}</td>
+                                <td>{{ poll.conduction_date }}</td>
                                 <td>
-                                    <a href="{% url 'Professor:poll' poll.id %}" class="btn btn-secondary">
+                                    <a href="{% url 'Professor:poll' poll.poll.id %}" class="btn btn-secondary">
                                         <i class="fas fa-angle-double-right"></i> Details
                                     </a>
                                 </td>
                                 </tr>
                             {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>No Active Polls</td>
+                            </tr>
                         {% endif %}
                   </tbody>
                 </table>
@@ -55,7 +59,7 @@
                       <th></th>
                         <th></th>
                         <th></th>
-                      <th style="text-align: right;"><i class="fa fa-plus" aria-hidden="true"></i></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
                     </tr>
                   </thead>
                   <tbody>
