@@ -15,7 +15,7 @@ from Professor.models import Course, CourseProfessor, Quiz, QuizOptions, Conduct
 from Doubt.models import Doubt, Comment
 from UserAuth.models import StudentAuthProfile
 from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer
-from Student.models import CourseStudent, StudentProfile, QuizResults, QuizQuestion
+from Student.models import CourseStudent, StudentProfile, QuizResult, QuizQuestion
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
@@ -277,11 +277,12 @@ class QuizComplete(APIView):
             stud = get_object_or_404(StudentProfile, user__email_address=email)
             quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id)
             print (stud, quiz)
-            qr = QuizResults(student=stud, conduct_quiz=quiz, marks_obtained=marks).save()
+            qr = QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks).save()
             for question in (body['quiz_response']):
                 print (question)
+                ''' from here '''
                 que = get_object_or_404(QuizQuestion, id=question[1]).save()
-                QuestionWiseResults(quiz_result=qr, question=que, answer=question[1])
+                QuestionWiseResult(quiz_result=qr, question=que, answer=question[1])
         except Exception as e:
             print (e)
 

@@ -44,7 +44,7 @@ class QuizResult(models.Model):
 		return str(self.student.user.user.username) + '-->' +str(self.conduct_quiz.quiz.title)
 
 class QuestionWiseResult(models.Model):
-	quiz_result = models.OneToOneField(QuizResults, null=True, blank=True)
+	quiz_result = models.OneToOneField(QuizResult, null=True, blank=True)
 	question = models.OneToOneField(QuizQuestion, null=True, blank=True)
 	answer = models.CharField(max_length=100, null=True, blank=True)
 
