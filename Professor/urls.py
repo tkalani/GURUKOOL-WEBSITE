@@ -8,6 +8,7 @@ urlpatterns = [
 		url(r'^create-poll/$', views.create_poll, name='create-poll'),
 		url(r'^poll/(?P<poll_id>\d+)/$', views.show_poll, name='poll'),
 		url(r'^poll/$', views.show_all_polls, name='all-poll'),
+		url(r'^quiz/$', views.show_all_quiz, name='all-quiz'),
 		url(r'^create-quiz/$', views.create_quiz, name='create-quiz'),
 		url(r'^quiz/(?P<quiz_id>\d+)/$', views.show_quiz, name='quiz'),
 		url(r'^conduct-quiz/(?P<quiz_id>\d+)/$', views.conduct_quiz, name='conduct-quiz'),

@@ -16,7 +16,7 @@
                 <table class="table table-striped">
                   <thead class="bg-warning">
                     <tr>
-                      <th>Polls</th>
+                      <th>Active Polls</th>
                       <th></th>
                         <th></th>
                         <th></th>
@@ -58,7 +58,7 @@
                       <th></th>
                         <th></th>
                         <th></th>
-                      <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-poll' %}"><i class="fa fa-plus" aria-hidden="true" style="color: black;"></i></a></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -95,7 +95,7 @@
                             <th colspan="2">Poll Drafts</th>
                               <th></th>
                               <th></th>
-                            <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
+                            <th style="text-align: right;"><a href="{% url 'Professor:create-poll' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -115,7 +115,7 @@
                                   {% endfor %}
                               {% else %}
                                   <tr>
-                                      <td>No Quizzers Created</td>
+                                      <td>No Polls Created</td>
                                     </tr>
                               {% endif %}
                         </tbody>
