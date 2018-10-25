@@ -14,7 +14,7 @@ from rest_framework.decorators import api_view
 from Professor.models import Course, CourseProfessor, Quiz, QuizOptions, ConductQuiz
 from Doubt.models import Doubt, Comment
 from UserAuth.models import StudentAuthProfile
-from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer
+from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer
 from Student.models import CourseStudent, StudentProfile
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
@@ -190,6 +190,54 @@ class CommentCreate(APIView):
             print(traceback.format_exc())
             return Response(status=500)
 
+
+class MeetingManage(APIView):
+    serializer_class = MeetingSerializer
+
+    def get(self, request, type, format=None):
+        if type == 'student':
+            meetings = Meeting.objects.filter(student__user__user__id=request.user.id)
+        elif type == 'professor':
+            meetings = Meeting.objects.filter(professor__user__user__id=request.user.id)
+        else:
+            return Response(status=500)
+        serializer = self.serializer_class(meetings, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, type, format=None):     #professor(username),title,body,status,prof_response
+        try:
+            if type == 'professor':
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid():
+                student = StudentProfile.objects.get(user__user__id=request.user.id)
+                serializer.save(student=student)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            print(traceback.format_exc())
+            return Response(status=500)
+
+    def put(self, request, type, format=None):   #id, status|prof_response
+        try:
+            if type == 'student':
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            meeting = Meeting.objects.get(id=request.data.get('id'))
+            if meeting.professor.user.user.id == request.user.id:
+                serializer = self.serializer_class(meeting, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        except Exception:
+            print(traceback.format_exc())
+            return Response(status=500)
+
+
+
 class CheckQuiz(APIView):
     def get(self, request, quiz_id, course_id):
         print ("checking quiz")
@@ -198,7 +246,7 @@ class CheckQuiz(APIView):
             return JsonResponse({"check":True}, status=200)
         except Exception as e:
             print (e)
-            return JsonResponse({"check":False}, status=200)        
+            return JsonResponse({"check":False}, status=200)
 
 
 

@@ -7,48 +7,111 @@
 {% endblock %}
 
 {% block body %}
-    {% include 'UserAuth/message.html' %}
-    Quiz Detail Here {{ quiz_data.0.quiz.id }}<br><br>
+    <!-- Quiz Detail Here {{ quiz_data.0.quiz.id }}<br><br> -->
 
-    Course : {{ quiz_data.0.quiz.course.name }} - {{ quiz_data.0.quiz.course.code }}<br>
-    Title : {{ quiz_data.0.quiz.title }}<br>
-    Description : {{ quiz_data.0.quiz.description }}<br>
+  {% include 'UserAuth/message.html' %}
+
+    <header id="main-header" class="py-2 bg-success text-white">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Quiz Detail</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="categories">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <div class="card-header">
+                <h4>
+                    <div class="row">
+                        <div class="col-md-8">{{ quiz_data.0.quiz.course.name }} - {{ quiz_data.0.quiz.course.code }}</div>
+                        {% if is_quiz_active %}
+                            <div class="col-md-2"><a href="{% url 'Professor:stop-quiz' is_quiz_active.0.id %}"><button class="btn btn-success btn-block" style="background-color: rgb(226, 34, 28);"><i class="fa fa-stop"></i> &nbsp; &nbsp;End</button></a></div>
+                        {% else %}
+                            <div class="col-md-2"><a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button class="btn btn-success btn-block" style="background-color: rgb(0, 217, 255);"> <i class="fa fa-play"></i> &nbsp; &nbsp;Start</button></a></div>
+                        {% endif %}
+                        <div class="col-md-2"><button class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Edit</button></div>
+                    </div>
+            </h4>
+            <table class="table table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th>{{ quiz_data.0.quiz.title }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ quiz_data.0.quiz.description }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          </div>
+
+        {% with count=0 %}
+            {% with question_id=quiz_data.0.question.id %}
+                <div class="quiz">
+                    <div class="row">
+                    {% for option in quiz_data %}
+                        {% if count == 0 %}
+                          <div class="container col-md-6">
+                          <h4 class="quiz-question">Q: {{ option.question.question }}</h4>
+                          <ul data-quiz-question="1">
+                        {% endif %}
+                        {% update_variable 1 as count %}
+                        {% if option.question.id is question_id %}
+                            {% if option.is_correct %}
+                                <li class="quiz-answer correct">{{ option.option }}</li>
+                            {% else %}
+                                <li class="quiz-answer incorrect">{{ option.option }}</li>
+                            {% endif %}
+                        {% else %}
+                            {% update_variable option.question.id as question_id %}
+                            {% update_variable 0 as count %}
+                            {% if count == 0 %}
+                                </ul>
+                                </div>
+                              <div class="col-md-6">
+                              <h4 class="quiz-question">Q: {{ option.question.question }}</h4>
+                              <ul data-quiz-question="1">
+                                {% endif %}
+                                {% update_variable 1 as count %}
+                                {% if option.is_correct %}
+                                    <li class="quiz-answer correct"> {{option.option}} </li>
+                                {% else %} 
+                                    <li class="quiz-answer incorrect"> {{option.option}} </li>
+                                {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endwith %}
+        {% endwith %}
+
+
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+        
+      </div>
+    </div>
 
     <br><br>
-    {% with count=0 %}
-    {% with question_id=quiz_data.0.question.id %}
-        {% for option in quiz_data %}
-            {% if count == 0 %} QUESTION : {{option.question.question}} {% endif %}<br>
-            {% update_variable 1 as count %}
-            {% if option.question.id is question_id %}
-                option : {{option.option}}
-                {% if option.is_correct %} YES {% else %} NO {% endif %}
-                <br>
-            {% else %}
-                {% update_variable option.question.id as question_id %}
-                {% update_variable 0 as count %}
-                {% if count == 0 %} QUESTION : {{option.question.question}} {% endif %}<br>
-                {% update_variable 1 as count %}
-                option : {{option.option}}
-                {% if option.is_correct %} YES {% else %} NO {% endif %}
-                <br>
-            {% endif %}
-        {% endfor %}
-    {% endwith %}
-    {% endwith %}
-<!-- 
-    <button type="button">Conduct Quiz</button>
-    <button type="button">Conduct Quiz</button> -->
-    {% if is_quiz_active %}
-        <a href="{% url 'Professor:stop-quiz' is_quiz_active.0.id %}"><button type="button">Stop Quiz</button></a>
-    {% else %}
-        <a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button type="button">Conduct Quiz</button></a>
-    {% endif %}
-    <button type="button">Edit Quiz</button>
 
 
 {% endblock %}
 
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
 {% endblock %}

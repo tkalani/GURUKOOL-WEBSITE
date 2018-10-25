@@ -1,4 +1,5 @@
 {% extends 'Professor/main.html' %}
+{% load tags %}
 {% load staticfiles %}
 
 {% block title %}
@@ -7,7 +8,19 @@
 
 {% block body %}
     {% include 'UserAuth/message.html' %}
-        Create Poll
+        
+    
+    <header id="main-header" class="py-2 bg-success text-white">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-6">
+                  <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Create Poll</h1>
+                </div>
+              </div>
+            </div>
+          </header>
+
+
         <br><br>
         <form action="{% url 'Professor:create-poll' %}" method="POST">
             {% csrf_token %}

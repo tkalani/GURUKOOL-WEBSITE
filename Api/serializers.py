@@ -105,4 +105,3 @@ class QuizOptionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizOptions
         fields = '__all__'
-

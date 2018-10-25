@@ -2,6 +2,7 @@
 db.sqlite3
 *.pyc
 env
+gurukul_env
 **/migrations/*
-*/__pycache__
+*/__pycache__/*
 __pycache__
