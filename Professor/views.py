@@ -56,7 +56,7 @@ def create_poll(request):
         question = request.POST.get('question')
         option_list = request.POST.getlist('poll_options[]')
 
-        print(option_list)
+        # print(option_list)
 
         try:
             poll_inst = Poll()
@@ -93,7 +93,7 @@ def create_quiz(request):
 
     if request.method == 'POST':
         try:
-            print(request.POST)
+            # print(request.POST)
             # print(request.POST['course'])
             question_option_array = list(map(int, request.POST['question-option'].split(',')))
             # print(question_option_array)
@@ -121,7 +121,7 @@ def create_quiz(request):
                     ques_inst.save()
 
                     option_list = request.POST.getlist('poll_options_'+str(i+1)+'[]')
-                    # print(option_list)
+                    print(option_list)
                     for j in range(len(option_list)):
                         # print(option_list[j])
                         opt_inst = QuizOptions()
