@@ -121,7 +121,7 @@ def create_quiz(request):
                     ques_inst.save()
 
                     option_list = request.POST.getlist('poll_options_'+str(i+1)+'[]')
-                    print(option_list)
+                    # print(option_list)
                     for j in range(len(option_list)):
                         # print(option_list[j])
                         opt_inst = QuizOptions()
@@ -219,3 +219,15 @@ def stop_poll(request, poll_id):
             print(e)
             messages.warning(request, "There was an error stopping Poll. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:poll', kwargs={'poll_id':conduct_poll_inst.poll.id}))
+
+def show_all_polls(request):
+    if request.method == 'GET':
+        try:
+            all_poll_list = Poll.objects.filter(professor__user__user__username=request.user.username)
+            finished_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=False)
+            active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True)
+            return render(request, 'Professor/polls.html', {"all_poll_list": all_poll_list, "finished_poll_list": finished_poll_list, "active_poll_list": active_poll_list})
+        except Exception as e:
+            print('error is', e)
+            messages.warning(request, "There was an error displaying Polls. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:dashboard'))

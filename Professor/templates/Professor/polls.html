@@ -2,22 +2,21 @@
 {% include 'UserAuth/message.html' %}
 
 {% block title %}
-    Dashboard
+    Polls
 {% endblock %}
 <br><br>
 
 {% block body %}
 
 <section id="posts">
-        <div class="container">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="card" style="height: 25rem; overflow-y: scroll;" >
                 
                 <table class="table table-striped">
                   <thead class="bg-warning">
                     <tr>
-                      <th><a href="{% url 'Professor:all-poll' %}" style="text-decoration: none; color: black">Polls</a></th>
+                      <th>Polls</th>
                       <th></th>
                         <th></th>
                         <th></th>
@@ -34,7 +33,7 @@
                                 <td>{{ poll.conduction_date }}</td>
                                 <td>
                                     <a href="{% url 'Professor:poll' poll.poll.id %}" class="btn btn-secondary">
-                                        <i class="fas fa-angle-double-right"></i> Details
+                                        <i class="fas fa-angle-double-right"></i>
                                     </a>
                                 </td>
                                 </tr>
@@ -49,13 +48,13 @@
               </div>
             </div>
   
-            <div class="col-md-6">
+            <div class="col-md-4">
               <div class="card" style="height: 25rem; overflow-y: scroll;" >
                 
                 <table class="table table-striped">
-                  <thead class="thead-dark">
+                  <thead class="table-danger">
                     <tr>
-                      <th>Quiz</th>
+                      <th>Condcuted Polls</th>
                       <th></th>
                         <th></th>
                         <th></th>
@@ -63,109 +62,69 @@
                     </tr>
                   </thead>
                   <tbody>
-                        {% if active_quiz_list %}
-                            {% for quiz in active_quiz_list %}
+                        {% if finished_poll_list %}
+                            {% for poll in finished_poll_list %}
                             <tr>
-                                <td>{{ quiz.unique_quiz_id }}</td>
-                                <td>{{ quiz.quiz.course.code }}</td>
-                                <td>{{ quiz.quiz.title }}</td>
-                                <td>{{ quiz.quiz.description }}</td>
+                                <td>{{ poll.unique_poll_id }}</td>
+                                <td>{{ poll.poll.course.code }}</td>
+                                <td>{{ poll.poll.title }}</td>
+                                <td>{{ poll.conduction_date }}</td>
                                 <td>
-                                    <a href="{% url 'Professor:quiz' quiz.quiz.id %}" class="btn btn-secondary">
-                                    <i class="fas fa-angle-double-right"></i> Details
+                                    <a href="{% url 'Professor:quiz' poll.poll.id %}" class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i>
                                     </a>
                                 </td>
                             </tr>
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td>No Active Quizzes</td>
+                                <td>Zero Polls Conducted Yet.</td>
                               </tr>
                         {% endif %}
                   </tbody>
                 </table>
               </div>
             </div>
+
+            <div class="col-md-4">
+                    <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                      
+                      <table class="table table-striped">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th colspan="2">Poll Drafts</th>
+                              <th></th>
+                              <th></th>
+                            <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                              {% if all_poll_list %}
+                                  {% for poll in all_poll_list %}
+                                  <tr>
+                                      <td>{{ poll.course.code }}</td>
+                                      <td>{{ poll.title }}</td>
+                                      <td>{{ poll.description }}</td>
+                                      <td></td>
+                                      <td>
+                                          <a href="{% url 'Professor:poll' poll.id %}" class="btn btn-secondary">
+                                          <i class="fas fa-angle-double-right"></i>
+                                          </a>
+                                      </td>
+                                  </tr>
+                                  {% endfor %}
+                              {% else %}
+                                  <tr>
+                                      <td>No Quizzers Created</td>
+                                    </tr>
+                              {% endif %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
           </div>
-        </div>
       </section>
 <br>
-      <section id="posts">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="card" style="height: 25rem; overflow-y: scroll;" >
-                    
-                    <table class="table table-striped">
-                      <thead class="bg-success">
-                        <tr>
-                          <th>Doubts</th>
-                          <th></th>
-                            <th></th>
-                            <th></th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                            {% if poll_list %}
-                                {% for poll in poll_list %}
-                                    <tr>
-                                    <td>1</td>
-                                    <td>Post One</td>
-                                    <td>Web Development</td>
-                                    <td>May 10 2018</td>
-                                    <td>
-                                        <a href="{% url 'Professor:poll' poll.id %}" class="btn btn-secondary">
-                                            <i class="fas fa-angle-double-right"></i> Details
-                                        </a>
-                                    </td>
-                                    </tr>
-                                {% endfor %}
-                            {% endif %}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-      
-                <div class="col-md-6">
-                  <div class="card" style="height: 25rem; overflow-y: scroll;" >
-                    
-                    <table class="table table-striped">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th>Meetings</th>
-                          <th></th>
-                            <th></th>
-                            <th></th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                            {% if meeting_list %}
-                                {% for meeting in meeting_list %}
-                                <tr>
-                                    <td>{{ meeting.student.user.user.username }}</td>
-                                    <td>{{ meeting.title}}</td>
-                                    <td>{{ meeting.status }}</td>
-                                    <td>
-                                        <a href="{% url 'Meeting:meeting-detail' meeting.id %}" class="btn btn-secondary">
-                                        <i class="fas fa-angle-double-right"></i> Details
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td>No Meeting Today</td>
-                                  </tr>
-                            {% endif %}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
 
     <!-- <a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
     Polls:
