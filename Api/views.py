@@ -51,7 +51,7 @@ class CourseList(APIView):
     '''
         if type == 'student':
             if menu == 'quiz':
-                courses = CourseStudent.objects.all()
+                courses = Course.objects.all()
         elif type == 'professor':
             print ("request", request, request.user.id)
 
