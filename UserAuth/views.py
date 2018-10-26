@@ -22,10 +22,18 @@ EMAIL_VERIFICATION_LINK_LENGTH = 50
 LOGIN_URL = 'UserAuth:landingPage'
 
 def redirectPage(request, user_token):
+	'''
+		Redirects the page
+		Takes input request method and user_token
+		returns http response
+	'''
 	request.session['token'] = user_token
 	return HttpResponseRedirect(reverse('Student:dashboard'))
 	
 class landingPage(View):
+	'''
+	get Landing Page
+	'''
 	get_login_page = 'UserAuth/landingPage.html'
 
 	def get(self, request, *args, **kwargs):

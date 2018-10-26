@@ -20,6 +20,10 @@
         </div>
     </header>
 
+
+
+
+
         <form action="{% url 'Professor:create-poll' %}" method="POST">
             {% csrf_token %}
           <section id="details">
@@ -86,4 +90,7 @@
             $('#poll-option-'+id).remove();
         }
     </script>
+
+
+    
 {% endblock %}

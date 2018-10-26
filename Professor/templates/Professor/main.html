@@ -2,137 +2,137 @@
 <html>
     <head>
         <title>{% block title %}TITLE{% endblock %}</title>
-        <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
-    crossorigin="anonymous">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-    crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-  .quiz {
-  padding: 0 0 20px 30px;
-  max-width: 860px;
-  margin: 0 auto;
-}
-.quiz ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.quiz-question {
-  font-weight: bold;
-  display: block;
-  padding: 30px 0 10px 0;
-  margin: 0;
-}
-.quiz-answer {
-  margin: 0;
-  padding: 10px;
-  background: #f7f7f7;
-  margin-bottom: 5px;
-  cursor: pointer;
-}
-.quiz-answer:hover {
-  background: #eee;
-}
-.quiz-answer:before {
-  content: "";
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border: 1px solid #ccc;
-  background: #fff;
-  vertical-align: middle;
-  margin-right: 10px;
-}
-.quiz-answer.active:before {
-  background-color: #333;
-  border-color: #333;
-}
-.quiz-answer.correct:before {
-  background-color: green;
-  border-color: green;
-}
-.quiz-answer.incorrect:before {
-  background-color: red;
-  border-color: red;
-}
-.quiz-answer.active.correct:before {
-  outline: 2px solid green;
-  outline-offset: 2px;
-}
-
-.button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 10px 25px;
-    text-align: center;
-    text-decoration: none;
+          <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+      crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+      crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <style>
+    .quiz {
+    padding: 0 0 20px 30px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .quiz ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .quiz-question {
+    font-weight: bold;
+    display: block;
+    padding: 30px 0 10px 0;
+    margin: 0;
+  }
+  .quiz-answer {
+    margin: 0;
+    padding: 10px;
+    background: #f7f7f7;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+  .quiz-answer:hover {
+    background: #eee;
+  }
+  .quiz-answer:before {
+    content: "";
     display: inline-block;
-    font-size: 14px;
-}
+    width: 15px;
+    height: 15px;
+    border: 1px solid #ccc;
+    background: #fff;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+  .quiz-answer.active:before {
+    background-color: #333;
+    border-color: #333;
+  }
+  .quiz-answer.correct:before {
+    background-color: green;
+    border-color: green;
+  }
+  .quiz-answer.incorrect:before {
+    background-color: red;
+    border-color: red;
+  }
+  .quiz-answer.active.correct:before {
+    outline: 2px solid green;
+    outline-offset: 2px;
+  }
 
-</style>
+  .button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 10px 25px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+  }
 
-    </head>
-    <body>
-    	<nav class="navbar navbar-expand-sm navbar-dark bg-dark p-0">
-    <div class="container">
-      <a href="{% url 'Professor:dashboard' %}" class="navbar-brand"> <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/IIIT_Sri_City_Logo.png/220px-IIIT_Sri_City_Logo.png" style="width: 32px; height: 32px; margin-right: 8px;">GURUKOOL</a>
-      <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav">
-          <li class="nav-item px-2">
-            <a href="{% url 'Professor:dashboard' %}" class="nav-link active">Dashboard</a>
-          </li>
-          <li class="nav-item px-2">
-            <a href="{% url 'Professor:all-poll' %}" class="nav-link active">Polls</a>
-          </li>
-          <li class="nav-item px-2">
-            <a href="{% url 'Professor:all-quiz' %}" class="nav-link active">Quiz</a>
-          </li>
-          <li class="nav-item px-2">
-            <a href="users.html" class="nav-link active">Doubts</a>
-          </li>
-          <li class="nav-item px-2">
-              <a href="users.html" class="nav-link active">Meetings</a>
+  </style>
+
+      </head>
+      <body>
+      	<nav class="navbar navbar-expand-sm navbar-dark bg-dark p-0">
+      <div class="container">
+        <a href="{% url 'Professor:dashboard' %}" class="navbar-brand"> <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/IIIT_Sri_City_Logo.png/220px-IIIT_Sri_City_Logo.png" style="width: 32px; height: 32px; margin-right: 8px;">GURUKOOL</a>
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav">
+            <li class="nav-item px-2">
+              <a href="{% url 'Professor:dashboard' %}" class="nav-link active">Dashboard</a>
             </li>
-        </ul>
+            <li class="nav-item px-2">
+              <a href="{% url 'Professor:all-poll' %}" class="nav-link active">Polls</a>
+            </li>
+            <li class="nav-item px-2">
+              <a href="{% url 'Professor:all-quiz' %}" class="nav-link active">Quiz</a>
+            </li>
+            <!-- <li class="nav-item px-2">
+              <a href="users.html" class="nav-link active">Doubts</a>
+            </li> -->
+            <!-- <li class="nav-item px-2">
+                <a href="users.html" class="nav-link active">Meetings</a>
+              </li> -->
+          </ul>
 
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item dropdown mr-3">
-            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-              <i class="fas fa-user"></i> Welcome {{ request.user.username }}
-            </a>
-            <div class="dropdown-menu">
-              <a href="profile.html" class="dropdown-item">
-                <i class="fas fa-user-circle"></i> Profile
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown mr-3">
+              <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                <i class="fas fa-user"></i> Welcome {{ request.user.username }}
               </a>
-              <a href="settings.html" class="dropdown-item">
-                <i class="fas fa-cog"></i> Settings
+              <div class="dropdown-menu">
+                <a href="profile.html" class="dropdown-item">
+                  <i class="fas fa-user-circle"></i> Profile
+                </a>
+                <a href="settings.html" class="dropdown-item">
+                  <i class="fas fa-cog"></i> Settings
+                </a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'UserAuth:logout' %}" class="nav-link active">
+                <i class="fas fa-user-times"></i> Logout
               </a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'UserAuth:logout' %}" class="nav-link active">
-              <i class="fas fa-user-times"></i> Logout
-            </a>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
-        {% block body %}
-        {% endblock %}
-    </body>
+    </nav>
+          {% block body %}
+          {% endblock %}
+      </body>
 
-    {% block scripts %}
-    {% endblock %}
-</html>
+      {% block scripts %}
+      {% endblock %}
+  </html>
