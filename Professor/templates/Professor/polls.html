@@ -70,7 +70,7 @@
                                 <td>{{ poll.poll.title }}</td>
                                 <td>{{ poll.conduction_date }}</td>
                                 <td>
-                                    <a href="{% url 'Professor:quiz' poll.poll.id %}" class="btn btn-secondary">
+                                    <a href="{% url 'Professor:conducted-poll' poll.id %}" class="btn btn-secondary">
                                     <i class="fas fa-angle-double-right"></i>
                                     </a>
                                 </td>

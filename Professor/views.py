@@ -8,6 +8,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import *
 from Doubt.models import *
+from Student.models import *
 from Meeting.models import Meeting
 import hashlib
 import time
@@ -219,7 +220,7 @@ def stop_quiz(request, quiz_id):
             conduct_quiz_inst.active = False
             conduct_quiz_inst.save()
             messages.success(request, "Successfully stopped quiz")
-            return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':conduct_quiz_inst.quiz.id}))
+            return HttpResponseRedirect(reverse('Professor:conducted-quiz', kwargs={'quiz_id':conduct_quiz_inst.id}))
         except Exception as e:
             print(e)
             messages.warning(request, "There was an error stopping Quiz. Please Try Again.")
@@ -273,6 +274,8 @@ def stop_poll(request, poll_id):
             messages.warning(request, "There was an error stopping Poll. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:poll', kwargs={'poll_id':conduct_poll_inst.poll.id}))
 
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
 def show_all_polls(request):
     '''
         Shows all polls
@@ -290,6 +293,8 @@ def show_all_polls(request):
             messages.warning(request, "There was an error displaying Polls. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:dashboard'))
 
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
 def show_all_quiz(request):
     '''
         Shows all quiz
@@ -306,3 +311,43 @@ def show_all_quiz(request):
             print('error is', e)
             messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def conducted_poll(request, poll_id):
+    if request.method == "GET":
+        try:
+            conducted_poll = ConductPoll.objects.get(id=poll_id)
+            poll_details = Poll.objects.get(id=conducted_poll.poll.id)
+            poll_options = PollOption.objects.filter(poll__id=conducted_poll.poll.id)
+            return render(request, 'Professor/conducted-poll.html', {"conducted_poll": conducted_poll, "poll_details": poll_details, 'poll_options': poll_options})
+        except Exception as e:
+            print('error is', e)
+            messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def conducted_quiz(request, quiz_id):
+    if request.method == 'GET':
+        try:
+            conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
+            quiz_data = QuizOptions.objects.filter(quiz__id=conducted_quiz.quiz.id)
+            return render(request, 'Professor/conducted-quiz.html', {"conducted_quiz": conducted_quiz, "quiz_data": quiz_data})
+        except Exception as e:
+            print('error is', e)
+            messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def quiz_result(request, quiz_id):
+    if request.method == 'GET':
+        try:
+            conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
+            quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id)
+            return render(request, 'Professor/quiz-result.html', {"conducted_quiz": conducted_quiz, "quiz_results": quiz_results})
+        except Exception as e:
+            print('error is', e)
+            messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:all-quiz'))

@@ -48,20 +48,20 @@ def create_comment(request, doubt_id):
         # return HttpResponseRedirect(reverse('Doubt:doubt-list',kwargs={'course_id':doubt.course.id}))
         return HttpResponseRedirect(reverse('Doubt:doubt', kwargs={'doubt_id': doubt_id}))
 
+'''
+Get a particular doubt
+Takes input request method and doubt_id
+Returns doubt_data,previous_replies and renders the web page
+'''
 @login_required(login_url=login_url)
 @group_required(prof_group, login_url=login_url)
 def doubt(request, doubt_id):
-    '''
-        Get a particular doubt
-        Takes input request method and doubt_id
-        Returns doubt_data,previous_replies and renders the web page
-    '''
-    if request.method == 'GET':
-        try:
-                doubt = Doubt.objects.get(id=doubt_id)
-                previous_replies = Comment.objects.filter(doubt__id=doubt_id).order_by('-last_updated')
-                return render(request, 'Doubt/doubt-details.html', {"doubt_data": doubt, "previous_replies": previous_replies})
-        except Exception as e:
-                print(e)
-                messages.success(request, "Some Error Occurred")
-                return HttpResponseRedirect(reverse('Professor:dashboard'))
+        if request.method == 'GET':
+                try:
+                        doubt = Doubt.objects.get(id=doubt_id)
+                        previous_replies = Comment.objects.filter(doubt__id=doubt_id).order_by('-last_updated')
+                        return render(request, 'Doubt/doubt-details.html', {"doubt_data": doubt, "previous_replies": previous_replies})
+                except Exception as e:
+                        print(e)
+                        messages.success(request, "Some Error Occurred")
+                        return HttpResponseRedirect(reverse('Professor:dashboard'))
