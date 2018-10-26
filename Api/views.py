@@ -43,7 +43,7 @@ def group_required(*group_names, login_url=None):
 
 class CourseList(APIView):
     serializer_class = CourseSerializer
-    def get(self, request, type, menu, format=None):
+    def get(self, request, type, menu, email,format=None):
         '''
         get Courses Student is registered for
         takes input type,menu
@@ -51,7 +51,8 @@ class CourseList(APIView):
     '''
         if type == 'student':
             if menu == 'quiz':
-                courses = Course.objects.all()
+                courses = CourseStudent.objects.filter(student__user__email_address=email)
+                print (courses)
         elif type == 'professor':
             print ("request", request, request.user.id)
 
