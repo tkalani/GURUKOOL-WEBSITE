@@ -76,7 +76,7 @@ def create_poll(request):
         try:
             poll_inst = Poll()
             poll_inst.professor = ProfessorProfile.objects.get(user__user__username=request.user.username)
-            poll_inst.course = Course.objects.get(id=course)
+            poll_inst.course = Course.objects.get(id=(CourseProfessor.objects.get(id=course)).course.id)
             poll_inst.title = title
             poll_inst.question = question
             poll_inst.save()
@@ -85,9 +85,12 @@ def create_poll(request):
                 option_inst.poll = poll_inst
                 option_inst.option = option
                 option_inst.save()
-            return HttpResponseRedirect(reverse('Professor:dashboard'))
+            messages.success(request, "Successfully created Poll")
+            return HttpResponseRedirect(reverse('Professor:all-poll'))
         except Exception as e:
             print(e)
+            messages.warning(request, "There was an error creating poll. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:create-poll'))
 
 ''' Login Required
 '''
@@ -152,7 +155,7 @@ def create_quiz(request):
                             opt_inst.is_correct = False
                         opt_inst.save()
             messages.success(request, "Successfully Created Quiz")
-            return HttpResponseRedirect(reverse('Professor:dashboard'))
+            return HttpResponseRedirect(reverse('Professor:all-quiz'))
         except Exception as e:
             print('error is ', e)
             messages.warning(request, "There was an error creating Quiz. Please Try Again.")
