@@ -42,8 +42,9 @@ def doubt(request, doubt_id):
         if request.method == 'GET':
                 try:
                         doubt = Doubt.objects.get(id=doubt_id)
-                        return render(request, 'Doubt/doubt-details.html', {"doubt_data": doubt})
+                        previous_replies = Comment.objects.filter(doubt__id=doubt_id).order_by('-last_updated')
+                        return render(request, 'Doubt/doubt-details.html', {"doubt_data": doubt, "previous_replies": previous_replies})
                 except Exception as e:
                         print(e)
                         messages.success(request, "Some Error Occurred")
-                        return HttpResponseRedirect(reverse('Professor:dasboard'))
+                        return HttpResponseRedirect(reverse('Professor:dashboard'))

@@ -70,11 +70,32 @@
                             </div>
                           </h4>
                         </div>
+                        {% for reply in previous_replies %}
+                            {% if reply.user.email == request.user.email %}
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="card-body col-md-8">
+                                    <div class="form-group">
+                                        <textarea readonly class="form-control" required>{{ reply.text }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="row">
+                                <div class="card-body col-md-8">
+                                    <div class="form-group">
+                                        <textarea readonly class="form-control" required>{{ reply.text }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="body">Reply</label>
                                 <textarea name="comment" class="form-control" rows=4 required></textarea>
-                              </div>
+                            </div>
                         </div>
                       </div>
                     </div>
