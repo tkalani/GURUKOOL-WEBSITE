@@ -7,6 +7,11 @@ from django.contrib import messages
 # Create your views here.
 
 def meeting_detail(request, meeting_id):
+    '''
+    Get the meeting details
+    Takes input request method and meeting_id
+    If GET request, the render the web page and if POST requets then return HHTP response
+    '''
     if request.method == 'GET':
         meeting_data = Meeting.objects.get(id=meeting_id)
         if meeting_data.professor.user.user.id == request.user.id:
