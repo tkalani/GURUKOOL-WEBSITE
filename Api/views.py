@@ -67,12 +67,12 @@ class CourseDoubt(APIView):
 class DoubtCreate(APIView):
     serializer_class = DoubtSerializer
 
-    def get(self, request, course_id, format=None):        #doubts of a student
+    def get(self, request, course_id, email, format=None):        #doubts of a student
         # can't use request in mobile app
         #doubts = Doubt.objects.filter(student__user__user__username=request.user.username)
         course = get_object_or_404(Course, id=course_id)
         print(course, course.name, course.id)
-        doubts = Doubt.objects.filter(course__id=course_id)        
+        doubts = Doubt.objects.filter(course__id=course_id, student__user__email_address=email)        
         serializer = self.serializer_class(doubts, many=True)
 
         # print(serializer.data)
@@ -80,7 +80,7 @@ class DoubtCreate(APIView):
 
     @method_decorator(csrf_exempt)
     # @method_decorator(group_required(student_group, login_url=login_url))
-    def post(self, request, course_id, format=None):       #code, title, description
+    def post(self, request, course_id, email, format=None):       #code, title, description
         try:
             body = json.loads(request.body.decode('utf-8'))
             student = StudentProfile.objects.get(user__email_address=body['email'])
