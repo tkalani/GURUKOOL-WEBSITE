@@ -31,7 +31,8 @@ login_url = 'UserAuth:login'
 def group_required(*group_names, login_url=None):
     ''' checks group requirement whwther the user is student or professor
         Takes group name as input and login url
-        returns status if user passes or not'''
+        returns status if user passes or not
+    '''
     def in_groups(u):
         if u.is_authenticated:
             if bool(u.groups.filter(name__in=group_names)) | u.is_superuser:
@@ -42,8 +43,8 @@ def group_required(*group_names, login_url=None):
 
 class CourseList(APIView):
     serializer_class = CourseSerializer
-    def get(self, request, type, menu, format=None):    
-    '''
+    def get(self, request, type, menu, format=None):
+        '''
         get Courses Student is registered for
         takes input type,menu
         returns students courses in json format
@@ -66,8 +67,8 @@ class CourseList(APIView):
 class CourseDoubt(APIView):
     serializer_class = DoubtSerializer
 
-    def get(self, request, course_id, format=None):         
-    '''
+    def get(self, request, course_id, format=None):
+        '''
         get Student Doubts
         takes input request method,course_id
         returns students doubts in json format
@@ -79,19 +80,9 @@ class CourseDoubt(APIView):
 
 class DoubtCreate(APIView):
     serializer_class = DoubtSerializer
-<<<<<<< HEAD
-      '''
-            Creates a doubt from student side, api for deleting a doub
-            takes input course_id,request method and form
-            returns http response for successfull operation
-        '''
-    def get(self, request, course_id, format=None):       
-=======
-
     def get(self, request, course_id, email, format=None):        #doubts of a student
         # can't use request in mobile app
         #doubts = Doubt.objects.filter(student__user__user__username=request.user.username)
->>>>>>> 80e505ce3fa10714bd9b0e10abd48b8acc57e296
         course = get_object_or_404(Course, id=course_id)
         print(course, course.name, course.id)
         doubts = Doubt.objects.filter(course__id=course_id, student__user__email_address=email)        
