@@ -8,6 +8,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import *
 from Doubt.models import *
+from Student.models import *
 from Meeting.models import Meeting
 import hashlib
 import time
@@ -219,7 +220,7 @@ def stop_quiz(request, quiz_id):
             conduct_quiz_inst.active = False
             conduct_quiz_inst.save()
             messages.success(request, "Successfully stopped quiz")
-            return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':conduct_quiz_inst.quiz.id}))
+            return HttpResponseRedirect(reverse('Professor:conducted-quiz', kwargs={'quiz_id':conduct_quiz_inst.id}))
         except Exception as e:
             print(e)
             messages.warning(request, "There was an error stopping Quiz. Please Try Again.")
@@ -325,6 +326,8 @@ def conducted_poll(request, poll_id):
             messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:dashboard'))
 
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
 def conducted_quiz(request, quiz_id):
     if request.method == 'GET':
         try:
@@ -335,3 +338,16 @@ def conducted_quiz(request, quiz_id):
             print('error is', e)
             messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def quiz_result(request, quiz_id):
+    if request.method == 'GET':
+        try:
+            conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
+            quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id)
+            return render(request, 'Professor/quiz-result.html', {"conducted_quiz": conducted_quiz, "quiz_results": quiz_results})
+        except Exception as e:
+            print('error is', e)
+            messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
+            return HttpResponseRedirect(reverse('Professor:all-quiz'))

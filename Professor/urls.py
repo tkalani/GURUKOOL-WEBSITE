@@ -17,4 +17,5 @@ urlpatterns = [
 		url(r'^stop-poll/(?P<poll_id>\d+)/$', views.stop_poll, name='stop-poll'),
 		url(r'^conducted-poll/(?P<poll_id>\d+)/$', views.conducted_poll, name='conducted-poll'),
 		url(r'^conducted-quiz/(?P<quiz_id>\d+)/$', views.conducted_quiz, name='conducted-quiz'),
+		url(r'^quiz-result/(?P<quiz_id>\d+)/$', views.quiz_result, name='quiz-result'),
 	]
