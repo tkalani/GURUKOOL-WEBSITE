@@ -14,8 +14,8 @@ from rest_framework.decorators import api_view
 from Professor.models import Course, CourseProfessor, Quiz, QuizOptions, ConductQuiz
 from Doubt.models import Doubt, Comment
 from UserAuth.models import StudentAuthProfile
-from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer
-from Student.models import CourseStudent, StudentProfile, QuizResult, QuizQuestion
+from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer, QuizResultSerializer
+from Student.models import CourseStudent, StudentProfile, QuizResult, QuizQuestion, QuestionWiseResult
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
@@ -239,14 +239,19 @@ class MeetingManage(APIView):
 
 
 class CheckQuiz(APIView):
-    def get(self, request, quiz_id, course_id):
+    def get(self, request, quiz_id, course_id, email):
         print ("checking quiz")
         try:
             check_quiz = get_object_or_404(ConductQuiz, quiz__course__id=course_id, unique_quiz_id=quiz_id, active=True)
-            return JsonResponse({"check":True}, status=200)
+            print (email, quiz_id)
+            print(QuizResult.objects.filter(student__user__email_address=email, conduct_quiz=check_quiz).count())
+            if not(QuizResult.objects.filter(student__user__email_address=email, conduct_quiz=check_quiz).count()):
+                return JsonResponse({"check":"Success"}, status=200, safe=False)
+            else:
+                return JsonResponse({"check":"Completed"}, status=200, safe=False)
         except Exception as e:
             print (e)
-            return JsonResponse({"check":False}, status=200)
+            return JsonResponse({"check":"Fail"}, status=500)
 
 class QuizDetails(APIView):
     def get(self, request, quiz_id):
@@ -277,14 +282,16 @@ class QuizComplete(APIView):
             stud = get_object_or_404(StudentProfile, user__email_address=email)
             quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id)
             print (stud, quiz)
-            qr = QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks).save()
+            QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks).save()
             for question in (body['quiz_response']):
                 print (question)
-                ''' from here '''
-                que = get_object_or_404(QuizQuestion, id=question[1]).save()
-                QuestionWiseResult(quiz_result=qr, question=que, answer=question[1])
+                qr = get_object_or_404(QuizResult, student=stud, conduct_quiz=quiz)
+                que = get_object_or_404(QuizQuestion, id=question[1])
+                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0]).save()
+                return JsonResponse(True, status=200, safe=False)
         except Exception as e:
             print (e)
+            return JsonResponse(False, status=500, safe=False)
 
 class CommentOnDoubt(APIView):
     @method_decorator(csrf_exempt)
@@ -316,7 +323,18 @@ class Login(APIView):
             print (e)
             return body("Wrong Username", status=401, safe=False)
 
+class AllStudentQuiz(APIView):
+    serializer_class = QuizResultSerializer
 
+    def get(self, request, course_id, email):
+        print ("all student quizzes")
+        try:
+            results = QuizResult.objects.filter(student__user__email_address=email, conduct_quiz__quiz__course__id=course_id)
+            quiz_results = QuizResultSerializer(results, many=True).data
+            return JsonResponse(quiz_results, status=200, safe=False)
+        except Exception as e:
+            print (e)
+            return JsonResponse(False, status=500)
 
 
 class Test(View):

@@ -36,16 +36,16 @@ class CourseStudent(models.Model):
 		return str(self.student.user.user.username) + ' --> ' + str(self.course.name)
 
 class QuizResult(models.Model):
-	student = models.OneToOneField(StudentProfile, on_delete=models.SET_NULL, null=True, blank=True)
-	conduct_quiz = models.OneToOneField(ConductQuiz, on_delete=models.SET_NULL, null=True, blank=True)
+	student = models.ForeignKey(StudentProfile, on_delete=models.SET_NULL, null=True, blank=True)
+	conduct_quiz = models.ForeignKey(ConductQuiz, on_delete=models.SET_NULL, null=True, blank=True)
 	marks_obtained = models.IntegerField(null=True, blank=True)
 
 	def __str__(self):
 		return str(self.student.user.user.username) + '-->' +str(self.conduct_quiz.quiz.title)
 
 class QuestionWiseResult(models.Model):
-	quiz_result = models.OneToOneField(QuizResult, null=True, blank=True)
-	question = models.OneToOneField(QuizQuestion, null=True, blank=True)
+	quiz_result = models.ForeignKey(QuizResult, null=True, blank=True)
+	question = models.ForeignKey(QuizQuestion, null=True, blank=True)
 	answer = models.CharField(max_length=100, null=True, blank=True)
 
 	def __str__(self):
