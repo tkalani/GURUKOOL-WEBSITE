@@ -1,8 +1,8 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
-
-from .models import Doubt
+from django.contrib import messages
+from .models import *
 from Professor.models import Course
 
 student_group = 'Student'
@@ -32,5 +32,18 @@ def create_comment(request, doubt_id):
     if request.method == 'POST':
         text = request.POST['comment']
         doubt = Doubt.objects.get(id=doubt_id)
-        Comment = Comment.objects.create(doubt=doubt, user__id=request.user.id, text=text)
-        return HttpResponseRedirect(reverse('Doubt:doubt-list',kwargs={'course_id':doubt.course.id}))
+        comment = Comment.objects.create(doubt=doubt, user_id=request.user.id, text=text)
+        # return HttpResponseRedirect(reverse('Doubt:doubt-list',kwargs={'course_id':doubt.course.id}))
+        return HttpResponseRedirect(reverse('Doubt:doubt', kwargs={'doubt_id': doubt_id}))
+
+@login_required(login_url=login_url)
+@group_required(prof_group, login_url=login_url)
+def doubt(request, doubt_id):
+        if request.method == 'GET':
+                try:
+                        doubt = Doubt.objects.get(id=doubt_id)
+                        return render(request, 'Doubt/doubt-details.html', {"doubt_data": doubt})
+                except Exception as e:
+                        print(e)
+                        messages.success(request, "Some Error Occurred")
+                        return HttpResponseRedirect(reverse('Professor:dasboard'))

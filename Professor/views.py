@@ -41,7 +41,17 @@ def dashboard(request):
         active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True).order_by('-id')
         active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
         # print(poll_list)
-        return render(request, 'Professor/dashboard.html', {"poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
+
+        all_doubt_list = []
+        for course in course_list:
+            # print(course.id)
+            for y in Doubt.objects.filter(course__id=course.course.id):
+                all_doubt_list.append(y)
+        # print(all_doubt_list)
+        all_doubt_list = sorted(all_doubt_list, key=lambda k: k.last_updated)
+        all_doubt_list = all_doubt_list[::-1]
+        # print(all_doubt_list)
+        return render(request, 'Professor/dashboard.html', {"all_doubt_list": all_doubt_list, "poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)

@@ -107,7 +107,30 @@
                         </tr>
                       </thead>
                       <tbody>
-                            
+                        {% if all_doubt_list %}
+                            {% for doubt in all_doubt_list %}
+                            <tr>
+                                <td>{{ doubt.course.code }}</td>
+                                <td>{{ doubt.student.user.user.first_name }}</td>
+                                <td>{{ doubt.last_updated }}</td>
+                                <td>{{ doubt.title }}</td>
+                                <td>
+                                    <a href="{% url 'Doubt:doubt' doubt.id %}" class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i> Details
+                                    </a>
+                                </td>
+                                <!-- <td>
+                                    <a href="{% url 'Doubt:doubt-list' doubt.course.id %}" class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i> Details
+                                    </a>
+                                </td> -->
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>No Courses Assigned</td>
+                            </tr>
+                        {% endif %}
                       </tbody>
                     </table>
                   </div>
@@ -133,6 +156,7 @@
                                     <td>{{ meeting.student.user.user.username }}</td>
                                     <td>{{ meeting.title}}</td>
                                     <td>{{ meeting.status }}</td>
+                                    <td></td>
                                     <td>
                                         <a href="{% url 'Meeting:meeting-detail' meeting.id %}" class="btn btn-secondary">
                                         <i class="fas fa-angle-double-right"></i> Details
