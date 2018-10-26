@@ -28,6 +28,9 @@ prof_group = 'Professor'
 login_url = 'UserAuth:login'
 
 def group_required(*group_names, login_url=None):
+    ''' checks group requirement whwther the user is student or professor
+        Takes group name as input and login url
+        returns status if user passes or not'''
     def in_groups(u):
         if u.is_authenticated:
             if bool(u.groups.filter(name__in=group_names)) | u.is_superuser:
@@ -38,7 +41,12 @@ def group_required(*group_names, login_url=None):
 
 class CourseList(APIView):
     serializer_class = CourseSerializer
-    def get(self, request, type, menu, format=None):    #get courses stduent is registed for
+    def get(self, request, type, menu, format=None):    
+    '''
+        get Courses Student is registered for
+        takes input type,menu
+        returns students courses in json format
+    '''
         if type == 'student':
             if menu == 'quiz':
                 courses = CourseStudent.objects.all()
@@ -57,7 +65,12 @@ class CourseList(APIView):
 class CourseDoubt(APIView):
     serializer_class = DoubtSerializer
 
-    def get(self, request, course_id, format=None):         #doubts in a course
+    def get(self, request, course_id, format=None):         
+    '''
+        get Student Doubts
+        takes input request method,course_id
+        returns students doubts in json format
+    '''
         doubts = Doubt.objects.filter(course__id=course_id)
         serializer = self.serializer_class(doubts, many=True)
         return Response(serializer.data)
@@ -65,16 +78,17 @@ class CourseDoubt(APIView):
 
 class DoubtCreate(APIView):
     serializer_class = DoubtSerializer
-
-    def get(self, request, course_id, format=None):        #doubts of a student
-        # can't use request in mobile app
-        #doubts = Doubt.objects.filter(student__user__user__username=request.user.username)
+      '''
+            Creates a doubt from student side, api for deleting a doub
+            takes input course_id,request method and form
+            returns http response for successfull operation
+        '''
+    def get(self, request, course_id, format=None):       
         course = get_object_or_404(Course, id=course_id)
         print(course, course.name, course.id)
         doubts = Doubt.objects.filter(course__id=course_id)        
         serializer = self.serializer_class(doubts, many=True)
 
-        # print(serializer.data)
         return Response(serializer.data)
 
     @method_decorator(csrf_exempt)
@@ -138,6 +152,11 @@ class DoubtCreate(APIView):
 
 
 class CommentCreate(APIView):
+    '''
+        Creates a comment,delete a comment api
+        takes input request method,doubt_id
+        Returns http response fr successful operation
+    '''
     serializer_class = CommentSerializer
 
     def get(self, request, doubt_id):
@@ -192,6 +211,11 @@ class CommentCreate(APIView):
 
 
 class MeetingManage(APIView):
+    '''
+        Manages a meeting. Meeting Request Generation
+        Takes input request method,type
+        Returns corresponding http response on successful creation
+    '''
     serializer_class = MeetingSerializer
 
     def get(self, request, type, format=None):
@@ -239,6 +263,11 @@ class MeetingManage(APIView):
 
 
 class CheckQuiz(APIView):
+    '''
+        API for check Quiz on quiz id,course id
+        Takes input, course_id,email,quiz_id
+        Returns the quiz status if quiz is completed, quiz id is valid or not
+    '''
     def get(self, request, quiz_id, course_id, email):
         print ("checking quiz")
         try:
@@ -254,6 +283,11 @@ class CheckQuiz(APIView):
             return JsonResponse({"check":"Fail"}, status=500)
 
 class QuizDetails(APIView):
+    '''
+        Gets Quiz details question wise
+        Takes input request method and quiz_id
+        Returns the question_id,question_text,question_time,question_marks,answers
+    '''
     def get(self, request, quiz_id):
         try:
             quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id).quiz
@@ -273,6 +307,11 @@ class QuizDetails(APIView):
             return JsonResponse(False, status=500, safe=False)
 
 class QuizComplete(APIView):
+    '''
+        Completes the quiz
+        takes input request method
+        Return json response true or false based on successful operation
+    '''
     def post(self, request):
         try:
             body = json.loads(request.body.decode('utf-8'))
@@ -294,6 +333,11 @@ class QuizComplete(APIView):
             return JsonResponse(False, status=500, safe=False)
 
 class CommentOnDoubt(APIView):
+    '''
+        Comments in Doubt Thread
+        Takes input request method
+        Returns json response based on successful operation
+    '''
     @method_decorator(csrf_exempt)
     def post(self,request):
         try:
