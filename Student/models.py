@@ -41,7 +41,7 @@ class QuizResult(models.Model):
 	marks_obtained = models.IntegerField(null=True, blank=True)
 
 	def __str__(self):
-		return str(self.student.user.user.username) + '-->' +str(self.conduct_quiz.quiz.title)
+		return str(self.student.user.user.username) + '-->' +str(self.conduct_quiz)
 
 class QuestionWiseResult(models.Model):
 	quiz_result = models.ForeignKey(QuizResult, null=True, blank=True)

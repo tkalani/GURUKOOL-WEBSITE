@@ -348,7 +348,7 @@ def quiz_result(request, quiz_id):
     if request.method == 'GET':
         try:
             conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
-            quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id)
+            quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id).order_by('-marks_obtained')
             return render(request, 'Professor/quiz-result.html', {"conducted_quiz": conducted_quiz, "quiz_results": quiz_results})
         except Exception as e:
             print('error is', e)
