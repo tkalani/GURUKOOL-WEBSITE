@@ -48,11 +48,11 @@ def create_comment(request, doubt_id):
         # return HttpResponseRedirect(reverse('Doubt:doubt-list',kwargs={'course_id':doubt.course.id}))
         return HttpResponseRedirect(reverse('Doubt:doubt', kwargs={'doubt_id': doubt_id}))
 
-    '''
-        Get a particular doubt
-        Takes input request method and doubt_id
-        Returns doubt_data,previous_replies and renders the web page
-    '''
+'''
+Get a particular doubt
+Takes input request method and doubt_id
+Returns doubt_data,previous_replies and renders the web page
+'''
 @login_required(login_url=login_url)
 @group_required(prof_group, login_url=login_url)
 def doubt(request, doubt_id):
