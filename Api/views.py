@@ -15,7 +15,7 @@ from Professor.models import Course, CourseProfessor, Quiz, QuizOptions, Conduct
 from Doubt.models import Doubt, Comment
 from UserAuth.models import StudentAuthProfile
 from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer
-from Student.models import CourseStudent, StudentProfile
+from Student.models import CourseStudent, StudentProfile, QuizResult, QuizQuestion
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
@@ -248,21 +248,43 @@ class CheckQuiz(APIView):
             print (e)
             return JsonResponse({"check":False}, status=200)
 
-
-
 class QuizDetails(APIView):
     def get(self, request, quiz_id):
-        quiz = Quiz.objects.all()[1]
-        questions = quiz.quizquestion_set.all()
-        fullQuiz = {}
-        value = []
-        for question in questions:
-            options = question.quizoptions_set.all()
-            answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False} for opt in options]
-            value.append({"questionText":question.question,"questionTime":question.time,"questionMarks":question.marks, "answers":answers})
-        fullQuiz["questions"] = value
-        # print (fullQuiz)
-        return JsonResponse(fullQuiz, status=200, safe=False)
+        try:
+            quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id).quiz
+            print ("made it prolly")
+            questions = quiz.quizquestion_set.all()
+            fullQuiz = {}
+            value = []
+            for question in questions:
+                options = question.quizoptions_set.all()
+                answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False} for opt in options]
+                value.append({"questionText":question.question, "question_id":question.id, "questionTime":question.time,"questionMarks":question.marks, "answers":answers})
+            fullQuiz["questions"] = value
+            # print (fullQuiz)
+            return JsonResponse(fullQuiz, status=200, safe=False)
+        except Exception as e:
+            print (e)
+            return JsonResponse(False, status=500, safe=False)
+
+class QuizComplete(APIView):
+    def post(self, request):
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            email = body['email']
+            quiz_id = body["quiz_id"]
+            marks = int(body["marks"])
+            stud = get_object_or_404(StudentProfile, user__email_address=email)
+            quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id)
+            print (stud, quiz)
+            qr = QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks).save()
+            for question in (body['quiz_response']):
+                print (question)
+                ''' from here '''
+                que = get_object_or_404(QuizQuestion, id=question[1]).save()
+                QuestionWiseResult(quiz_result=qr, question=que, answer=question[1])
+        except Exception as e:
+            print (e)
 
 class CommentOnDoubt(APIView):
     @method_decorator(csrf_exempt)
