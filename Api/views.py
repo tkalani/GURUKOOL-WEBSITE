@@ -13,6 +13,7 @@ from rest_framework.decorators import api_view
 
 from Professor.models import Course, CourseProfessor, Quiz, QuizOptions, ConductQuiz
 from Doubt.models import Doubt, Comment
+from Meeting.models import Meeting
 from UserAuth.models import StudentAuthProfile
 from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer, QuizResultSerializer
 from Student.models import CourseStudent, StudentProfile, QuizResult, QuizQuestion, QuestionWiseResult
@@ -80,17 +81,6 @@ class DoubtCreate(APIView):
     @method_decorator(csrf_exempt)
     # @method_decorator(group_required(student_group, login_url=login_url))
     def post(self, request, course_id, format=None):       #code, title, description
-        '''try:
-            username = request.user.username
-            serializer = self.serializer_class(data=request.data)
-            if serializer.is_valid():
-                student = StudentProfile.objects.get(user__user__id=request.user.id)
-                serializer.save(student=student)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            print(traceback.format_exc())
-            return Response(status=500)'''
         try:
             body = json.loads(request.body.decode('utf-8'))
             student = StudentProfile.objects.get(user__email_address=body['email'])
@@ -336,6 +326,28 @@ class AllStudentQuiz(APIView):
             print (e)
             return JsonResponse(False, status=500)
 
+
+class CreateMeeting(APIView):
+    serializer_class = MeetingSerializer
+    def get(self, request, course_id, email, format=None):        
+        meetings = Meeting.objects.filter(student__user__email_address=email)
+        serializer = self.serializer_class(meetings, many=True)
+        return Response(serializer.data)
+
+    @method_decorator(csrf_exempt)
+    def post(self, request, course_id, email, format=None):
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            print (body)
+            student = StudentProfile.objects.get(user__email_address=body['email'])
+            professor = get_object_or_404(CourseProfessor, course__id=course_id).professor
+            Meeting(student=student, professor=professor, title=body['data']['meeting_title'], body=body['data']['meeting_description']).save()
+            return JsonResponse(True, status=200, safe=False)
+        except Exception as e:
+            print (e)
+            print(traceback.format_exc())
+            return Response(status=500)
+        
 
 class Test(View):
     @method_decorator(csrf_exempt)
