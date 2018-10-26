@@ -1,0 +1,212 @@
+{% extends 'Professor/main.html' %}
+{% include 'UserAuth/message.html' %}
+
+{% block title %}
+    Polls
+{% endblock %}
+<br><br>
+
+{% block body %}
+
+<section id="posts">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                
+                <table class="table table-striped">
+                  <thead class="bg-warning">
+                    <tr>
+                      <th colspan="2">Active Quizzes</th>
+                        <th></th>
+                        <th></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: black;"></i></a></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        {% if active_quiz_list %}
+                            {% for quiz in active_quiz_list %}
+                                <tr>
+                                <td>{{ quiz.unique_quiz_id }}</td>
+                                <td>{{ quiz.quiz.course.code }}</td>
+                                <td>{{ quiz.quiz.title }}</td>
+                                <td>{{ quiz.conduction_date }}</td>
+                                <td>
+                                    <a href="{% url 'Professor:quiz' quiz.quiz.id %}" class="btn btn-secondary">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>No Active Quizzes</td>
+                            </tr>
+                        {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+  
+            <div class="col-md-4">
+              <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                
+                <table class="table table-striped">
+                  <thead class="table-danger">
+                    <tr>
+                      <th colspan="3">Conducted Quizzes</th>
+                        <th></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        {% if finished_quiz_list %}
+                            {% for quiz in finished_quiz_list %}
+                            <tr>
+                                <td>{{ quiz.unique_quiz_id }}</td>
+                                <td>{{ quiz.quiz.course.code }}</td>
+                                <td>{{ quiz.quiz.title }}</td>
+                                <td>{{ quiz.conduction_date }}</td>
+                                <td>
+                                    <a href="{% url 'Professor:quiz' quiz.quiz.id %}" class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>Zero Quizzes Conducted Yet.</td>
+                              </tr>
+                        {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+                    <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                      
+                      <table class="table table-striped">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th colspan="2">Quiz Drafts</th>
+                              <th></th>
+                              <th></th>
+                            <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                              {% if all_quiz_list %}
+                                  {% for quiz in all_quiz_list %}
+                                  <tr>
+                                      <td>{{ quiz.course.code }}</td>
+                                      <td>{{ quiz.title }}</td>
+                                      <td>{{ quiz.description }}</td>
+                                      <td></td>
+                                      <td>
+                                          <a href="{% url 'Professor:quiz' quiz.id %}" class="btn btn-secondary">
+                                          <i class="fas fa-angle-double-right"></i>
+                                          </a>
+                                      </td>
+                                  </tr>
+                                  {% endfor %}
+                              {% else %}
+                                  <tr>
+                                      <td>No Quizzes Created</td>
+                                    </tr>
+                              {% endif %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+          </div>
+      </section>
+<br>
+
+    <!-- <a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
+    Polls:
+    {% if poll_list %}
+        {% for poll in poll_list %}
+            <ul>
+                <li><a href="{% url 'Professor:poll' poll.id %}"> {{ poll.title }} </a></li>
+            </ul>
+        {% endfor %}
+    {% else %}
+        No Poll Created Yet.
+    {% endif %}
+    <br>
+    <br><br>
+
+    Active Quizzes<br>
+    {% if active_quiz_list %}
+        {% for quiz in active_quiz_list %}
+            <ul>
+                <li><a href="{% url 'Professor:quiz' quiz.quiz.id %}"> {{ quiz.quiz.title }} - {{ quiz.unique_quiz_id }} </a></li>
+            </ul>
+        {% endfor %}
+    {% else %}
+        No Active Quizzes.
+    {% endif %}
+    <br>
+    <br><br>
+
+<a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
+Quizzes:
+{% if quiz_list %}
+    {% for quiz in quiz_list %}
+        <ul>
+            <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
+        </ul>
+    {% endfor %}
+{% else %}
+    No Quiz Created Yet.
+{% endif %}
+<br>
+<br><br>
+Doubts:
+{% if course_list %}
+    {% for course in course_list %}
+        <ul>
+          <li><a href="{% url 'Doubt:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
+        </ul>
+    {% endfor %}
+{% else %}
+    No courses to select for Doubts
+{% endif %}
+
+<br>
+<br><br>
+
+    <a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
+    Quizzes:
+    {% if quiz_list %}
+        {% for quiz in quiz_list %}
+            <ul>
+                <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
+            </ul>
+        {% endfor %}
+    {% else %}
+        No Quiz Created Yet.
+    {% endif %}
+    <br>
+    <br><br>
+    Doubts:
+    {% if course_list %}
+        {% for course in course_list %}
+            <ul>
+            <li><a href="{% url 'Doubt:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
+            </ul>
+        {% endfor %}
+    {% else %}
+        No courses to select for Doubts
+    {% endif %}
+
+    <br>
+    <br><br>
+    Meetings: -->
+
+{% endblock %}
+
+<!-- <a href="{% url 'UserAuth:logout' %}">LOGOUT</a> -->
+{% block scripts %}
+{% endblock %}

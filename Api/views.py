@@ -3,6 +3,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,8 +13,9 @@ from rest_framework.decorators import api_view
 
 from Professor.models import Course, CourseProfessor, Quiz, QuizOptions, ConductQuiz
 from Doubt.models import Doubt, Comment
-from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer
-from Student.models import CourseStudent, StudentProfile
+from UserAuth.models import StudentAuthProfile
+from .serializers import CourseSerializer, DoubtSerializer, CommentSerializer, QuizOptionsSerializer, MeetingSerializer, QuizResultSerializer
+from Student.models import CourseStudent, StudentProfile, QuizResult, QuizQuestion, QuestionWiseResult
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
@@ -64,15 +66,21 @@ class CourseDoubt(APIView):
 class DoubtCreate(APIView):
     serializer_class = DoubtSerializer
 
-    def get(self, request, format=None):        #doubts of a student
-        doubts = Doubt.objects.filter(student__user__user__username=request.user.username)
+    def get(self, request, course_id, format=None):        #doubts of a student
+        # can't use request in mobile app
+        #doubts = Doubt.objects.filter(student__user__user__username=request.user.username)
+        course = get_object_or_404(Course, id=course_id)
+        print(course, course.name, course.id)
+        doubts = Doubt.objects.filter(course__id=course_id)        
         serializer = self.serializer_class(doubts, many=True)
+
         # print(serializer.data)
         return Response(serializer.data)
 
-    @method_decorator(group_required(student_group, login_url=login_url))
-    def post(self, request, format=None):       #code, title, description
-        try:
+    @method_decorator(csrf_exempt)
+    # @method_decorator(group_required(student_group, login_url=login_url))
+    def post(self, request, course_id, format=None):       #code, title, description
+        '''try:
             username = request.user.username
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
@@ -82,7 +90,20 @@ class DoubtCreate(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception:
             print(traceback.format_exc())
+            return Response(status=500)'''
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            student = StudentProfile.objects.get(user__email_address=body['email'])
+            print (student)
+            Doubt(student=student, course=get_object_or_404(Course, id=course_id), title=body['data']['doubt_title'], description=body['data']['doubt_description']).save()
+            # serializer.save(student=student)
+            return JsonResponse(True, status=200, safe=False)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print (e)
+            print(traceback.format_exc())
             return Response(status=500)
+        
 
     def delete(self, request, format=None):         #id
         try:
@@ -218,30 +239,103 @@ class MeetingManage(APIView):
 
 
 class CheckQuiz(APIView):
-    def get(self, request, quiz_id, course_id):
+    def get(self, request, quiz_id, course_id, email):
         print ("checking quiz")
         try:
-            check_quiz = get_object_or_404(ConductQuiz, quiz__course__id=course_id, unique_quiz_id=quiz_id)
-            return JsonResponse({"check":True}, status=200)
+            check_quiz = get_object_or_404(ConductQuiz, quiz__course__id=course_id, unique_quiz_id=quiz_id, active=True)
+            print (email, quiz_id)
+            print(QuizResult.objects.filter(student__user__email_address=email, conduct_quiz=check_quiz).count())
+            if not(QuizResult.objects.filter(student__user__email_address=email, conduct_quiz=check_quiz).count()):
+                return JsonResponse({"check":"Success"}, status=200, safe=False)
+            else:
+                return JsonResponse({"check":"Completed"}, status=200, safe=False)
         except Exception as e:
             print (e)
-            return JsonResponse({"check":False}, status=200)
-
-
+            return JsonResponse({"check":"Fail"}, status=500)
 
 class QuizDetails(APIView):
     def get(self, request, quiz_id):
-        quiz = Quiz.objects.all()[1]
-        questions = quiz.quizquestion_set.all()
-        fullQuiz = {}
-        value = []
-        for question in questions:
-            options = question.quizoptions_set.all()
-            answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False} for opt in options]
-            value.append({"questionText":question.question,"questionTime":question.time,"questionMarks":question.marks, "answers":answers})
-        fullQuiz["questions"] = value
-        # print (fullQuiz)
-        return JsonResponse(fullQuiz, status=200, safe=False)
+        try:
+            quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id).quiz
+            print ("made it prolly")
+            questions = quiz.quizquestion_set.all()
+            fullQuiz = {}
+            value = []
+            for question in questions:
+                options = question.quizoptions_set.all()
+                answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False} for opt in options]
+                value.append({"questionText":question.question, "question_id":question.id, "questionTime":question.time,"questionMarks":question.marks, "answers":answers})
+            fullQuiz["questions"] = value
+            # print (fullQuiz)
+            return JsonResponse(fullQuiz, status=200, safe=False)
+        except Exception as e:
+            print (e)
+            return JsonResponse(False, status=500, safe=False)
+
+class QuizComplete(APIView):
+    def post(self, request):
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            email = body['email']
+            quiz_id = body["quiz_id"]
+            marks = int(body["marks"])
+            stud = get_object_or_404(StudentProfile, user__email_address=email)
+            quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id)
+            print (stud, quiz)
+            QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks).save()
+            for question in (body['quiz_response']):
+                print (question)
+                qr = get_object_or_404(QuizResult, student=stud, conduct_quiz=quiz)
+                que = get_object_or_404(QuizQuestion, id=question[1])
+                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0]).save()
+                return JsonResponse(True, status=200, safe=False)
+        except Exception as e:
+            print (e)
+            return JsonResponse(False, status=500, safe=False)
+
+class CommentOnDoubt(APIView):
+    @method_decorator(csrf_exempt)
+    def post(self,request):
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            Comment(doubt=get_object_or_404(Doubt, id=body['doubt_id']), user=get_object_or_404(User, email=body['email']), text=body['text']).save()
+            return JsonResponse(True, status=200, safe=False)
+        except Exception as e:
+            print (e)
+            return JsonResponse(False,status=500)
+
+class Login(APIView):
+    @method_decorator(csrf_exempt)
+    def post(self, request):
+        body = json.loads(request.body.decode('utf-8'))
+        username = body['json_data']['username']
+        password = body['json_data']['password']
+        print (username, password)
+        try:
+            instance = get_object_or_404(StudentAuthProfile, email_address=username)
+            print (instance, instance.user.first_name)
+            username = instance.user.username
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                return JsonResponse({"pass":"Success", "user":username, "name":instance.user.first_name+" "+instance.user.last_name}, status=200, safe=False)
+            return JsonResponse("Invalid", status=401, safe=False)
+        except Exception as e:
+            print (e)
+            return body("Wrong Username", status=401, safe=False)
+
+class AllStudentQuiz(APIView):
+    serializer_class = QuizResultSerializer
+
+    def get(self, request, course_id, email):
+        print ("all student quizzes")
+        try:
+            results = QuizResult.objects.filter(student__user__email_address=email, conduct_quiz__quiz__course__id=course_id)
+            quiz_results = QuizResultSerializer(results, many=True).data
+            return JsonResponse(quiz_results, status=200, safe=False)
+        except Exception as e:
+            print (e)
+            return JsonResponse(False, status=500)
+
 
 class Test(View):
     @method_decorator(csrf_exempt)

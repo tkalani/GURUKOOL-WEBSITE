@@ -7,7 +7,7 @@
 
 {% block body %}
     {% include 'UserAuth/message.html' %}
-    <h1>Meeting: {{meeting.title}}</h1>
+    <!-- <h1>Meeting: {{meeting.title}}</h1>
     <br>
     <h3>Body: {{meeting.body}}</h3>
     <br>
@@ -23,14 +23,102 @@
     <form action="#" id="meeting-response"  method="PUT">
       {% csrf_token %}
       <input type="text" value="{{meeting.id}}" name="id" readonly><br>
-      <textarea name="prof_response" rows="4" cols="50" placeholder="Write your response and make PUT request to {% url 'Api:meeting-create' 'professor' %}" required></textarea>
+      <textarea name="prof_response" rows="4" cols="50" placeholder="Write your response and make PUT request {% url 'Api:meeting-create' 'professor' %}" required></textarea>
       <select name="status" required>
               <option value="APPROVED">APPROVED</option>
               <option value="REJECTED">REJECTED</option>
       </select><br>
       <input type="submit" value="SUBMIT">
     </form>
-    {% endif %}
+    {% endif %} -->
+
+    <header id="main-header" class="py-2 bg-success text-white">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-6">
+                <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Meeting Details</h1>
+            </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+            <div class="row">
+              <div class="col">
+                <div class="card">
+                  <div class="card-header">
+                      <h4>
+                          <div class="row">
+                              <div class="col-md-10">{{ meeting.title }}</div>
+                              <!-- <div class="col-md-2"><a href=""><button class="btn btn-success btn-block" style="background-color: rgb(226, 34, 28);"><i class="fa fa-stop"></i> &nbsp; &nbsp;</button></a></div>     -->
+                          </div>
+                  </h4>
+                  <table class="table table-striped">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>{{ meeting.body }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <td>Posted On: <b>{{ meeting.created_time }}</b></td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
+                </div>
+                
+                {% if not meeting.prof_response %}
+                <form action="{% url 'Meeting:meeting-detail' meeting.id %}" id="comment-submit" method="POST">
+                    {% csrf_token %}
+                {% endif %}
+                <section id="details">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col">
+                            <div class="card">
+                              <div class="card-header">
+                                <h4>
+                                  <div class="row">
+                                      <div class="col-md-10">Meeting</div>
+                                      {% if not meeting.prof_response %}
+                                        <div class="col-md-2"><button type="submit" class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Submit</button></div>
+                                      {% endif %}
+                                    </div>
+                                </h4>
+                              </div>
+                                {% if meeting.prof_response %}
+                                  <div class="row">
+                                      <div class="col-md-4"></div>
+                                      <div class="card-body col-md-8">
+                                          <div class="form-group">
+                                              <textarea readonly class="form-control" required>{{ meeting.prof_response }}</textarea>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  {% else %}
+                                  <div class="card-body">
+                                        <label for="body">Status</label>
+                                        <select class="form-control" name="status">
+                                            <option value="APPROVED">APPROVED</option>
+                                            <option value="REJECTED">REJECTED</option>
+                                        </select>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="body">Reply</label>
+                                            <textarea name="prof_response" class="form-control" rows=4 required></textarea>
+                                        </div>
+                                    </div>
+                              {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                    {% if not meeting.prof_response %}
+                        </form>
+                    {% endif %}
 
 {% endblock %}
 
