@@ -153,10 +153,10 @@
                             {% if meeting_list %}
                                 {% for meeting in meeting_list %}
                                 <tr>
-                                    <td>{{ meeting.student.user.user.username }}</td>
+                                    <td>{{ meeting.student.user.user.first_name }}</td>
                                     <td>{{ meeting.title}}</td>
+                                    <td>{{ meeting.created_time }}</td>
                                     <td>{{ meeting.status }}</td>
-                                    <td></td>
                                     <td>
                                         <a href="{% url 'Meeting:meeting-detail' meeting.id %}" class="btn btn-secondary">
                                         <i class="fas fa-angle-double-right"></i> Details
