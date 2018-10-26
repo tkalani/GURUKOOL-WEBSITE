@@ -7,9 +7,82 @@
 
 {% block body %}
     {% include 'UserAuth/message.html' %}
-        Create Poll
+    <header id="main-header" class="py-2 bg-success text-white">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-6">
+                <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Create Quiz</h1>
+            </div>
+            </div>
+        </div>
+    </header>
+
+    <form action="{% url 'Professor:create-quiz' %}" method="POST">
+        {% csrf_token %}
+        <section id="details">
+                <div class="container">
+                  <div class="row">
+                    <div class="col">
+                      <div class="card">
+                        <div class="card-header">
+                            <h4>
+                                <div class="row">
+                                    <div class="col-md-8">Create Quiz</div>
+                                    <div class="col-md-2"><button type="button" onclick="add_question()" class="btn btn-success btn-block" style="background-color: rgb(53, 180, 102);"><i class="fa fa-plus"></i> &nbsp; &nbsp;Add Question</button></a></div>
+                                    <div class="col-md-2"><button type="submit" class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Create</button></div>
+                                </div>
+                            </h4>
+                        </div>
+                        <input type="hidden" name="question-option" id="question-option" value="2">
+                        <div class="card-body">
+                            <div class="form-group">
+                              <label for="category">Course</label>
+                              <select class="form-control" name="course" required>
+                                    {% for course in course_list %}
+                                        <option value="{{ course.id }}">{{ course.course.name }} ( {{ course.course.code }} )</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Quiz Title</label>
+                                <input type="text" class="form-control" placeholder="Quiz Title" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Description</label>
+                                <input type="text" class="form-control" placeholder="Quiz Description" name="description" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Maximum Marks</label>
+                                <input type="number" class="form-control" required readonly placeholder="Maximum Marks" id="max-marks" name="max_marks" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Pass Marks</label>
+                                <input type="number" class="form-control" placeholder="Passing Marks" name="pass_marks" required>
+                            </div>
+
+                            <div id="question-list" class="row">
+                                <div id="question-1" class="col-md-6" style="border: red">
+                                    Question 1 : <input class="btn btn-success btn-sm" type="button" onclick="add_option(1)" value="+"><input class="form-control" type="text" name="question_1" required placeholder="Question">
+                                    Marks : <input class="form-control question-marks" type="number" name="marks_1" required placeholder="Marks" onkeyup="calc_max_marks(this)">
+                                    Time : <input class="form-control" type="number" name="time_1" required placeholder="Time (in seconds)">
+                                    Options :
+                                        <div id="option-list-1">
+                                            <div id="poll-option-1-1"><input class="form-control" type="text" name="poll_options_1[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-1-1" name="option_checkbox_1_1"></div>
+                                            <div id="poll-option-1-2"><input class="form-control" type="text" name="poll_options_1[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-1-2" name="option_checkbox_1_2"></div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </form>
+
+
         <br><br>
-        <form action="{% url 'Professor:create-quiz' %}" method="POST">
+        <!-- <form action="{% url 'Professor:create-quiz' %}" method="POST">
             {% csrf_token %}
             <input type="text" name="question-option" id="question-option" value="2">
             Course : 
@@ -38,7 +111,7 @@
             </div>
             <input type="button" onclick="add_question()" value="Add Question"><br>
             <input type="submit" value="SUBMIT">
-        </form>
+        </form> -->
 {% endblock %}
 
 {% block scripts %}
@@ -47,7 +120,7 @@
         var question_option_array = [2];
         function add_option(question_id)
         {
-            html = '<div id="poll-option-'+ question_id + '-' + (question_option_array[question_id-1]+1) +'"><input type="text" name="poll_options_'+question_id+'[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-'+question_id+'-'+(question_option_array[question_id-1]+1)+'" name="option_checkbox_'+question_id+'_'+(question_option_array[question_id-1]+1)+'"><span onclick="delete_option('+ question_id +', ' + (question_option_array[question_id-1]+1) + ')">&#x2715;</span><br></div>';
+            html = '<div id="poll-option-'+ question_id + '-' + (question_option_array[question_id-1]+1) +'"><input type="text" class="form-control" name="poll_options_'+question_id+'[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-'+question_id+'-'+(question_option_array[question_id-1]+1)+'" name="option_checkbox_'+question_id+'_'+(question_option_array[question_id-1]+1)+'"><span onclick="delete_option('+ question_id +', ' + (question_option_array[question_id-1]+1) + ')">&#x2715;</span><br></div>';
             $('#option-list-'+question_id).append(html);
             question_option_array[question_id-1]++;
             $('#question-option').val(question_option_array);
@@ -62,17 +135,17 @@
 
         function add_question()
         {
-            html = '<div id="question-'+(question_option_array.length+1)+'">';
-            html += 'Question '+(question_option_array.length+1)+' : <input type="text" name="question_'+(question_option_array.length+1)+'" required placeholder="Question"><span onclick="delete_question('+(question_option_array.length+1)+')">&#x2715;</span><br>';
-            html += 'Marks : <input type="text" name="marks_'+(question_option_array.length+1)+'" required placeholder="Marks" class="question-marks" onkeyup="calc_max_marks(this)"><br>'
-            html += 'Time : <input type="number" name="time_'+(question_option_array.length+1)+'" required placeholder="Time (in seconds)"><br>';
+            html = '<div id="question-'+(question_option_array.length+1)+'" class="col-md-6" style="border: red">';
+            html += 'Question '+(question_option_array.length+1)+' : <input class="btn btn-success btn-sm" type="button" onclick="add_option('+(question_option_array.length+1)+')" value="+"><input type="text" class="form-control" name="question_'+(question_option_array.length+1)+'" required placeholder="Question"><span onclick="delete_question('+(question_option_array.length+1)+')">&#x2715;</span>';
+            html += '<br>Marks : <input class="form-control question-marks" type="text" name="marks_'+(question_option_array.length+1)+'" required placeholder="Marks" onkeyup="calc_max_marks(this)">'
+            html += 'Time : <input class="form-control" type="number" name="time_'+(question_option_array.length+1)+'" required placeholder="Time (in seconds)">';
             html += 'Options :';
             html += '<div id="option-list-'+(question_option_array.length+1)+'">';
-            html += '<div id="poll-option-'+(question_option_array.length+1)+'-1"><input type="text" name="poll_options_'+(question_option_array.length+1)+'[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-'+(question_option_array.length+1)+'-1" name="option_checkbox_'+(question_option_array.length+1)+'_1"><br></div>';
-            html += '<div id="poll-option-'+(question_option_array.length+1)+'-2"><input type="text" name="poll_options_'+(question_option_array.length+1)+'[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-'+(question_option_array.length+1)+'-2" name="option_checkbox_'+(question_option_array.length+1)+'_2"><br></div>';
+            html += '<div id="poll-option-'+(question_option_array.length+1)+'-1"><input class="form-control" type="text" name="poll_options_'+(question_option_array.length+1)+'[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-'+(question_option_array.length+1)+'-1" name="option_checkbox_'+(question_option_array.length+1)+'_1"><br></div>';
+            html += '<div id="poll-option-'+(question_option_array.length+1)+'-2"><input class="form-control" type="text" name="poll_options_'+(question_option_array.length+1)+'[]" required><input type="checkbox" onclick="checkbox_change(this)" id="option-checkbox-'+(question_option_array.length+1)+'-2" name="option_checkbox_'+(question_option_array.length+1)+'_2"><br></div>';
             html == '</div>';
             html += '</div>';
-            html += '<input type="button" onclick="add_option('+(question_option_array.length+1)+')" value="Add Option"><br>';
+            // html += '<br>';
             $('#question-list').append(html);
             question_option_array.push(2);
             $('#question-option').val(question_option_array);
@@ -110,9 +183,11 @@
             // console.log(document.getElementsByClassName('question-marks'));
             Array.from(document.getElementsByClassName("question-marks")).forEach(
                 function(element, index, array) {
+                    // console.log(element.value);
                     max_marks += parseInt(element.value);
                 }
             );
+            // console.log(max_marks);
             $('#max-marks').attr("value", max_marks);
         }
 

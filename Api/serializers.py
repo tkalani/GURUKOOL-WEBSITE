@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
 
-from Student.models import CourseStudent, StudentProfile
-from Professor.models import Course, ProfessorProfile, Quiz, QuizOptions, QuizQuestion
+from Student.models import CourseStudent, StudentProfile, QuizResult
+from Professor.models import Course, ProfessorProfile, Quiz, QuizOptions, QuizQuestion, ConductQuiz
 from Doubt.models import Doubt, Comment
 from Meeting.models import Meeting
 
@@ -94,14 +94,26 @@ class QuizSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuizQuestionSerializer(serializers.ModelSerializer):
-    quiz = QuizSerializer(many=False)
+    # quiz = QuizSerializer(many=False)
     class Meta:
         model = QuizQuestion
         fields = '__all__'
 
 class QuizOptionsSerializer(serializers.ModelSerializer):
-    quiz = QuizSerializer(many=False)
-    question = QuizQuestionSerializer(many=False)
+    # quiz = QuizSerializer(many=False)
+    # question = QuizQuestionSerializer(many=False)
     class Meta:
         model = QuizOptions
         fields = '__all__'
+
+class ConductQuizSerializer(serializers.ModelSerializer):
+    quiz = QuizSerializer(many=False)
+    class Meta:
+        model = ConductQuiz
+        fields = ('quiz', 'unique_quiz_id', 'active', 'conduction_date')
+
+class QuizResultSerializer(serializers.ModelSerializer):
+    conduct_quiz = ConductQuizSerializer(many=False)
+    class Meta:
+        model = QuizResult
+        fields = ("student", "conduct_quiz", "marks_obtained")

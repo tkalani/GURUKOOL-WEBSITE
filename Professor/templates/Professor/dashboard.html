@@ -8,87 +8,256 @@
 
 {% block body %}
 
-    <a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
-    Polls:
-    {% if poll_list %}
-        {% for poll in poll_list %}
-            <ul>
-                <li><a href="{% url 'Professor:poll' poll.id %}"> {{ poll.title }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No Poll Created Yet.
-    {% endif %}
-    <br>
-    <br><br>
-
-    Active Quizzes<br>
-    {% if active_quiz_list %}
-        {% for quiz in active_quiz_list %}
-            <ul>
-                <li><a href="{% url 'Professor:quiz' quiz.quiz.id %}"> {{ quiz.quiz.title }} - {{ quiz.unique_quiz_id }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No Active Quizzes.
-    {% endif %}
-    <br>
-    <br><br>
-
-<a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
-Quizzes:
-{% if quiz_list %}
-    {% for quiz in quiz_list %}
-        <ul>
-            <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
-        </ul>
-    {% endfor %}
-{% else %}
-    No Quiz Created Yet.
-{% endif %}
+<section id="posts">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                
+                <table class="table table-striped">
+                  <thead class="bg-warning">
+                    <tr>
+                      <th><a href="{% url 'Professor:all-poll' %}" style="text-decoration: none; color: black">Polls</a></th>
+                      <th></th>
+                        <th></th>
+                        <th></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-poll' %}"><i class="fa fa-plus" aria-hidden="true" style="color: black;"></i></a></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        {% if active_poll_list %}
+                            {% for poll in active_poll_list %}
+                                <tr>
+                                <td>{{ poll.unique_poll_id }}</td>
+                                <td>{{ poll.poll.course.code }}</td>
+                                <td>{{ poll.poll.title }}</td>
+                                <td>{{ poll.conduction_date }}</td>
+                                <td>
+                                    <a href="{% url 'Professor:poll' poll.poll.id %}" class="btn btn-secondary">
+                                        <i class="fas fa-angle-double-right"></i> Details
+                                    </a>
+                                </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>No Active Polls</td>
+                            </tr>
+                        {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+  
+            <div class="col-md-6">
+              <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                
+                <table class="table table-striped">
+                  <thead class="table-danger">
+                    <tr>
+                      <th><a style="text-decoration: none; color: black" href="{% url 'Professor:all-quiz' %}">Quiz</th>
+                      <th></th>
+                        <th></th>
+                        <th></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: black;"></i></a></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        {% if active_quiz_list %}
+                            {% for quiz in active_quiz_list %}
+                            <tr>
+                                <td>{{ quiz.unique_quiz_id }}</td>
+                                <td>{{ quiz.quiz.course.code }}</td>
+                                <td>{{ quiz.quiz.title }}</td>
+                                <td>{{ quiz.quiz.description }}</td>
+                                <td>
+                                    <a href="{% url 'Professor:quiz' quiz.quiz.id %}" class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i> Details
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>No Active Quizzes</td>
+                              </tr>
+                        {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 <br>
-<br><br>
-Doubts:
-{% if course_list %}
-    {% for course in course_list %}
-        <ul>
-          <li><a href="{% url 'Doubt:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
-        </ul>
-    {% endfor %}
-{% else %}
-    No courses to select for Doubts
-{% endif %}
+      <section id="posts">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                    
+                    <table class="table table-striped">
+                      <thead class="bg-success">
+                        <tr>
+                          <th>Doubts</th>
+                          <th></th>
+                            <th></th>
+                            <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% if all_doubt_list %}
+                            {% for doubt in all_doubt_list %}
+                            <tr>
+                                <td>{{ doubt.course.code }}</td>
+                                <td>{{ doubt.student.user.user.first_name }}</td>
+                                <td>{{ doubt.last_updated }}</td>
+                                <td>{{ doubt.title }}</td>
+                                <td>
+                                    <a href="{% url 'Doubt:doubt' doubt.id %}" class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i> Details
+                                    </a>
+                                </td>
+                                <!-- <td>
+                                    <a href="{% url 'Doubt:doubt-list' doubt.course.id %}" class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i> Details
+                                    </a>
+                                </td> -->
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>No Courses Assigned</td>
+                            </tr>
+                        {% endif %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+      
+                <div class="col-md-6">
+                  <div class="card" style="height: 25rem; overflow-y: scroll;" >
+                    
+                    <table class="table table-striped">
+                      <thead class="bg-primary">
+                        <tr>
+                          <th>Meetings</th>
+                          <th></th>
+                            <th></th>
+                            <th></th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                            {% if meeting_list %}
+                                {% for meeting in meeting_list %}
+                                <tr>
+                                    <td>{{ meeting.student.user.user.first_name }}</td>
+                                    <td>{{ meeting.title}}</td>
+                                    <td>{{ meeting.created_time }}</td>
+                                    <td>{{ meeting.status }}</td>
+                                    <td>
+                                        <a href="{% url 'Meeting:meeting-detail' meeting.id %}" class="btn btn-secondary">
+                                        <i class="fas fa-angle-double-right"></i> Details
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td>No Meeting Today</td>
+                                  </tr>
+                            {% endif %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
-<br>
-<br><br>
+      <!-- <a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
+      Polls:
+      {% if poll_list %}
+          {% for poll in poll_list %}
+              <ul>
+                  <li><a href="{% url 'Professor:poll' poll.id %}"> {{ poll.title }} </a></li>
+              </ul>
+          {% endfor %}
+      {% else %}
+          No Poll Created Yet.
+      {% endif %}
+      <br>
+      <br><br>
 
-    <a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
-    Quizzes:
-    {% if quiz_list %}
-        {% for quiz in quiz_list %}
-            <ul>
-                <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No Quiz Created Yet.
-    {% endif %}
-    <br>
-    <br><br>
-    Doubts:
-    {% if course_list %}
-        {% for course in course_list %}
-            <ul>
+      Active Quizzes<br>
+      {% if active_quiz_list %}
+          {% for quiz in active_quiz_list %}
+              <ul>
+                  <li><a href="{% url 'Professor:quiz' quiz.quiz.id %}"> {{ quiz.quiz.title }} - {{ quiz.unique_quiz_id }} </a></li>
+              </ul>
+          {% endfor %}
+      {% else %}
+          No Active Quizzes.
+      {% endif %}
+      <br>
+      <br><br>
+
+  <a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
+  Quizzes:
+  {% if quiz_list %}
+      {% for quiz in quiz_list %}
+          <ul>
+              <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
+          </ul>
+      {% endfor %}
+  {% else %}
+      No Quiz Created Yet.
+  {% endif %}
+  <br>
+  <br><br>
+  Doubts:
+  {% if course_list %}
+      {% for course in course_list %}
+          <ul>
             <li><a href="{% url 'Doubt:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No courses to select for Doubts
-    {% endif %}
+          </ul>
+      {% endfor %}
+  {% else %}
+      No courses to select for Doubts
+  {% endif %}
 
-    <br>
-    <br><br>
-    Meetings:
+  <br>
+  <br><br>
+
+      <a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
+      Quizzes:
+      {% if quiz_list %}
+          {% for quiz in quiz_list %}
+              <ul>
+                  <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
+              </ul>
+          {% endfor %}
+      {% else %}
+          No Quiz Created Yet.
+      {% endif %}
+      <br>
+      <br><br>
+      Doubts:
+      {% if course_list %}
+          {% for course in course_list %}
+              <ul>
+              <li><a href="{% url 'Doubt:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
+              </ul>
+          {% endfor %}
+      {% else %}
+          No courses to select for Doubts
+      {% endif %}
+
+      <br>
+      <br><br>
+      Meetings: -->
 
 {% endblock %}
 
