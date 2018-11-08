@@ -15,8 +15,8 @@ urlpatterns = [
 
 		url(r'^show-message/$', utils.show_message, name='show-message'),
 
-		url(r'^logout/$', logout, {'next_page': '/'}, name='logout'), 
-		url(r'^auth/callback/(?P<user_token>[\w\-]+)/$', views.redirectPage, name='redirection'),
+		url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+		url(r'^auth/callback/(?P<user_token>.+)$', views.redirectPage, name='redirection'),
 	]
 
 # Our Client Id and Client Key
