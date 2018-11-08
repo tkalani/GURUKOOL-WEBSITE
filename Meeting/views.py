@@ -2,7 +2,7 @@ from django.shortcuts import render
 from Meeting.models import Meeting
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from Meeting.models import Meeting
+from Meeting.models import *
 from django.contrib import messages
 # Create your views here.
 
@@ -14,9 +14,8 @@ def meeting_detail(request, meeting_id):
     '''
     if request.method == 'GET':
         meeting_data = Meeting.objects.get(id=meeting_id)
-        if meeting_data.professor.user.user.id == request.user.id:
-            return render(request, 'Meeting/meeting-detail.html', {"meeting": meeting_data})
-        return HttpResponseNotFound('<h1>Page not found</h1>')
+        meeting_place = MeetingPlace.objects.filter(meeting__id=meeting_id)
+        return render(request, 'Meeting/meeting-detail.html', {"meeting": meeting_data, "meeting_detail": meeting_place})
     
     if request.method == 'POST':
         try:
@@ -27,6 +26,13 @@ def meeting_detail(request, meeting_id):
             meeting_inst.status = status
             meeting_inst.prof_response = resp
             meeting_inst.save()
+
+            inst = MeetingPlace()
+            inst.meeting = meeting_inst
+            inst.meeting_date = request.POST.get('meeting_date')
+            inst.meeting_time = request.POST.get('meeting_time')
+            inst.meeting_place = request.POST.get('meeting_place')
+            inst.save()
 
             messages.success(request, status+" Sccuessfully.")
             return HttpResponseRedirect(reverse('Meeting:meeting-detail', kwargs={'meeting_id': meeting_id}))

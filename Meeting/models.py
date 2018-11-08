@@ -19,3 +19,13 @@ class Meeting(models.Model):
 
     def __str__(self):
         return self.title + ": " + self.status + " - " + self.student.user.user.username
+
+class MeetingPlace(models.Model):
+    meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, null=True, blank=True)
+    meeting_date = models.DateField(null=True, blank=True)
+    meeting_time = models.TimeField(null=True, blank=True)
+    meeting_place = models.CharField(blank=True, null=True, max_length=1000)
+    discussed = models.CharField(null=True, blank=True, max_length=1000)
+
+    def __str__(self):
+        return self.meeting.title + ": " + self.meeting.status + " - " + self.meeting.student.user.user.username
