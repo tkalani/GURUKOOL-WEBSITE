@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from .models import *
 from Doubt.models import *
 from Student.models import *
-from Meeting.models import Meeting
+from Meeting.models import *
 import hashlib
 import time
 
@@ -41,7 +41,7 @@ def dashboard(request):
         poll_list = Poll.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
         quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
         course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id).order_by('-id')
-        meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id).order_by('-id')
+        meeting_list = (MeetingPlace.objects.filter(meeting__professor__user__user__id=request.user.id, meeting_date=time.strftime('%Y-%m-%d'), meeting__status='APPROVED').order_by('-id'))[:1]
         active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True).order_by('-id')
         active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
         all_doubt_list = []

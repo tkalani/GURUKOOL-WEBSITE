@@ -1,17 +1,193 @@
 {% extends 'Professor/main.html' %}
 {% include 'UserAuth/message.html' %}
+{% load staticfiles %}
 
 {% block title %}
-    Dashboard
+Dashboard
 {% endblock %}
 <br><br>
 
 {% block body %}
 
+<section class="body-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-xs-12">
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        {% if meeting_list %}
+                        {% for meeting in meeting_list %}
+                        <div class="card meeting-card border-primary">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-md-9 col-xs-12">Todays' Meetings</div>
+                                    <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
+                                                All</button></a></div>
+                                </div>
+                            </div>
+                            <div class="card-image">
+                                <img src="{% static 'images/avatar/student.png' %}" class="student-avatar">
+                            </div>
+                            <div class="card-body" style="overflow-y: scroll">
+                                <h5 class="card-title">{{ meeting.meeting.student.user.user.first_name }} {{ meeting.meeting.student.user.user.last_name }}</h5>
+                                <p class="card-text meeting-title">{{ meeting.meeting.title }}</p>
+                                <p class="card-text meeting-body">{{ meeting.meeting.body }}</p>
+                                <form action="" method="POST">
+                                    {% csrf_token %}
+                                    <textarea class="form-control meeting-body" class="2" placeholder="What was discussed"
+                                        max="50"></textarea>
+                                </form>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-md-9 col-xs-12"><small class="text-muted">{{ meeting.meeting_place }} : {{ meeting.meeting_date }} {{ meeting.meeting_time }}</small></div>
+                                    <div class="col-md-3 col-xs-12"><i class="fa fa-check" style="color:green"></i>
+                                        &nbsp; &nbsp;<i class="fa fa-times" style="color: red;"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="card meeting-card border-primary">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-md-9 col-xs-12">Todays' Meetings</div>
+                                    <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
+                                                All</button></a></div>
+                                </div>
+                            </div>
+                            <div class="card-image">
+                                <img src="{% static 'images/avatar/student.png' %}" class="student-avatar">
+                            </div>
+                            <div class="card-body no-meeting">
+                                No Meetings Today
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8 col-xs-12">
+                <div class="row">
+                    <div class="card col-md-12 col-xs-12 border-warning list-card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12">Active Quizzes</div>
+                                <div class="col-md-2 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
+                                            All</button></a></div>
+                            </div>
+                        </div>
+                        <div class="card-body" style="overflow-y: scroll;">
+                            <table class="table table-striped">
+                                <tbody>
+                                    {% if active_quiz_list %}
+                                    {% for quiz in active_quiz_list %}
+                                    <tr>
+                                        <td>{{ quiz.unique_quiz_id }}</td>
+                                        <td>{{ quiz.quiz.course.code }}</td>
+                                        <td>{{ quiz.quiz.title }}</td>
+                                        <td>{{ quiz.quiz.description }}</td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a href="{% url 'Professor:quiz' quiz.quiz.id %}" class="btn btn-secondary btn-sm">
+                                                        <i class="fas fa-info"></i>&nbsp; Details
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="{% url 'Professor:quiz' quiz.quiz.id %}" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-stop"></i>&nbsp; End
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td>No Active Quizzes</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card col-md-12 col-xs-12 border-secondary poll-card  list-card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-10 col-xs-12">Active Polls</div>
+                                <div class="col-md-2 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
+                                            All</button></a></div>
+                            </div>
+                        </div>
+                        <div class="card-body" style="overflow-y: scroll">
+                            <!-- <tbody>
+                                {% if active_poll_list %}
+                                    {% for poll in active_poll_list %}
+                                        <tr>
+                                        <td>{{ poll.unique_poll_id }}</td>
+                                        <td>{{ poll.poll.course.code }}</td>
+                                        <td>{{ poll.poll.title }}</td>
+                                        <td>{{ poll.conduction_date }}</td>
+                                        <td>
+                                            <a href="{% url 'Professor:poll' poll.poll.id %}" class="btn btn-secondary">
+                                                <i class="fas fa-angle-double-right"></i> Details
+                                            </a>
+                                        </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td>No Active Polls</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody> -->
+                            <table class="table table-striped">
+                                <tbody>
+                                    {% if active_poll_list %}
+                                    {% for poll in active_poll_list %}
+                                    <tr>
+                                        <td>{{ poll.unique_poll_id }}</td>
+                                        <td>{{ poll.poll.course.code }}</td>
+                                        <td>{{ poll.poll.title }}</td>
+                                        <td>{{ poll.conduction_date }}</td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <a href="{% url 'Professor:poll' poll.poll.id %}" class="btn btn-secondary btn-sm">
+                                                        <i class="fas fa-info"></i>&nbsp; Details
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="{% url 'Professor:poll' poll.poll.id %}" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-stop"></i>&nbsp; End
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td>No Active Polls</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="posts">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="col-md-6">
               <div class="card" style="height: 25rem; overflow-y: scroll;" >
                 
                 <table class="table table-striped">
@@ -85,15 +261,15 @@
                   </tbody>
                 </table>
               </div>
-            </div>
-          </div>
+            </div> -->
         </div>
-      </section>
+    </div>
+</section>
 <br>
-      <section id="posts">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-6">
+<section id="posts">
+    <div class="container">
+        <div class="row">
+            <!-- <div class="col-md-6">
                   <div class="card" style="height: 25rem; overflow-y: scroll;" >
                     
                     <table class="table table-striped">
@@ -119,11 +295,6 @@
                                     <i class="fas fa-angle-double-right"></i> Details
                                     </a>
                                 </td>
-                                <!-- <td>
-                                    <a href="{% url 'Doubt:doubt-list' doubt.course.id %}" class="btn btn-secondary">
-                                    <i class="fas fa-angle-double-right"></i> Details
-                                    </a>
-                                </td> -->
                             </tr>
                             {% endfor %}
                         {% else %}
@@ -135,8 +306,8 @@
                     </table>
                   </div>
                 </div>
-      
-                <div class="col-md-6">
+       -->
+            <!-- <div class="col-md-6">
                   <div class="card" style="height: 25rem; overflow-y: scroll;" >
                     
                     <table class="table table-striped">
@@ -172,12 +343,12 @@
                       </tbody>
                     </table>
                   </div>
-                </div>
-              </div>
-            </div>
-          </section>
+                </div> -->
+        </div>
+    </div>
+</section>
 
-      <!-- <a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
+<!-- <a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
       Polls:
       {% if poll_list %}
           {% for poll in poll_list %}

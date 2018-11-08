@@ -11,7 +11,7 @@
       crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'main.css' %}">
       <style>
     .quiz {
     padding: 0 0 20px 30px;
@@ -109,7 +109,7 @@
           <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown mr-3">
               <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-                <i class="fas fa-user"></i> Welcome {{ request.user.username }}
+                <i class="fas fa-user"></i> Welcome {{ request.user.first_name }}
               </a>
               <div class="dropdown-menu">
                 <a href="profile.html" class="dropdown-item">
@@ -122,7 +122,7 @@
             </li>
             <li class="nav-item">
               <a href="{% url 'UserAuth:logout' %}" class="nav-link active">
-                <i class="fas fa-user-times"></i> Logout
+                <i class="fa fa-sign-out"></i> Logout
               </a>
             </li>
           </ul>

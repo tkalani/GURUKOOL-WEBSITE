@@ -1,0 +1,65 @@
+.body-section{
+    margin-top: 3%;
+}
+
+.meeting-card{
+    max-height: 450px;
+}
+
+.list-card{
+    max-height: 350px;
+}
+
+.card-image{
+    align-items: center;
+    align-content: center;
+    text-align: center;
+}
+
+.student-avatar{
+    height: 15vh;
+    width: 15vh;
+}
+
+.card-data {
+    background-color: rgb(107, 104, 102);
+}
+
+.header-text{
+    float: left;
+}
+
+.header-button{
+    float: right;
+}
+
+.meeting-title{
+    font-weight: bold;
+}
+
+.meeting-body{
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.no-meeting{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.poll-card{
+    margin-top: 2%;
+}
+
+.doubt-card{
+    margin-top: 2%;
+}
+
+.broad-card{
+    padding-top: 2%;
+}
+
+.list{
+    overflow-y: scroll;
+    height: 300px;
+}
