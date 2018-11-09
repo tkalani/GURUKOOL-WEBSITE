@@ -20,17 +20,15 @@ Dashboard
                         <div class="card meeting-card border-primary">
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col-md-9 col-xs-12">Todays' Meetings - {{ meeting_list.length }}</div>
-                                    <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
-                                                All</button></a></div>
+                                    <div class="col-md-9 col-xs-12">Todays' Meetings</div>
+                                    <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
                                 </div>
                             </div>
-                            <br>
-                            <div class="card-image">
-                                <img src="{% static 'images/avatar/student.png' %}" class="student-avatar">
-                            </div>
-                            <div class="card-body" style="overflow-y: scroll">
-                                <h5 class="card-title">{{ meeting.meeting.student.user.user.first_name }} {{ meeting.meeting.student.user.user.last_name }}</h5>
+                            <div class="card-body meeting-card-body" style="overflow-y: scroll">
+                                <div class="row">
+                                    <div class="col-md-4 col-xs-12"><img src="{% static 'images/avatar/student.png' %}" class="student-avatar"></div>
+                                    <div class="col-md-8 col-xs-12">{{ meeting.meeting.student.user.user.first_name }} {{ meeting.meeting.student.user.user.last_name }}</div>
+                                </div>
                                 <p class="card-text meeting-title">{{ meeting.meeting.title }}</p>
                                 <p class="card-text meeting-body">{{ meeting.meeting.body }}</p>
                                 <form action="" method="POST">
@@ -41,9 +39,9 @@ Dashboard
                             </div>
                             <div class="card-footer">
                                 <div class="row">
-                                    <div class="col-md-9 col-xs-12"><small class="text-muted">{{ meeting.meeting_place }} : {{ meeting.meeting_date }} {{ meeting.meeting_time }}</small></div>
-                                    <div class="col-md-3 col-xs-12"><i class="fa fa-check" style="color:green"></i>
-                                        &nbsp; &nbsp;<i class="fa fa-times" style="color: red;"></i></div>
+                                    <div class="col-md-8 col-xs-12"><small class="text-muted">{{ meeting.meeting_place }} : {{ meeting.meeting_date }} {{ meeting.meeting_time }}</small></div>
+                                    <div class="col-md-2 col-xs-12"><i class="fa fa-check" style="color:green"></i></div>
+                                    <div class="col-md-2 col-xs-12"><i class="fa fa-times" style="color: red;"></i></div>
                                 </div>
                             </div>
                         </div>
@@ -66,6 +64,55 @@ Dashboard
                         </div>
                         {% endif %}
                     </div>
+
+                    <div class="col-md-12 col-xs-12">
+                            {% if all_doubt_list %}
+                            {% for doubt in all_doubt_list %}
+                            <div class="card meeting-card border-primary doubt-card">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-9 col-xs-12">Doubts</div>
+                                        <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
+                                    </div>
+                                </div>
+                                <div class="card-body meeting-card-body" style="overflow-y: scroll">
+                                    <div class="row">
+                                        <div class="col-md-4 col-xs-12"><img src="{% static 'images/avatar/student.png' %}" class="student-avatar"></div>
+                                        <div class="col-md-8 col-xs-12">{{ doubt.student.user.user.first_name }} {{ doubt.student.user.user.last_name }}</div>
+                                    </div>
+                                    <p class="card-text meeting-title">{{ doubt.title }}</p>
+                                    <p class="card-text">{{ doubt.description }}</p>
+                                    <form action="{% url 'Doubt:post-comment' doubt.id %}" method="POST" name="doubt_comment_form">
+                                        {% csrf_token %}
+                                        <textarea class="form-control meeting-body" name="comment" id="doubt-comment" class="2" placeholder="What was discussed" max="50"></textarea>
+                                    </form>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-md-8 col-xs-12"><small class="text-muted">{{ doubt.last_updated }}</small></div>
+                                        <div class="col-md-2 col-xs-12"><i class="fa fa-check" style="color: green;" onclick="post_comment()"></i></div>
+                                        <div class="col-md-2 col-xs-12"><a href="{% url 'Doubt:doubt' doubt.id %}" style="color: blue; text-decoration: underline;"><i class="fa fa-eye"></i></a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div class="card meeting-card border-primary">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-9 col-xs-12">Doubts</div>
+                                        <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
+                                    </div>
+                                </div>
+                                <div class="card-image">
+                                    <img src="{% static 'images/avatar/student.png' %}" class="student-avatar">
+                                </div>
+                                <div class="card-body no-meeting">
+                                    No Doubts
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
                 </div>
             </div>
 
@@ -74,9 +121,9 @@ Dashboard
                     <div class="card col-md-12 col-xs-12 border-warning list-card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-md-10 col-xs-12">Active Quizzes - {{ active_quiz_list.count }}</div>
-                                <div class="col-md-2 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
-                                            All</button></a></div>
+                                <div class="col-md-8 col-xs-12">Active Quizzes - {{ active_quiz_list.count }}</div>
+                                <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-quiz' %}"><button type="button" class="btn btn-info btn-sm">Add Quiz</button></a></div>
+                                <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:all-quiz' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
                             </div>
                         </div>
                         <div class="card-body" style="overflow-y: scroll;">
@@ -103,8 +150,8 @@ Dashboard
                                         </div>
                                         <div class="card-footer quiz-card-footer">
                                             <div class="row">
-                                            <div class="col-md-6 col-xs-12">{{ forloop.counter }} / 10</div>
-                                            <div class="col-md-6 col-xs-12"><a href="{% url 'Professor:stop-quiz' quiz.id %}" style="color: red">End Quiz</a></div>
+                                            <div class="col-md-6 col-xs-12">{{ quiz.submissions }} / {{ quiz.total }}</div>
+                                            <div class="col-md-6 col-xs-12"><a href="{% url 'Professor:stop-quiz' quiz.id %}" style="color: red; text-decoration: underline;">End Quiz</a></div>
                                             </div>
                                         </div>
                                     </div>
@@ -126,9 +173,9 @@ Dashboard
                     <div class="card col-md-12 col-xs-12 border-secondary poll-card  list-card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-md-10 col-xs-12">Active Polls - {{ active_poll_list.count }}</div>
-                                <div class="col-md-2 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
-                                            All</button></a></div>
+                                <div class="col-md-8 col-xs-12">Active Polls - {{ active_poll_list.count }}</div>
+                                <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-poll' %}"><button type="button" class="btn btn-info btn-sm">Add Poll</button></a></div>
+                                <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:all-poll' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
                             </div>
                         </div>
                         <div class="card-body" style="overflow-y: scroll">
@@ -156,7 +203,7 @@ Dashboard
                                             <div class="card-footer quiz-card-footer">
                                                 <div class="row">
                                                 <div class="col-md-6 col-xs-12">{{ forloop.counter }} / 10</div>
-                                                <div class="col-md-6 col-xs-12"><a href="{% url 'Professor:stop-poll' poll.id %}" style="color: red">End Poll</a></div>
+                                                <div class="col-md-6 col-xs-12"><a href="{% url 'Professor:stop-poll' poll.id %}" style="color: red; text-decoration: underline;">End Poll</a></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -187,6 +234,21 @@ Dashboard
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script>
+        function post_comment()
+        {
+            console.log($('#doubt-comment').val());
+            if($('#doubt-comment').val() == '')
+            {
+                alert('Enter Comment. Cannot be empty');
+                return false;
+            }
+            else
+            {
+                document.doubt_comment_form.submit();
+            }
+        }
+    </script>
+    <script>
             
         {% if active_quiz_list %}
         {% for quiz in active_quiz_list %}
@@ -200,7 +262,7 @@ Dashboard
                 labels: ['Submitted', 'Not-Submitted'],
                 datasets: [{
                     label: 'akncakjnck',
-                    data: [{{forloop.counter}}, {{ forloop.counter}}+1],
+                    data: [{{ quiz.submissions }}, {{ quiz.total }}-{{ quiz.submissions }}],
                     fill: true,
                     lineTension: 0.1,
                     backgroundColor: ['#04A1B7', '#144F1E'],

@@ -51,6 +51,11 @@ def dashboard(request):
                 all_doubt_list.append(y)
         all_doubt_list = sorted(all_doubt_list, key=lambda k: k.last_updated)
         all_doubt_list = all_doubt_list[::-1]
+        all_doubt_list = all_doubt_list[:1]
+
+        for quiz in active_quiz_list:
+            quiz.submissions = QuizResult.objects.filter(conduct_quiz=quiz).count()
+            quiz.total = CourseStudent.objects.filter(course=quiz.quiz.course).count()
 
         return render(request, 'Professor/dashboard.html', {"all_doubt_list": all_doubt_list, "poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
 
@@ -135,8 +140,10 @@ def create_quiz(request):
             quiz.pass_marks = request.POST['pass_marks']
             quiz.save()
 
+            question_count = 0
             for i in range(len(question_option_array)):
                 if question_option_array[i] != 0:
+                    question_count += 1
                     ques_inst = QuizQuestion()
                     ques_inst.quiz = quiz
                     ques_inst.question = request.POST['question_'+str(i+1)]
@@ -154,6 +161,8 @@ def create_quiz(request):
                         else:
                             opt_inst.is_correct = False
                         opt_inst.save()
+            quiz.no_of_questions = question_count
+            quiz.save()
             messages.success(request, "Successfully Created Quiz")
             return HttpResponseRedirect(reverse('Professor:all-quiz'))
         except Exception as e:
@@ -309,6 +318,15 @@ def show_all_quiz(request):
             all_quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
             finished_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=False).order_by('-id')
             active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
+            
+            for quiz in active_quiz_list:
+                quiz.submissions = QuizResult.objects.filter(conduct_quiz=quiz).count()
+                quiz.total = CourseStudent.objects.filter(course=quiz.quiz.course).count()
+
+            for quiz in finished_quiz_list:
+                quiz.submissions = QuizResult.objects.filter(conduct_quiz=quiz).count()
+                quiz.total = CourseStudent.objects.filter(course=quiz.quiz.course).count()
+            
             return render(request, 'Professor/quiz.html', {"all_quiz_list": all_quiz_list, "finished_quiz_list": finished_quiz_list, "active_quiz_list": active_quiz_list})
         except Exception as e:
             print('error is', e)

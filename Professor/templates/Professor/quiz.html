@@ -1,14 +1,186 @@
 {% extends 'Professor/main.html' %}
 {% include 'UserAuth/message.html' %}
-
+{% load staticfiles %}
 {% block title %}
     Quiz
 {% endblock %}
-<br><br>
 
 {% block body %}
 
-<section id="posts">
+<section class="body-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12">
+                            {% if active_quiz_list %}
+                            <div class="card active-quiz-card border-primary">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-9 col-xs-12">Active Quizzes - {{ active_quiz_list.count }}</div>
+                                        <!-- <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View All</button></a></div> -->
+                                    </div>
+                                </div>
+                                <div class="card-body" style="overflow-y: scroll">
+                                    <div class="row">
+                                            {% for quiz in active_quiz_list %}
+                                            <div class="col-md-12 col-xs-12">
+                                                <div class="card quiz-card">
+                                                    <div class="card-header">
+                                                        <div class="row">
+                                                            <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:quiz' quiz.quiz.id %}" style="color: black; text-decoration: underline;">{{ quiz.unique_quiz_id }}</a></div>
+                                                            <div class="col-md-4 col-xs-12">{{ quiz.quiz.course.code }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <center>
+                                                        <div class="div-canvas" id="active-quiz-pie-chart-{{forloop.counter}}-div" style="height: 80px; width: 80px;">
+                                                            <canvas id="active-quiz-pie-chart-{{forloop.counter}}"></canvas>
+                                                        </div>
+                                                    </center>
+                                                    <div class="card-body quiz-card-body" style="overflow-y: scroll;">
+                                                        <h5 class="card-title">{{ quiz.quiz.title }}</h5>
+                                                        <p class="card-text">{{ quiz.quiz.description }}</p>
+                                                    </div>
+                                                    <div class="card-footer quiz-card-footer">
+                                                        <div class="row">
+                                                        <div class="col-md-6 col-xs-12">{{ quiz.submissions }} / {{ quiz.total }}</div>
+                                                        <div class="col-md-6 col-xs-12"><a href="{% url 'Professor:stop-quiz' quiz.id %}" style="color: red; text-decoration: underline;">End Quiz</a></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="card meeting-card border-primary">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-9 col-xs-12">Active Quizzes</div>
+                                    </div>
+                                </div>
+                                <div class="card-image">
+                                    <img src="{% static 'images/avatar/student.png' %}" class="student-avatar">
+                                </div>
+                                <div class="card-body no-meeting">
+                                    No Active Quizzes
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-xs-12">
+                        <div class="row">
+                            <div class="card col-md-12 col-xs-12 border-warning list-card">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-md-10 col-xs-12">Finished Quizzes - {{ finished_quiz_list.count }}</div>
+                                    </div>
+                                </div>
+                                <div class="card-body" style="overflow-y: scroll;">
+                                    <div class="row">
+                                        {% if finished_quiz_list %}
+                                        {% for quiz in finished_quiz_list %}
+                                        <div class="col-md-4 col-xs-12">
+                                            <div class="card quiz-card">
+                                                <div class="card-header">
+                                                    <div class="row">
+                                                        <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:conducted-quiz' quiz.id %}" style="color: black; text-decoration: underline;">{{ quiz.unique_quiz_id }}</a></div>
+                                                        <div class="col-md-4 col-xs-12">{{ quiz.quiz.course.code }}</div>
+                                                    </div>
+                                                </div>
+                                                <br>
+                                                <center>
+                                                    <div class="div-canvas" id="finished-quiz-pie-chart-{{forloop.counter}}-div" style="height: 80px; width: 80px;">
+                                                        <canvas id="finished-quiz-pie-chart-{{forloop.counter}}"></canvas>
+                                                    </div>
+                                                </center>
+                                                <div class="card-body quiz-card-body" style="overflow-y: scroll;">
+                                                    <h5 class="card-title">{{ quiz.quiz.title }}</h5>
+                                                    <p class="card-text">{{ quiz.quiz.description }}</p>
+                                                </div>
+                                                <div class="card-footer quiz-card-footer">
+                                                    <div class="row">
+                                                    <div class="col-md-4 col-xs-12">{{ quiz.submissions }} / {{ quiz.total }}</div>
+                                                    <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:quiz-result' quiz.id %}" style="color: red; text-decoration: underline;">View Results</a></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        {% else %}
+                                        <div class="col-md-12 col-xs-12">
+                                                <div class="card quiz-card">
+                                                    <div class="card-body quiz-card-body" style="overflow-y: scroll;">
+                                                        No Quizzes Conducted
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="card col-md-12 col-xs-12 border-danger list-card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-10 col-xs-12">Quiz Drafts - {{ all_quiz_list.count }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" style="overflow-y: scroll;">
+                                        <div class="row">
+                                            {% if all_quiz_list %}
+                                            {% for quiz in all_quiz_list %}
+                                            <div class="col-md-4 col-xs-12">
+                                                <div class="card quiz-card">
+                                                    <div class="card-header">
+                                                        <div class="row">
+                                                            <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:quiz' quiz.id %}" style="color: black; text-decoration: underline;">{{ quiz.title }}</a></div>
+                                                            <div class="col-md-4 col-xs-12">{{ quiz.course.code }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                    <!-- <center>
+                                                        <div class="div-canvas" id="finished-quiz-pie-chart-{{forloop.counter}}-div" style="height: 80px; width: 80px;">
+                                                            <canvas id="finished-quiz-pie-chart-{{forloop.counter}}"></canvas>
+                                                        </div>
+                                                    </center> -->
+                                                    <div class="card-body quiz-draft-card-body" style="overflow-y: scroll;">
+                                                        <h5 class="card-title">{{ quiz.title }}</h5>
+                                                        <p class="card-text">{{ quiz.description }}</p>
+                                                        <!-- <p class="card-text">{{ quiz.course.name }}</p> -->
+                                                        <table>
+                                                            <tr><td style="color: red">Max Marks</td><td>{{ quiz.max_marks }}</td></tr>
+                                                            <tr><td style="color: green">Pass Marks</td><td>{{ quiz.pass_marks }}</td></tr>
+                                                            <tr><td style="color: blue">No. of Ques</td><td>{{ quiz.no_of_questions }}</td></tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                            {% else %}
+                                            <div class="col-md-12 col-xs-12">
+                                                    <div class="card quiz-card">
+                                                        <div class="card-body quiz-card-body" style="overflow-y: scroll;">
+                                                            No Quizzes Drafts
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+</section>
+            
+<!-- <section id="posts">
           <div class="row">
             <div class="col-md-4">
               <div class="card" style="height: 25rem; overflow-y: scroll;" >
@@ -121,92 +293,134 @@
                   </div>
           </div>
       </section>
-<br>
-
-    <!-- <a href="{% url 'Professor:create-poll' %}">Create Poll</a><br>
-    Polls:
-    {% if poll_list %}
-        {% for poll in poll_list %}
-            <ul>
-                <li><a href="{% url 'Professor:poll' poll.id %}"> {{ poll.title }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No Poll Created Yet.
-    {% endif %}
-    <br>
-    <br><br>
-
-    Active Quizzes<br>
-    {% if active_quiz_list %}
-        {% for quiz in active_quiz_list %}
-            <ul>
-                <li><a href="{% url 'Professor:quiz' quiz.quiz.id %}"> {{ quiz.quiz.title }} - {{ quiz.unique_quiz_id }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No Active Quizzes.
-    {% endif %}
-    <br>
-    <br><br>
-
-<a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
-Quizzes:
-{% if quiz_list %}
-    {% for quiz in quiz_list %}
-        <ul>
-            <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
-        </ul>
-    {% endfor %}
-{% else %}
-    No Quiz Created Yet.
-{% endif %}
-<br>
-<br><br>
-Doubts:
-{% if course_list %}
-    {% for course in course_list %}
-        <ul>
-          <li><a href="{% url 'Doubt:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
-        </ul>
-    {% endfor %}
-{% else %}
-    No courses to select for Doubts
-{% endif %}
-
-<br>
-<br><br>
-
-    <a href="{% url 'Professor:create-quiz' %}">Create Quiz</a><br>
-    Quizzes:
-    {% if quiz_list %}
-        {% for quiz in quiz_list %}
-            <ul>
-                <li><a href="{% url 'Professor:quiz' quiz.id %}"> {{ quiz.title }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No Quiz Created Yet.
-    {% endif %}
-    <br>
-    <br><br>
-    Doubts:
-    {% if course_list %}
-        {% for course in course_list %}
-            <ul>
-            <li><a href="{% url 'Doubt:doubt-list' course.course.id %}"> {{ course.course.code }}: {{ course.course.name }} </a></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        No courses to select for Doubts
-    {% endif %}
-
-    <br>
-    <br><br>
-    Meetings: -->
+<br> -->
 
 {% endblock %}
 
-<!-- <a href="{% url 'UserAuth:logout' %}">LOGOUT</a> -->
 {% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script>
+        {% if active_quiz_list %}
+        {% for quiz in active_quiz_list %}
+            var ctx = document.querySelector("#active-quiz-pie-chart-{{forloop.counter}}").getContext('2d');
+            var myChart = new Chart(ctx, {
+            type: 'pie',
+            responsive: false,
+            width: 30,
+            height: 30,
+            data: {
+                labels: ['Submitted', 'Not-Submitted'],
+                datasets: [{
+                    label: 'akncakjnck',
+                    data: [{{ quiz.submissions }}, {{ quiz.total }}-{{ quiz.submissions }}],
+                    fill: true,
+                    lineTension: 0.1,
+                    backgroundColor: ['#04A1B7', '#144F1E'],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(242,34,34,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(242,34,34,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        gridLines:{
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks:{
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines:{
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks:{
+                            display: false
+                        }
+                    }]
+                }
+            }
+            });
+        {% endfor %}
+        {% endif %}
+
+        {% if finished_quiz_list %}
+        {% for quiz in finished_quiz_list %}
+            var ctx = document.querySelector("#finished-quiz-pie-chart-{{forloop.counter}}").getContext('2d');
+            var myChart = new Chart(ctx, {
+            type: 'pie',
+            responsive: false,
+            width: 30,
+            height: 30,
+            data: {
+                labels: ['Submitted', 'Not-Submitted'],
+                datasets: [{
+                    label: 'akncakjnck',
+                    data: [{{ quiz.submissions }}, {{ quiz.total }}-{{ quiz.submissions }}],
+                    fill: true,
+                    lineTension: 0.1,
+                    backgroundColor: ['#560846', '#A53606'],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(242,34,34,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(242,34,34,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        gridLines:{
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks:{
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines:{
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks:{
+                            display: false
+                        }
+                    }]
+                }
+            }
+            });
+        {% endfor %}
+        {% endif %}
+    </script>
 {% endblock %}
