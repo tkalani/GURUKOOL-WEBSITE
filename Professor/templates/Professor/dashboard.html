@@ -21,7 +21,7 @@ Dashboard
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-9 col-xs-12">Todays' Meetings</div>
-                                    <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
+                                    <div class="col-md-3 col-xs-12"><a href="{% url 'Meeting:index' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
                                 </div>
                             </div>
                             <div class="card-body meeting-card-body" style="overflow-y: scroll">
@@ -72,7 +72,7 @@ Dashboard
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col-md-9 col-xs-12">Doubts</div>
-                                        <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
+                                        <div class="col-md-3 col-xs-12"><a href="{% url 'Doubt:index' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
                                     </div>
                                 </div>
                                 <div class="card-body meeting-card-body" style="overflow-y: scroll">

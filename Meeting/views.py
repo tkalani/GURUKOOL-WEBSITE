@@ -4,8 +4,26 @@ from django.http import HttpResponseNotFound, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from Meeting.models import *
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 # Create your views here.
 
+group_name = 'Professor'
+login_url = 'UserAuth:login'
+
+def group_required(*group_names, login_url=None):
+    ''' checks group requirement whwther the user is student or professor
+        Takes group name as input and login url
+        returns status if user passes or not'''
+    def in_groups(u):
+        if u.is_authenticated:
+            if bool(u.groups.filter(name__in=group_names)) | u.is_superuser:
+                return True
+        return False
+    return user_passes_test(in_groups, login_url=login_url)
+
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
 def meeting_detail(request, meeting_id):
     '''
     Get the meeting details
@@ -40,3 +58,11 @@ def meeting_detail(request, meeting_id):
             print(e)
             messages.warning(request, "Some Error Occurred. Please try again later")
             return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def index(request):
+    meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id).order_by('-created_time')
+    print(meeting_list)
+    return render(request, 'Meeting/all-meetings.html', {'all_meeting_list': meeting_list})

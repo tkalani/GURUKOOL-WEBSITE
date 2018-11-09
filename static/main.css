@@ -87,3 +87,7 @@
 .meeting-card-body{
     max-height: 30vh;
 }
+
+.all-meeting-card{
+    max-height: 80vh;
+}

@@ -17,8 +17,8 @@
                             <div class="card active-quiz-card border-primary">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-md-9 col-xs-12">Active Quizzes - {{ active_quiz_list.count }}</div>
-                                        <!-- <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View All</button></a></div> -->
+                                        <div class="col-md-8 col-xs-12">Active Quizzes - {{ active_quiz_list.count }}</div>
+                                        <div class="col-md-4 col-xs-12"><a href="{% url 'Professor:create-quiz' %}"><button type="button" class="btn btn-info btn-sm">Create Quiz</button></a></div>
                                     </div>
                                 </div>
                                 <div class="card-body" style="overflow-y: scroll">
@@ -79,6 +79,7 @@
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col-md-10 col-xs-12">Finished Quizzes - {{ finished_quiz_list.count }}</div>
+                                        <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-quiz' %}"><button type="button" class="btn btn-info btn-sm">Create Quiz</button></a></div>
                                     </div>
                                 </div>
                                 <div class="card-body" style="overflow-y: scroll;">
@@ -129,6 +130,7 @@
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-10 col-xs-12">Quiz Drafts - {{ all_quiz_list.count }}</div>
+                                            <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-quiz' %}"><button type="button" class="btn btn-info btn-sm">Create Quiz</button></a></div>
                                         </div>
                                     </div>
                                     <div class="card-body" style="overflow-y: scroll;">
