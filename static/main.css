@@ -1,5 +1,5 @@
 .body-section{
-    margin-top: 3%;
+    margin-top: 1%;
 }
 
 .meeting-card{
@@ -7,7 +7,7 @@
 }
 
 .list-card{
-    max-height: 350px;
+    max-height: 380px;
 }
 
 .card-image{
@@ -62,4 +62,12 @@
 .list{
     overflow-y: scroll;
     height: 300px;
+}
+
+.quiz-card{
+    height: 300px;
+}
+
+.quiz-card-body{
+    max-height: 150px;
 }
