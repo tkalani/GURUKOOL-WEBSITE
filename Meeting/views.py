@@ -34,7 +34,7 @@ def meeting_detail(request, meeting_id):
         meeting_data = Meeting.objects.get(id=meeting_id)
         meeting_place = MeetingPlace.objects.filter(meeting__id=meeting_id)
         return render(request, 'Meeting/meeting-detail.html', {"meeting": meeting_data, "meeting_detail": meeting_place})
-    
+
     if request.method == 'POST':
         try:
             status = request.POST['status']
@@ -66,3 +66,45 @@ def index(request):
     meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id).order_by('-created_time')
     print(meeting_list)
     return render(request, 'Meeting/all-meetings.html', {'all_meeting_list': meeting_list})
+
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def meeting_happened(request, meeting_id):
+    print("meeting ", meeting_id)
+    if request.method == 'POST':
+        try:
+            discussed = request.POST['discussed']
+            print("Discussion = ", discussed)
+            meeting_inst = MeetingPlace.objects.get(meeting__id=meeting_id)
+            meeting_inst.discussed = discussed
+            meeting_inst.is_happened = True
+            meeting_inst.is_ticked = True
+            meeting_inst.save()
+            print(meeting_inst)
+            return HttpResponseRedirect(reverse('Professor:dashboard'))
+        except Exception as e:
+            print(e)
+            messages.warning(request, "Some Error Occurred. Please try again later")
+            return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def meeting_not_happened(request, meeting_id):
+    print("meeting ", meeting_id)
+    if request.method == 'POST':
+        try:
+            discussed = request.POST['discussed']
+            print("Discussion = ", discussed)
+            meeting_inst = MeetingPlace.objects.get(meeting__id=meeting_id)
+            meeting_inst.discussed = discussed
+            meeting_inst.is_happened = False
+            meeting_inst.is_ticked = True
+            meeting_inst.save()
+            print(meeting_inst)
+            return HttpResponseRedirect(reverse('Professor:dashboard'))
+        except Exception as e:
+            print(e)
+            messages.warning(request, "Some Error Occurred. Please try again later")
+            return HttpResponseRedirect(reverse('Professor:dashboard'))

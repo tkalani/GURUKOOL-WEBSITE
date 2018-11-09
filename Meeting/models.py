@@ -25,6 +25,8 @@ class MeetingPlace(models.Model):
     meeting_date = models.DateField(null=True, blank=True)
     meeting_time = models.TimeField(null=True, blank=True)
     meeting_place = models.CharField(blank=True, null=True, max_length=1000)
+    is_happened = models.BooleanField(default=False)
+    is_ticked = models.BooleanField(default=False)
     discussed = models.CharField(null=True, blank=True, max_length=1000)
 
     def __str__(self):

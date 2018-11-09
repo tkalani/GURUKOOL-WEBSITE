@@ -31,17 +31,17 @@ Dashboard
                                 </div>
                                 <p class="card-text meeting-title">{{ meeting.meeting.title }}</p>
                                 <p class="card-text meeting-body">{{ meeting.meeting.body }}</p>
-                                <form action="" method="POST">
+                                <form action="/" method="POST" name="meeting_discussion_form">
                                     {% csrf_token %}
-                                    <textarea class="form-control meeting-body" class="2" placeholder="What was discussed"
+                                    <textarea class="form-control meeting-body" name="discussed" class="2" id="discussed-text" placeholder="What was discussed"
                                         max="50"></textarea>
                                 </form>
                             </div>
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-md-8 col-xs-12"><small class="text-muted">{{ meeting.meeting_place }} : {{ meeting.meeting_date }} {{ meeting.meeting_time }}</small></div>
-                                    <div class="col-md-2 col-xs-12"><i class="fa fa-check" style="color:green"></i></div>
-                                    <div class="col-md-2 col-xs-12"><i class="fa fa-times" style="color: red;"></i></div>
+                                    <div class="col-md-2 col-xs-12"><i class="fa fa-check" style="color:green" onclick="meeting_happened({{ meeting.meeting.id }})"></i></div>
+                                    <div class="col-md-2 col-xs-12"><i class="fa fa-times" style="color: red;" onclick="meeting_not_happened({{ meeting.meeting.id }})")></i></div>
                                 </div>
                             </div>
                         </div>
@@ -49,11 +49,10 @@ Dashboard
                         {% else %}
                         <div class="card meeting-card border-primary">
                             <div class="card-header">
-                                <div class="row">
-                                    <div class="col-md-9 col-xs-12">Todays' Meetings</div>
-                                    <div class="col-md-3 col-xs-12"><a><button type="button" class="btn btn-info btn-sm">View
-                                                All</button></a></div>
-                                </div>
+                              <div class="row">
+                                  <div class="col-md-9 col-xs-12">Todays' Meetings</div>
+                                  <div class="col-md-3 col-xs-12"><a href="{% url 'Meeting:index' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
+                              </div>
                             </div>
                             <div class="card-image">
                                 <img src="{% static 'images/avatar/student.png' %}" class="student-avatar">
@@ -247,9 +246,29 @@ Dashboard
                 document.doubt_comment_form.submit();
             }
         }
+        function meeting_happened(meeting_id)
+        {
+            if($('#discussed-text').val() == '')
+            {
+                alert('Enter details. Cannot be empty');
+                return false;
+            }
+            else
+            {
+                document.meeting_discussion_form.action = "{% url 'Meeting:meeting-happened' 1234 %}".replace(/1234/, meeting_id);
+                console.log(document.meeting_discussion_form.action)
+                document.meeting_discussion_form.submit();
+            }
+        }
+        function meeting_not_happened(meeting_id)
+        {
+              document.meeting_discussion_form.action = "{% url 'Meeting:meeting-not-happened' 1234 %}".replace(/1234/, meeting_id);
+              console.log(document.meeting_discussion_form.action)
+              document.meeting_discussion_form.submit();
+        }
     </script>
     <script>
-            
+
         {% if active_quiz_list %}
         {% for quiz in active_quiz_list %}
             var ctx = document.querySelector("#quiz-pie-chart-{{forloop.counter}}").getContext('2d');

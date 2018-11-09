@@ -41,7 +41,7 @@ def dashboard(request):
         poll_list = Poll.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
         quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
         course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id).order_by('-id')
-        meeting_list = (MeetingPlace.objects.filter(meeting__professor__user__user__id=request.user.id, meeting_date=time.strftime('%Y-%m-%d'), meeting__status='APPROVED').order_by('-id'))[:1]
+        meeting_list = (MeetingPlace.objects.filter(meeting__professor__user__user__id=request.user.id, is_ticked=False, meeting_date=time.strftime('%Y-%m-%d'), meeting__status='APPROVED').order_by('-id'))[:1]
         active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True).order_by('-id')
         active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
         all_doubt_list = []
@@ -292,7 +292,7 @@ def show_all_polls(request):
     '''
         Shows all polls
         Takes input request method
-        Returns all_polls_list,finished_polls_list,active_polls_list and renders the web page 
+        Returns all_polls_list,finished_polls_list,active_polls_list and renders the web page
     '''
     if request.method == 'GET':
         try:
@@ -311,14 +311,14 @@ def show_all_quiz(request):
     '''
         Shows all quiz
         Takes input request method
-        Returns all_quiz_list,finished_quiz_list,active_quiz_list and renders the web page 
+        Returns all_quiz_list,finished_quiz_list,active_quiz_list and renders the web page
     '''
     if request.method == 'GET':
         try:
             all_quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
             finished_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=False).order_by('-id')
             active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
-            
+
             for quiz in active_quiz_list:
                 quiz.submissions = QuizResult.objects.filter(conduct_quiz=quiz).count()
                 quiz.total = CourseStudent.objects.filter(course=quiz.quiz.course).count()
@@ -326,7 +326,7 @@ def show_all_quiz(request):
             for quiz in finished_quiz_list:
                 quiz.submissions = QuizResult.objects.filter(conduct_quiz=quiz).count()
                 quiz.total = CourseStudent.objects.filter(course=quiz.quiz.course).count()
-            
+
             return render(request, 'Professor/quiz.html', {"all_quiz_list": all_quiz_list, "finished_quiz_list": finished_quiz_list, "active_quiz_list": active_quiz_list})
         except Exception as e:
             print('error is', e)

@@ -108,7 +108,7 @@ class LoginUser(View):
 						user = authenticate(username=username, password=password)
 						if user is not None:
 							login(request, user)
-							return HttpResponseRedirect(reverse('Student:dashboard'))
+							return HttpResponseRedirect(reverse('Professor:dashboard'))
 						messages.warning(request, "Email address and Password does not match to any GURUKOOL PROFESSOR Account.")
 						return HttpResponseRedirect(reverse('UserAuth:login'))
 					except:
