@@ -208,6 +208,8 @@ def conduct_quiz(request, quiz_id):
             conduct_quiz_inst.active = True
             conduct_quiz_inst.save()
 
+            QuizStatistics(quiz_id=conduct_quiz_inst, conduct_quiz_id=unique_quiz_id).save()
+
             messages.success(request, "Successfully started quiz")
             return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':quiz_id}))
         except Exception as e:

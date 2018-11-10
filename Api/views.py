@@ -310,7 +310,7 @@ class QuizComplete(APIView):
             stud = get_object_or_404(StudentProfile, user__email_address=email)
             quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id)
             print (stud, quiz)
-            QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks).save()
+            QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks, cq_id=quiz_id).save()
             for question in (body['quiz_response']):
                 print (question)
                 qr = get_object_or_404(QuizResult, student=stud, conduct_quiz=quiz)
