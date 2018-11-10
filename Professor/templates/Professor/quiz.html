@@ -2,7 +2,7 @@
 {% include 'UserAuth/message.html' %}
 
 {% block title %}
-    Polls
+    Quiz
 {% endblock %}
 <br><br>
 
@@ -55,7 +55,7 @@
                     <tr>
                       <th colspan="3">Conducted Quizzes</th>
                         <th></th>
-                      <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: white;"></i></a></th>
+                      <th style="text-align: right;"><a href="{% url 'Professor:create-quiz' %}"><i class="fa fa-plus" aria-hidden="true" style="color: black;"></i></a></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -67,7 +67,7 @@
                                 <td>{{ quiz.quiz.title }}</td>
                                 <td>{{ quiz.conduction_date }}</td>
                                 <td>
-                                    <a href="{% url 'Professor:quiz' quiz.quiz.id %}" class="btn btn-secondary">
+                                    <a href="{% url 'Professor:conducted-quiz' quiz.id %}" class="btn btn-secondary">
                                     <i class="fas fa-angle-double-right"></i>
                                     </a>
                                 </td>
