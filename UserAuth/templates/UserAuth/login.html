@@ -1,0 +1,81 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <title>Gurukool</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+   ================================================== -->
+    <link rel="stylesheet" href="{% static 'UserAuth/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'UserAuth/css/vendor.css' %}">
+    <link rel="stylesheet" href="{% static 'UserAuth/css/main.css' %}">
+
+    <!-- script
+   ================================================== -->
+    <script src="{% static 'UserAuth/js/modernizr.js' %}"></script>
+    <script src="{% static 'UserAuth/js/pace.min.js' %}"></script>
+
+    <!-- favicons
+	================================================== -->
+    <link rel="shortcut icon" href="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/IIIT_Sri_City_Logo.png/220px-IIIT_Sri_City_Logo.png" type="image/x-icon">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/thumb/4/49/IIIT_Sri_City_Logo.png/220px-IIIT_Sri_City_Logo.png type="image/x-icon">
+
+</head>
+
+<body id="top">
+
+    <!-- header
+   ================================================== -->
+   <header id="header" class="row">
+   		<div class="header-logo">
+	        <a href="index.html">Gurukool</a>
+	    </div>
+	   	<nav id="header-nav-wrap">
+			<ul class="header-main-nav">
+				<li class="current"><a class="smoothscroll"  href="#home" title="home">Home</a></li>
+			</ul>
+            <a href="#" title="sign-up" class="button button-primary cta">Log In</a>
+		</nav>
+		<a class="header-menu-toggle" href="#"><span>Menu</span></a>
+   </header>
+
+   <section id="home" data-parallax="scroll" data-image-src="{% static 'UserAuth/images/hero-bg.jpg' %}">
+        <div class="home-content">
+            <div class="row contents">
+                <div class="home-content-left">
+                    <h3 data-aos="fade-up">Welcome to Gurukool</h3>
+                    <h1 data-aos="fade-up">
+                        Creative Landing <br>
+                        Page to Showcase <br>
+                        Your Amazing App.
+                    </h1>
+                    <div class="buttons" data-aos="fade-up">
+                        <a href="#download" class="smoothscroll button stroke">
+                            <!-- <span class="icon-sign-in" aria-hidden="true"></span> -->
+                            <i class="fa fa-sign-in"></i>
+                            IIITS LOGIN
+                        </a>
+                    </div>
+
+                </div>
+                <div class="home-image-right">
+                    <img src="{% static 'UserAuth/images/iphone-app-470.png' %}">
+                </div>
+            </div>
+        </div>
+        hjbjhbjbh
+    </section>
+
+    <script src="{% static 'UserAuth/js/jquery-2.1.3.min.js' %}"></script>
+    <script src="{% static 'UserAuth/js/plugins.js' %}"></script>
+    <script src="{% static 'UserAuth/js/main.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+{% extends 'Professor/main.html' %}
+{% include 'UserAuth/message.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Meetings
+{% endblock %}
+
+{% block body %}
+
+<section class="body-section">
+        <div class="container">
+            <div class="row">
+
+                <div class="card col-md-12 col-xs-12 all-meeting-card">
+                            <div class="card-header">
+                                <div class="row">
+                                    {% if all_meeting_list %}
+                                    <div class="col-md-8 col-xs-12">Meetings - {{ all_meeting_list.count }}</div>
+                                    {% else %}
+                                    <div class="col-md-8 col-xs-12">Meetings</div>
+                                    {% endif %}
+                                    <!-- <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-quiz' %}"><button type="button" class="btn btn-info btn-sm">Add Quiz</button></a></div>
+                                    <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:all-quiz' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div> -->
+                                </div>
+                            </div>
+                            <div class="card-body" style="overflow-y: scroll;">
+                                <div class="row">
+                                    {% if all_meeting_list %}
+                                    {% for meeting in all_meeting_list %}
+                                    <div class="col-md-4 col-xs-12">
+                                    <div class="card meeting-card border-primary">
+                                            <div class="card-header">
+                                                <div class="row">
+                                                    <div class="col-md-9 col-xs-12">{{ meeting.status }}</div>
+                                                    <div class="col-md-3 col-xs-12">
+                                                        <a href="{% url 'Meeting:meeting-detail' meeting.id %}" style="text-decoration: underline; color: black">Info</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body meeting-card-body" style="overflow-y: scroll">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-xs-12"><img src="{% static 'images/avatar/student.png' %}" class="student-avatar"></div>
+                                                    <div class="col-md-8 col-xs-12">{{ meeting.student.user.user.first_name }} {{ meeting.student.user.user.last_name }}</div>
+                                                </div>
+                                                <p class="card-text meeting-title">{{ meeting.title }}</p>
+                                                <p class="card-text meeting-body">{{ meeting.body }}</p>
+                                                {% if meeting.prof_response %}
+                                                    <textarea class="form-control meeting-body" class="2" placeholder="What was discussed"
+                                                        max="50" readonly>{{ meeting.prof_response}}</textarea>
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="row">
+                                                    <div class="col-md-8 col-xs-12"><small class="text-muted">{{ meeting.created_time }}</small></div>
+                                                    <!-- <div class="col-md-2 col-xs-12"><i class="fa fa-check" style="color:green"></i></div>
+                                                    <div class="col-md-2 col-xs-12"><i class="fa fa-times" style="color: red;"></i></div> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% else %}
+                                    <div class="col-md-12 col-xs-12">
+                                            <div class="card quiz-card">
+                                                <div class="card-body quiz-card-body" style="overflow-y: scroll;">
+                                                    No Meetings
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

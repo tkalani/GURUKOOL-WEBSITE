@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import *
 from Professor.models import Course
+from Professor.models import *
 
 student_group = 'Student'
 prof_group = 'Professor'
@@ -65,3 +66,17 @@ def doubt(request, doubt_id):
                         print(e)
                         messages.success(request, "Some Error Occurred")
                         return HttpResponseRedirect(reverse('Professor:dashboard'))
+
+@login_required(login_url=login_url)
+@group_required(prof_group, login_url=login_url)
+def all_doubts(request):
+        if request.method == 'GET':
+                course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id).order_by('-id')
+                all_doubt_list = []
+                for course in course_list:
+                        for y in Doubt.objects.filter(course__id=course.course.id):
+                                all_doubt_list.append(y)
+                all_doubt_list = sorted(all_doubt_list, key=lambda k: k.last_updated)
+                all_doubt_list = all_doubt_list[::-1]
+
+                return render(request, 'Doubt/all-doubts.html', {'all_doubt_list': all_doubt_list})

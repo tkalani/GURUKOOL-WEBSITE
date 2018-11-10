@@ -16,7 +16,8 @@ from django.views import View
 from .utils import *
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-
+import requests
+import simplejson as json
 SHOW_MESSAGE_URL = 'UserAuth:show-message'
 EMAIL_VERIFICATION_LINK_LENGTH = 50
 LOGIN_URL = 'UserAuth:landingPage'
@@ -28,8 +29,14 @@ def redirectPage(request, user_token):
 		returns http response
 	'''
 	request.session['token'] = user_token
-	return HttpResponseRedirect(reverse('Student:dashboard'))
-	
+	payload = {"secret":"27da906cca2278407c4717551f8ccae5d2fb89da47009050f3671245f2a14440f9c282152877f7d6b08d3f19696d94844b9f74ac901752424045f9190910d0bd", "token":user_token}
+	print(user_token)
+
+	r=requests.post('https://serene-wildwood-35121.herokuapp.com/oauth/getDetails/', data=payload)
+
+	return HttpResponse(r.text)
+	# return HttpResponseRedirect(reverse('Student:dashboard'))
+
 class landingPage(View):
 	'''
 	get Landing Page
@@ -42,10 +49,11 @@ class landingPage(View):
 				return HttpResponseRedirect(reverse('Professor:dashboard'))
 			elif request.user.groups.filter(name='Student').exists():
 				return HttpResponseRedirect(reverse('Student:dashboard'))
-		return render(request, self.get_login_page)
+		return HttpResponseRedirect(reverse('Professor:dashboard'))
 
 class Login(View):
 	get_login_template = 'UserAuth/loginPage.html'
+	# get_login_template = 'UserAuth/login.html'
 
 	def get(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
@@ -100,7 +108,7 @@ class LoginUser(View):
 						user = authenticate(username=username, password=password)
 						if user is not None:
 							login(request, user)
-							return HttpResponseRedirect(reverse('Student:dashboard'))
+							return HttpResponseRedirect(reverse('Professor:dashboard'))
 						messages.warning(request, "Email address and Password does not match to any GURUKOOL PROFESSOR Account.")
 						return HttpResponseRedirect(reverse('UserAuth:login'))
 					except:

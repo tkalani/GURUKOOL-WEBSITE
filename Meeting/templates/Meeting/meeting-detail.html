@@ -7,30 +7,6 @@
 
 {% block body %}
     {% include 'UserAuth/message.html' %}
-    <!-- <h1>Meeting: {{meeting.title}}</h1>
-    <br>
-    <h3>Body: {{meeting.body}}</h3>
-    <br>
-    <h4>Current Status: {{meeting.status}}</h4>
-    <h4> Requested By: {{meeting.student.user.user.first_name}} {{meeting.student.user.user.last_name}}</h4>
-    <br><br>
-
-      <h3>My Response</h3>
-      <br>
-    {% if meeting.prof_response %}
-        <h5>{{meeting.prof_response}}</h5>
-    {% else %}
-    <form action="#" id="meeting-response"  method="PUT">
-      {% csrf_token %}
-      <input type="text" value="{{meeting.id}}" name="id" readonly><br>
-      <textarea name="prof_response" rows="4" cols="50" placeholder="Write your response and make PUT request {% url 'Api:meeting-create' 'professor' %}" required></textarea>
-      <select name="status" required>
-              <option value="APPROVED">APPROVED</option>
-              <option value="REJECTED">REJECTED</option>
-      </select><br>
-      <input type="submit" value="SUBMIT">
-    </form>
-    {% endif %} -->
 
     <header id="main-header" class="py-2 bg-success text-white">
         <div class="container">
@@ -54,22 +30,33 @@
                           </div>
                   </h4>
                   <table class="table table-striped">
-                    <thead class="thead-dark">
+                    <thead>
                       <tr>
-                        <th>{{ meeting.body }}</th>
+                        <th>Request : <b>{{ meeting.body }}</b></th>
                       </tr>
                     </thead>
                     <tbody>
                         <tr>
                           <td>Posted On: <b>{{ meeting.created_time }}</b></td>
                         </tr>
+                        <tr>
+                            <td>Posted By: <b>{{ meeting.student.user.user.first_name }}</b>
+                        </tr>
+                        {% if meeting_detail %}
+                            <tr>
+                                <td>Meeting Date: <b>{{ meeting_detail.0.meeting_date }} {{ meeting_detail.0.meeting_time }}</b>
+                            </tr>
+                            <tr>
+                                <td>Meeting At: <b>{{ meeting_detail.0.meeting_place }}</b>
+                            </tr>
+                        {% endif %}
                     </tbody>
                   </table>
                 </div>
                 </div>
                 
                 {% if not meeting.prof_response %}
-                <form action="{% url 'Meeting:meeting-detail' meeting.id %}" id="comment-submit" method="POST">
+                <form action="{% url 'Meeting:meeting-detail' meeting.id %}" id="comment-submit" method="POST" onsubmit="return validate()">
                     {% csrf_token %}
                 {% endif %}
                 <section id="details">
@@ -82,7 +69,7 @@
                                   <div class="row">
                                       <div class="col-md-10">Meeting</div>
                                       {% if not meeting.prof_response %}
-                                        <div class="col-md-2"><button type="submit" class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Submit</button></div>
+                                        <div class="col-md-2"><button type="submit" class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-check"></i> &nbsp; &nbsp;Submit</button></div>
                                       {% endif %}
                                     </div>
                                 </h4>
@@ -99,7 +86,7 @@
                                   {% else %}
                                   <div class="card-body">
                                         <label for="body">Status</label>
-                                        <select class="form-control" name="status">
+                                        <select class="form-control" name="status" onchange="check_val(this)">
                                             <option value="APPROVED">APPROVED</option>
                                             <option value="REJECTED">REJECTED</option>
                                         </select>
@@ -108,6 +95,24 @@
                                         <div class="form-group">
                                             <label for="body">Reply</label>
                                             <textarea name="prof_response" class="form-control" rows=4 required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" id="meeting-place">
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="body">Date</label>
+                                                <input type="date" required="true" name="meeting_date" id="meeting-date" class="form-control">
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="body">Time</label>
+                                                <input type="time" required="true" name="meeting_time" id="meeting-time" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="body">Place</label>
+                                                <input type="text" required="true" name="meeting_place" id="meeting-place" class="form-control" value="Office">
+                                            </div>
                                         </div>
                                     </div>
                               {% endif %}
@@ -127,4 +132,61 @@
 
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        function check_val(t)
+        {
+            if(t.value=='APPROVED')
+            {
+                $('#meeting-date').attr('required', true);
+                $('#meeting-place').attr('required', true);
+                $('#meeting-time').attr('required', true);
+            }
+            else if(t.value=='REJECTED')
+            {
+                $('#meeting-date').removeAttr('required');
+                $('#meeting-place').removeAttr('required');
+                $('#meeting-time').removeAttr('required');
+            }
+        }
+
+        function validate()
+        {
+            var dte = $('#meeting-date').val();
+            var time = $('#meeting-time').val();
+            // console.log(dte, time);
+
+            dte = new Date(dte);
+            time = new Date(time);
+
+            var currentdate = new Date();
+            // console.log(currentdate.today());
+            var today_date = (currentdate.getMonth()+1)+ '-' + currentdate.getDate()  + "-" + currentdate.getFullYear();
+            console.log(today_date);
+            today_date = new Date(today_date);
+
+            console.log(dte, today_date)
+            if(dte < today_date)
+            {
+                console.log('here');
+                alert("Meeting date is before today's date");
+                return false
+            }
+            else if(dte > today_date)
+            {
+                console.log('here 2');
+                return true;
+            }
+            else
+            {
+                console.log('here 3');
+                var today_time = currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+                today_time = new Date(today_time);
+                if(time < today_time)
+                {
+                    alert('Chosen Time is before current time');
+                    return false;
+                }
+            }
+        }
+    </script>
 {% endblock %}
