@@ -24,12 +24,12 @@
                                     <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:all-quiz' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div> -->
                                 </div>
                             </div>
-                            <div class="card-body" style="overflow-y: scroll;">
+                            <div class="card-body">
                                 <div class="row">
                                     {% if all_meeting_list %}
                                     {% for meeting in all_meeting_list %}
                                     <div class="col-md-4 col-xs-12">
-                                    <div class="card meeting-card border-primary">
+                                    <div class="card meeting-card border-primary" style="margin-bottom: 20px;">
                                             <div class="card-header">
                                                 <div class="row">
                                                     <div class="col-md-9 col-xs-12">{{ meeting.status }}</div>

@@ -7,7 +7,8 @@
 }
 
 .list-card{
-    max-height: 380px;
+    max-height: 400px;
+    margin-bottom: 20px
 }
 
 .card-image{
@@ -89,5 +90,6 @@
 }
 
 .all-meeting-card{
-    max-height: 80vh;
+    /* max-height: 80vh; */
+    margin-bottom: 20px;
 }
