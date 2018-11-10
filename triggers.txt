@@ -1,0 +1,59 @@
+CREATE TRIGGER `upd_film` AFTER UPDATE ON `film` FOR EACH ROW BEGIN
+    IF (old.title != new.title) OR (old.description != new.description) OR (old.film_id != new.film_id)
+    THEN
+        UPDATE film_text
+            SET title=new.title,
+                description=new.description,
+                film_id=new.film_id
+        WHERE film_id=old.film_id;
+    END IF;
+  END;;
+
+
+DELIMITER ;
+DELIMITER $$
+  CREATE TRIGGER `quiz_avg` AFTER INSERT ON `Student_quizresult` FOR EACH ROW BEGIN
+    DECLARE total_responses INT;
+    set total_responses = ( select count(*) from Student_quizresult where cq_id = NEW.cq_id );
+        UPDATE `Professor_quizstatistics`
+            SET avg = (OLD.avg * total_responses)+marks_obtained/(total_responses+1) WHERE conduct_quiz_id=conduct_quiz;
+    end
+$$
+DELIMITER ;
+
+DELIMITER ;
+DELIMITER $$
+  CREATE TRIGGER `quiz_avg` AFTER INSERT ON `Student_quizresult` FOR EACH ROW BEGIN
+    DECLARE total_responses INT;
+    set total_responses = ( select count(*) from Student_quizresult where conduct_quiz = quiz_id );
+        UPDATE `Professor_quizstatistics`
+            SET avg = 5;
+    end
+$$
+DELIMITER ;
+
+
+DELIMITER ;
+DELIMITER $$
+  CREATE TRIGGER `quiz_avg` AFTER INSERT ON `Student_quizresult` FOR EACH ROW BEGIN
+    DECLARE total_responses INT;
+    set total_responses = ( select count(*) from Student_quizresult where cq_id = NEW.cq_id );
+        UPDATE `Professor_quizstatistics`
+            SET avg = 5;
+    end
+$$
+DELIMITER ;
+
+
+
+
+DELIMITER ;
+DELIMITER $$
+  CREATE TRIGGER `quiz_avg` AFTER INSERT ON `Student_quizresult` FOR EACH ROW BEGIN
+    DECLARE total_responses INT;
+    set total_responses = ( select count(*) from Student_quizresult where cq_id = NEW.cq_id );
+        UPDATE `Professor_quizstatistics`
+            SET avg = ((avg * (total_responses-1))+NEW.marks_obtained)/(total_responses) WHERE conduct_quiz_id=NEW.cq_id;
+    end
+$$
+DELIMITER ;
