@@ -106,6 +106,7 @@ class ConductQuiz(models.Model):
 class QuizStatistics(models.Model):
 	quiz_id = models.ForeignKey(ConductQuiz, null=True, blank=True)
 	avg = models.FloatField(null=True, default=0, blank=True)
+	number_of_responses = models.IntegerField(null=True, blank=True, default=0)
 	conduct_quiz_id = models.CharField(max_length=50, null=True, blank=True)
 
 	def __str__(self):
