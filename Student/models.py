@@ -39,6 +39,7 @@ class QuizResult(models.Model):
 	student = models.ForeignKey(StudentProfile, on_delete=models.SET_NULL, null=True, blank=True)
 	conduct_quiz = models.ForeignKey(ConductQuiz, on_delete=models.SET_NULL, null=True, blank=True)
 	marks_obtained = models.IntegerField(null=True, blank=True)
+	cq_id = models.CharField(max_length=50, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.student.user.user.username) + '-->' +str(self.conduct_quiz)

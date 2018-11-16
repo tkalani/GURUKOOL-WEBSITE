@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, HttpResponseRedirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse
 import UserAuth.utils as UserAuthutils
@@ -208,6 +208,8 @@ def conduct_quiz(request, quiz_id):
             conduct_quiz_inst.active = True
             conduct_quiz_inst.save()
 
+            QuizStatistics(quiz_id=conduct_quiz_inst, conduct_quiz_id=unique_quiz_id).save()
+
             messages.success(request, "Successfully started quiz")
             return HttpResponseRedirect(reverse('Professor:quiz', kwargs={'quiz_id':quiz_id}))
         except Exception as e:
@@ -366,8 +368,9 @@ def quiz_result(request, quiz_id):
     if request.method == 'GET':
         try:
             conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
+            quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
             quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id).order_by('-marks_obtained')
-            return render(request, 'Professor/quiz-result.html', {"conducted_quiz": conducted_quiz, "quiz_results": quiz_results})
+            return render(request, 'Professor/quiz-result.html', {"conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics, "quiz_results": quiz_results})
         except Exception as e:
             print('error is', e)
             messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
