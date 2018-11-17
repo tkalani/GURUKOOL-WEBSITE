@@ -17,5 +17,8 @@ urlpatterns = [
 		url(r'^meeting/(?P<type>[\w\-]+)/$',MeetingManage.as_view(), name='meeting-create'),
 		url(r'^all-student-quizes/(?P<course_id>[\w\-]+)/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$',AllStudentQuiz.as_view(), name='all-student-quizes'),
 		url(r'^create-meeting/(?P<course_id>\d+)/(?P<email>[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4})/$', CreateMeeting.as_view(), name='create-meeting'),	
+		
+		url(r'^calling-stored-procedure/$', views.CallingStoredProcedure, name='calling-stored-procedure'),	
+		
 		# url(r'^test/$', views.Test, name='test'),
 	]
