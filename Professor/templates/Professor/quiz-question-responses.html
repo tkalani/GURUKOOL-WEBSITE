@@ -80,31 +80,14 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% for qu, qwr in question_wise_result %}
                   <tr>
-                    <td>Description</td>
-                    <td>10</td>
-                    <td>20</td>
-                    <td>30</td>
+                    <td>{{ qu.question }}</td>
+                    <td>{% if qwr.0.total %} {{ qwr.0.total }} {% else %} 0 {% endif %}</td>
+                    <td>{% if qwr.1.total %} {{ qwr.1.total }} {% else %} 0 {% endif %}</td>
+                    <td>{% if qwr.2.total %} {{ qwr.2.total }} {% else %} 0 {% endif %}</td>
                   </tr>
-                  <tr>
-                    <td>Description</td>
-                    <td>10</td>
-                    <td>20</td>
-                    <td>30</td>
-                  </tr>
-                  <tr>
-                    <td>Description</td>
-                    <td>10</td>
-                    <td>20</td>
-                    <td>30</td>
-                    <td>40</td>
-                  </tr>
-                  <tr>
-                    <td>Description</td>
-                    <td>10</td>
-                    <td>20</td>
-                    <td>30</td>
-                  </tr>
+                  {% endfor %}
                 </tbody>
                 </table>
               </div>

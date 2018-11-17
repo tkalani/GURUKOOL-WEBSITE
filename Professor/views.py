@@ -392,10 +392,14 @@ def view_quiz_reponses(request, quiz_id):
     if request.method == 'GET':
         conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
         quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
-        question_wise_result = QuestionWiseResult.objects.filter(quiz_result__conduct_quiz__id=quiz_id).values('question').annotate(total=Count('question'))
+        question_wise_result = []
+        questions = []
+        for question in QuizQuestion.objects.filter(quiz__id=conducted_quiz.quiz.id):
+            question_wise_result.append(QuestionWiseResult.objects.filter(question=question, quiz_result__conduct_quiz=conducted_quiz).values('answer').annotate(total=Count('answer')))
+            questions.append(question)
         print(question_wise_result)
-
+ 
         # all_ques = []
         # for q in question_wise_result:
         #     all_ques.append
-        return render(request, 'Professor/quiz-question-responses.html', {"conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics})
+        return render(request, 'Professor/quiz-question-responses.html', {"question_wise_result":zip(questions, question_wise_result), "conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics})
