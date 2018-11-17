@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login
 
+from django.db import connection 
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -39,6 +41,18 @@ def group_required(*group_names, login_url=None):
                 return True
         return False
     return user_passes_test(in_groups, login_url=login_url)
+
+
+def CallingStoredProcedure(request):
+    if request.method == 'GET':
+        cur = connection.cursor()
+        cur.callproc('procedure_example_2', [2,])  
+        # grab the results  
+        results = cur.fetchall()  
+        cur.close() 
+        print ("results", results)
+        return HttpResponse("Procedure Call Success") 
+
 
 
 class CourseList(APIView):
