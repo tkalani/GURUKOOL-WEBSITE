@@ -48,6 +48,8 @@ class QuestionWiseResult(models.Model):
 	quiz_result = models.ForeignKey(QuizResult, null=True, blank=True)
 	question = models.ForeignKey(QuizQuestion, null=True, blank=True)
 	answer = models.CharField(max_length=100, null=True, blank=True)
+	answer_obtained = models.TextField(null=True, blank=True)
+	answer_id = models.IntegerField(null=True, blank=True)
 
 	def __str__(self):
 		return str(self.quiz_result.student.user.user.username) + '-->' +str(self.question.question)

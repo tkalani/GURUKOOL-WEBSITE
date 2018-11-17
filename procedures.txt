@@ -1,0 +1,20 @@
+DELIMITER $$
+CREATE PROCEDURE procedure_example(IN number_of_rows SMALLINT, OUT output INT)
+BEGIN
+	SELECT COUNT(*) INTO output FROM `Professor_course`;
+END $$
+DELIMITER ;
+
+CALL procedure_example(5,@out);
+SELECT @out;
+
+----------------------------
+
+DELIMITER $$
+CREATE PROCEDURE procedure_example_2(IN number_of_rows SMALLINT)
+BEGIN
+	SELECT *  FROM `Professor_course` LIMIT number_of_rows;
+END $$
+DELIMITER ;
+
+CALL procedure_example_2(2)
