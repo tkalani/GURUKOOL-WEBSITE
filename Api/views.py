@@ -329,7 +329,15 @@ class QuizComplete(APIView):
                 print (question)
                 qr = get_object_or_404(QuizResult, student=stud, conduct_quiz=quiz)
                 que = get_object_or_404(QuizQuestion, id=question[1])
-                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0]).save()
+
+                '''
+                    Populaing data
+                '''
+                import random
+                quiz_options = QuizOptions.objects.filter(question__id=que.id)
+                qo = quiz_options[random.randint(0,quiz_options.count()-1)]
+                print ("done")
+                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0], answer_obtained=qo.option, answer_id=qo.id).save()
             return JsonResponse(True, status=200, safe=False)
         except Exception as e:
             print (e)
