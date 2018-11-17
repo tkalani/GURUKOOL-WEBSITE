@@ -330,7 +330,7 @@ class QuizComplete(APIView):
                 qr = get_object_or_404(QuizResult, student=stud, conduct_quiz=quiz)
                 que = get_object_or_404(QuizQuestion, id=question[1])
                 QuestionWiseResult(quiz_result=qr, question=que, answer=question[0]).save()
-                return JsonResponse(True, status=200, safe=False)
+            return JsonResponse(True, status=200, safe=False)
         except Exception as e:
             print (e)
             return JsonResponse(False, status=500, safe=False)
