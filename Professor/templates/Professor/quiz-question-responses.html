@@ -17,9 +17,9 @@
                   <div class="card active-quiz-card border-primary">
                     <div class="card-header">
                       <div class="row">
-                          <div class="col-md-6 col-xs-12">Quiz Detail ({{ conducted_quiz.unique_quiz_id }})</div>
+                          <div class="col-md-7 col-xs-12">Quiz Detail ({{ conducted_quiz.unique_quiz_id }})</div>
                           <div class="col-md-3 col-xs-12">{{ conducted_quiz.conduction_date }}</div>
-                          <div class="col-md-3 col-xs-12"><a href="{% url 'Professor:view-quiz-responses' conducted_quiz.id %}"><button class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;View Quiz Responses</button></a></div>
+                          <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:view-quiz-responses' conducted_quiz.id %}"><button class="btn btn-info btn-sm"> <i class="fa fa-eye"></i> &nbsp; &nbsp;View Responses</button></a></div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -66,27 +66,101 @@
                 </div>
               </div>
               <br>
-              <div class="row">
-                  {% for result in quiz_results %}
-                <div class="col-md-3 col-xs-12">
-                    <div class="card meeting-card border-danger">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-md-9 col-xs-12">{{ result.marks_obtained }}</div>
-                                <div class="col-md-3 col-xs-12">#{{forloop.counter}}</div>
-                            </div>
-                        </div>
-                        <div class="card-body meeting-card-body" style="overflow-y: scroll">
-                            <div class="row">
-                                <div class="col-md-4 col-xs-12"><img src="{% static 'images/avatar/student.png' %}" class="student-avatar"></div>
-                                <div class="col-md-8 col-xs-12">{{ result.student.user.user.first_name }} {{ result.student.user.user.last_name }}</div>
-                            </div>
-                        </div>
-                    </div>
-                  </div>
-                  {% endfor %}
-                </div>
               <br>
+              <div class="row">
+                <div class="col-md-12 col-xs-12">
+                <div class="card active-quiz-card border-primary">
+                <table class="table table-striped">
+                  <thead class="card-header">
+                  <tr>
+                    <th>Question</th>
+                    <th>Correct</th>
+                    <th>Wrong</th>
+                    <th>Left</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Description</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                  </tr>
+                  <tr>
+                    <td>Description</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                  </tr>
+                  <tr>
+                    <td>Description</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                    <td>40</td>
+                  </tr>
+                  <tr>
+                    <td>Description</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>30</td>
+                  </tr>
+                </tbody>
+                </table>
+              </div>
+              </div>
+            </div>
+            <br>
+            <br>
+            <div id="question-wise-result">
+              <div class="row">
+                <div class="col-md-12 col-xs-12">
+                  <div class="card active-quiz-card border-primary">
+                  <div class="card-header">
+                      <div class="row">
+                          <div class="col-md-12 col-xs-12"><strong>Q: Waht does DFA stand for?</strong></div>                        
+                      </div>
+                    </div>
+                <table class="table table-striped">
+                  <thead class="card-header">
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Option Chosen</th>
+                    <th>Correct</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>S20160010096</td>
+                    <td>Tanmay Kalani</td>
+                    <td>Determinstic Finite Automata</td>
+                    <td>Yes</td>
+                  </tr>
+                  <tr>
+                    <td>S2016001001</td>
+                    <td>Bhavi Chawala</td>
+                    <td>Determinstic Finite Automata</td>
+                    <td>Yes</td>
+                  </tr>
+                  <tr>
+                    <td>S20160010006</td>
+                    <td>Anurag Gupta</td>
+                    <td>Non-Determinstic Finite Automata</td>
+                    <td>No</td>
+                  </tr>
+                  <tr>
+                    <td>S20160010082</td>
+                    <td>Sanyem Gupta</td>
+                    <td>Determinstic Finite Automata</td>
+                    <td>Yes</td>
+                  </tr>
+                </tbody>
+                </table>
+              </div>
+                </div>
+              </div>
+            </div>
             </div>
   </section>
 
@@ -102,4 +176,6 @@
     crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
     crossorigin="anonymous"></script>
+
+
 {% endblock %}
