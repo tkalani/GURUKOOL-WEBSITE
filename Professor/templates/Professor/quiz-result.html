@@ -3,107 +3,97 @@
 {% load staticfiles %}
 
 {% block title %}
-    Quiz Detail
+    Quiz Detail ({{ conducted_quiz.unique_quiz_id }})
 {% endblock %}
 
 {% block body %}
-    <!-- Quiz Detail Here {{ quiz_data.0.quiz.id }}<br><br> -->
 
   {% include 'UserAuth/message.html' %}
 
-    <header id="main-header" class="py-2 bg-success text-white">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <h1> <a href="{% url 'Professor:dashboard' %}"><i class="fa fa-arrow-left" style="color: white"></i></a> Quiz Detail ({{ conducted_quiz.unique_quiz_id }})</h1>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <section id="categories">
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <div class="card">
-            <div class="card-header">
-                <h4>
-                    <div class="row">
-                        <div class="col-md-8">{{ conducted_quiz.quiz.course.name }} - {{ conducted_quiz.quiz.course.code }}</div>
+    <section class="body-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                  <div class="card active-quiz-card border-primary">
+                    <div class="card-header">
+                      <div class="row">
+                          <div class="col-md-9 col-xs-12">Quiz Detail ({{ conducted_quiz.unique_quiz_id }})</div>
+                          <div class="col-md-3 col-xs-12">{{ conducted_quiz.conduction_date }}</div>
+                        </div>
                     </div>
-            </h4>
-            <table class="table table-striped">
-              <thead class="thead-dark">
-                <tr>
-                  <th>{{ conducted_quiz.quiz.title }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{ conducted_quiz.quiz.description }}</td>
-                </tr>
-                <tr>
-                    <td>Held On: <b>{{ conducted_quiz.conduction_date }}</b></td>
-                </tr>
-                <tr>
-                    <td>Average Marks: <b>{{ quiz_statistics.avg }}</b></td>
-                </tr>
-                <tr>
-                    <td>Total Responses: <b>{{ quiz_statistics.number_of_responses }}</b></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          </div>
-
-          <section id="categories">
-                <div class="container">
-                  <div class="row">
-                    <div class="col">
-                      <div class="card">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-md-6 col-xs-12">
+                          <div class="row">
+                            <div class="col-md-6 col-xs-12"><strong>Course Code</strong></div>
+                            <div class="col-md-6 col-xs-12">{{ conducted_quiz.quiz.course.code }}</div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-6 col-xs-12"><strong>Title</strong></div>
+                            <div class="col-md-6 col-xs-12">{{ conducted_quiz.quiz.title }}</div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-6 col-xs-12"><strong>Maximum Marks</strong></div>
+                              <div class="col-md-6 col-xs-12">{{ conducted_quiz.quiz.max_marks }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12"><strong>Average Marks</strong></div>
+                                <div class="col-md-6 col-xs-12">{{ quiz_statistics.avg }}</div>
+                              </div>
+                        </div>
+                        <div class="col-md-6 col-xs-12">
+                          <div class="row">
+                            <div class="col-md-6 col-xs-12"><strong>Course Name</strong></div>
+                            <div class="col-md-6 col-xs-12">{{ conducted_quiz.quiz.course.name }}</div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-6 col-xs-12"><strong>Description</strong></div>
+                            <div class="col-md-6 col-xs-12">{{ conducted_quiz.quiz.description }}</div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-6 col-xs-12"><strong>Pass Marks</strong></div>
+                              <div class="col-md-6 col-xs-12">{{ conducted_quiz.quiz.pass_marks }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-xs-12"><strong>Total Responses</strong></div>
+                                <div class="col-md-6 col-xs-12">{{ quiz_statistics.number_of_responses }}</div>
+                              </div>
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                  {% for result in quiz_results %}
+                <div class="col-md-3 col-xs-12">
+                    <div class="card meeting-card border-danger">
                         <div class="card-header">
-                            
-                        <table class="table table-striped">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th>Rank</th>
-                                    <th>Name</th>
-                                    <th>Marks Obtained / Max Marks</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                          <tbody>
-                              {% for result in quiz_results %}
-                                <tr>
-                                    <td>{{ forloop.counter }}</td>
-                                    <td>{{ result.student.user.user.first_name }} {{ result.student.user.user.last_name }}</td>
-                                    <td>{{ result.marks_obtained }} / {{ result.conduct_quiz.quiz.max_marks }}</td>
-                                    <td>
-                                        <a href="" class="btn btn-secondary">
-                                            <i class="fas fa-angle-double-right"></i> Details
-                                        </a>
-                                    </td>
-                                </tr>
-                              {% endfor %}
-                          </tbody>
-                        </table>
-                      </div>
-                      </div>
-
-        
-
-
-  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-        
-      </div>
-    </div>
-
-    <br><br>
+                            <div class="row">
+                                <div class="col-md-9 col-xs-12">{{ result.marks_obtained }}</div>
+                                <div class="col-md-3 col-xs-12">#{{forloop.counter}}</div>
+                            </div>
+                        </div>
+                        <div class="card-body meeting-card-body" style="overflow-y: scroll">
+                            <div class="row">
+                                <div class="col-md-4 col-xs-12"><img src="{% static 'images/avatar/student.png' %}" class="student-avatar"></div>
+                                <div class="col-md-8 col-xs-12">{{ result.student.user.user.first_name }} {{ result.student.user.user.last_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              <br>
+            </div>
+  </section>
 
 
 {% endblock %}
 
 {% block scripts %}
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>

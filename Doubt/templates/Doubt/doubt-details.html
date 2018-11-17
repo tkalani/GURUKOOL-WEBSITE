@@ -11,7 +11,7 @@
 
   {% include 'UserAuth/message.html' %}
 
-    <header id="main-header" class="py-2 bg-success text-white">
+    <!-- <header id="main-header" class="py-2 bg-success text-white">
     <div class="container">
       <div class="row">
         <div class="col-md-6">
@@ -30,7 +30,6 @@
                 <h4>
                     <div class="row">
                         <div class="col-md-10">{{ doubt_data.course.name }} - {{ doubt_data.course.code }}</div>
-                        <!-- <div class="col-md-2"><a href=""><button class="btn btn-success btn-block" style="background-color: rgb(226, 34, 28);"><i class="fa fa-stop"></i> &nbsp; &nbsp;</button></a></div>     -->
                     </div>
             </h4>
             <table class="table table-striped">
@@ -104,7 +103,106 @@
                   </div>
                 </div>
               </section>
-              </form>
+              </form> -->
+
+              <section class="body-section">
+                  <div class="container">
+                      <div class="row">
+                          <div class="col-md-12 col-xs-12">
+                            <div class="card active-quiz-card border-primary">
+                              <div class="card-header">
+                                <div class="row">
+                                    <div class="col-md-9 col-xs-12">Doubt Detail</div>
+                                    <div class="col-md-3 col-xs-12">{{ meeting.created_time }}</div>
+                                  </div>
+                              </div>
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col-md-6 col-xs-12">
+                                      <div class="row">
+                                          <div class="col-md-6 col-xs-12"><strong>Course Code</strong></div>
+                                          <div class="col-md-6 col-xs-12">{{ doubt_data.course.code }}</div>
+                                      </div>
+                                      <div class="row">
+                                          <div class="col-md-6 col-xs-12"><strong>Title</strong></div>
+                                          <div class="col-md-6 col-xs-12">{{ doubt_data.title }}</div>
+                                      </div>
+                                    <div class="row">
+                                      <div class="col-md-6 col-xs-12"><strong>Posted By</strong></div>
+                                      <div class="col-md-6 col-xs-12">{{doubt_data.student.user.user.first_name}} {{doubt_data.student.user.user.last_name}}</div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-6 col-xs-12">
+                                    <div class="row">
+                                      <div class="col-md-6 col-xs-12"><strong>Course Name</strong></div>
+                                      <div class="col-md-6 col-xs-12">{{ doubt_data.course.name }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-xs-12"><strong>Description</strong></div>
+                                        <div class="col-md-6 col-xs-12">{{ doubt_data.description }}</div>
+                                      </div>
+                                      <div class="row">
+                                          <div class="col-md-6 col-xs-12"><strong>Posted On</strong></div>
+                                          <div class="col-md-6 col-xs-12">{{ doubt_data.last_updated }}</div>
+                                        </div>
+                                  </div>
+                                </div>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                      <form action="{% url 'Doubt:post-comment' doubt_data.id %}" id="comment-submit" method="POST">
+                          {% csrf_token %}
+                      <section id="details">
+                            <div class="container">
+                              <div class="row">
+                                <div class="col">
+                                  <div class="card">
+                                    <div class="card-header">
+                                      <h4>
+                                        <div class="row">
+                                            <div class="col-md-10">Doubt</div>
+                                            <div class="col-md-2"><button type="submit" class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-check"></i> &nbsp; &nbsp;Submit</button></div>
+                                        </div>
+                                      </h4>
+                                    </div>
+                                    {% for reply in previous_replies %}
+                                        {% if reply.user.email == request.user.email %}
+                                        <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="card-body col-md-8">
+                                                <div class="form-group">
+                                                    <label>{{ reply.last_updated }}</label>
+                                                    <textarea readonly class="form-control" required>{{ reply.text }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="row">
+                                            <div class="card-body col-md-8">
+                                                <div class="form-group">
+                                                        <label>{{ reply.last_updated }}</label>
+                                                    <textarea readonly class="form-control" required>{{ reply.text }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4"></div>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="body">Reply</label>
+                                            <textarea name="comment" class="form-control" rows=4 required></textarea>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </section>
+                          </form>
+            </section>
 
 
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>

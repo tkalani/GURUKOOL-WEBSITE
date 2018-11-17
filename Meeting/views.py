@@ -64,7 +64,6 @@ def meeting_detail(request, meeting_id):
 @group_required(group_name, login_url=login_url)
 def index(request):
     meeting_list = Meeting.objects.filter(professor__user__user__id=request.user.id).order_by('-created_time')
-    print(meeting_list)
     return render(request, 'Meeting/all-meetings.html', {'all_meeting_list': meeting_list})
 
 

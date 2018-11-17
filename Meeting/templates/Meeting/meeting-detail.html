@@ -8,7 +8,7 @@
 {% block body %}
     {% include 'UserAuth/message.html' %}
 
-    <header id="main-header" class="py-2 bg-success text-white">
+    <!-- <header id="main-header" class="py-2 bg-success text-white">
         <div class="container">
             <div class="row">
             <div class="col-md-6">
@@ -26,7 +26,6 @@
                       <h4>
                           <div class="row">
                               <div class="col-md-10">{{ meeting.title }}</div>
-                              <!-- <div class="col-md-2"><a href=""><button class="btn btn-success btn-block" style="background-color: rgb(226, 34, 28);"><i class="fa fa-stop"></i> &nbsp; &nbsp;</button></a></div>     -->
                           </div>
                       </h4>
                       <table class="table table-striped">
@@ -53,9 +52,142 @@
                         </tbody>
                       </table>
                     </div>
-                </div>
+                </div> -->
 
-                {% if not meeting.prof_response %}
+                <!-- {% if not meeting.prof_response %}
+                <form action="{% url 'Meeting:meeting-detail' meeting.id %}" id="comment-submit" method="POST" onsubmit="return validate()">
+                    {% csrf_token %}
+                {% endif %}
+                <section id="details">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col">
+                            <div class="card">
+                              <div class="card-header">
+                                <h4>
+                                  <div class="row">
+                                      <div class="col-md-10">Meeting</div>
+                                      {% if not meeting.prof_response %}
+                                        <div class="col-md-2"><button type="submit" class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-check"></i> &nbsp; &nbsp;Submit</button></div>
+                                      {% endif %}
+                                    </div>
+                                </h4>
+                              </div>
+                                {% if meeting.prof_response %}
+                                  <div class="row">
+                                      <div class="col-md-4"></div>
+                                      <div class="card-body col-md-8">
+                                          <div class="form-group">
+                                              <textarea readonly class="form-control" required>{{ meeting.prof_response }}</textarea>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  {% else %}
+                                  <div class="card-body">
+                                        <label for="body">Status</label>
+                                        <select class="form-control" name="status" onchange="check_val(this)">
+                                            <option value="APPROVED">APPROVED</option>
+                                            <option value="REJECTED">REJECTED</option>
+                                        </select>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="body">Reply</label>
+                                            <textarea name="prof_response" class="form-control" rows=4 required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" id="meeting-place">
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="body">Date</label>
+                                                <input type="date" required="true" name="meeting_date" id="meeting-date" class="form-control">
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="body">Time</label>
+                                                <input type="time" required="true" name="meeting_time" id="meeting-time" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-6">
+                                                <label for="body">Place</label>
+                                                <input type="text" required="true" name="meeting_place" id="meeting-place" class="form-control" value="Office">
+                                            </div>
+                                        </div>
+                                    </div>
+                              {% endif %}
+                                  {% if meeting_detail.0.discussed %}
+                                  <div class="card-header">
+                                    <h4>
+                                      <div class="row">
+                                        <div class="col-md-10">Discussion About</div>
+                                      </div>
+                                    </h4>
+                                  </div>
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="card-body col-md-8">
+                                            <div class="form-group">
+                                                <textarea readonly class="form-control" required>{{ meeting_detail.0.discussed }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                    {% if not meeting.prof_response %}
+                        </form>
+                    {% endif %} -->
+
+                    <section class="body-section">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12 col-xs-12">
+                                      <div class="card active-quiz-card border-primary">
+                                        <div class="card-header">
+                                          <div class="row">
+                                              <div class="col-md-9 col-xs-12">Meeting Detail</div>
+                                              <div class="col-md-3 col-xs-12">{{ meeting.created_time }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                          <div class="row">
+                                            <div class="col-md-6 col-xs-12">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-xs-12"><strong>Title</strong></div>
+                                                    <div class="col-md-6 col-xs-12">{{ meeting.title }}</div>
+                                                </div>
+                                              <div class="row">
+                                                <div class="col-md-6 col-xs-12"><strong>Posted By</strong></div>
+                                                <div class="col-md-6 col-xs-12">{{ meeting.student.user.user.first_name }} {{ meeting.student.user.user.last_name }}</div>
+                                              </div>
+                                              <div class="row">
+                                                  <div class="col-md-6 col-xs-12"><strong>Meeting Date</strong></div>
+                                                  <div class="col-md-6 col-xs-12">{{ meeting_detail.0.meeting_date }} {{ meeting_detail.0.meeting_time }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12">
+                                              <div class="row">
+                                                <div class="col-md-6 col-xs-12"><strong>Body</strong></div>
+                                                <div class="col-md-6 col-xs-12">{{ meeting.body }}</div>
+                                              </div>
+                                              <div class="row">
+                                                  <div class="col-md-6 col-xs-12"><strong>Posted On</strong></div>
+                                                  <div class="col-md-6 col-xs-12">{{ meeting.created_time }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 col-xs-12"><strong>Meeting At</strong></div>
+                                                    <div class="col-md-6 col-xs-12">{{ meeting_detail.0.meeting_place }}</div>
+                                                  </div>
+                                            </div>
+                                          </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                  {% if not meeting.prof_response %}
                 <form action="{% url 'Meeting:meeting-detail' meeting.id %}" id="comment-submit" method="POST" onsubmit="return validate()">
                     {% csrf_token %}
                 {% endif %}
@@ -141,9 +273,12 @@
                     {% if not meeting.prof_response %}
                         </form>
                     {% endif %}
+                                </div>
+                      </section>
+                    
 
+                      
 {% endblock %}
-
 
 
 
