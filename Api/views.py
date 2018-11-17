@@ -324,23 +324,12 @@ class QuizComplete(APIView):
             stud = get_object_or_404(StudentProfile, user__email_address=email)
             quiz = get_object_or_404(ConductQuiz, unique_quiz_id=quiz_id)
             print (stud, quiz)
-            # QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks, cq_id=quiz_id).save()
+            QuizResult(student=stud, conduct_quiz=quiz, marks_obtained=marks, cq_id=quiz_id).save()
             for question in (body['quiz_response']):
                 print (question)
                 qr = get_object_or_404(QuizResult, student=stud, conduct_quiz=quiz)
                 que = get_object_or_404(QuizQuestion, id=question[1])
-
-                '''
-                    Populaing data
-                '''
-                import random
-
-                quiz_options = QuizOptions.objects.filter(question__id=que.id)
-                print ("deon")
-                print (quiz_options.count())
-                qo = quiz_options[random.randint(0,quiz_options.count()-1)]
-                print ("done")
-                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0], answer_obtained=qo.option, answer_id=qo.id).save()
+                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0]).save()
             return JsonResponse(True, status=200, safe=False)
         except Exception as e:
             print (e)

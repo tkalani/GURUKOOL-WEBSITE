@@ -12,6 +12,8 @@ from Student.models import *
 from Meeting.models import *
 import hashlib
 import time
+import datetime
+from django.db.models import Count
 
 group_name = 'Professor'
 login_url = 'UserAuth:login'
@@ -41,7 +43,7 @@ def dashboard(request):
         poll_list = Poll.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
         quiz_list = Quiz.objects.filter(professor__user__user__username=request.user.username).order_by('-id')
         course_list = CourseProfessor.objects.filter(professor__user__user__id=request.user.id).order_by('-id')
-        meeting_list = (MeetingPlace.objects.filter(meeting__professor__user__user__id=request.user.id, is_ticked=False, meeting_date=time.strftime('%Y-%m-%d'), meeting__status='APPROVED').order_by('-id'))[:1]
+        meeting_list = (MeetingPlace.objects.filter(meeting__professor__user__user__id=request.user.id, is_ticked=False, meeting_date=time.strftime('%Y-%m-%d'), meeting__status='APPROVED').order_by('meeting_time'))[:1]
         active_poll_list = ConductPoll.objects.filter(poll__professor__user__user__username=request.user.username, active=True).order_by('-id')
         active_quiz_list = ConductQuiz.objects.filter(quiz__professor__user__user__username=request.user.username, active=True).order_by('-id')
         all_doubt_list = []
@@ -56,6 +58,16 @@ def dashboard(request):
         for quiz in active_quiz_list:
             quiz.submissions = QuizResult.objects.filter(conduct_quiz=quiz).count()
             quiz.total = CourseStudent.objects.filter(course=quiz.quiz.course).count()
+
+        # all_meetings = []
+        # meeting_list = (MeetingPlace.objects.filter(meeting__professor__user__user__id=request.user.id, is_ticked=False, meeting_date=time.strftime('%Y-%m-%d'), meeting__status='APPROVED').order_by('meeting_time'))
+        # for m in meeting_list:
+        #     print(m.meeting_time)
+        #     print(datetime.datetime.time(datetime.datetime.now()))
+        #     if m.meeting_time >= datetime.datetime.time(datetime.datetime.now()):
+        #         print(True)
+        #         all_meetings.append(m)
+        # print(all_meetings)
 
         return render(request, 'Professor/dashboard.html', {"all_doubt_list": all_doubt_list, "poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
 
@@ -375,3 +387,15 @@ def quiz_result(request, quiz_id):
             print('error is', e)
             messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:all-quiz'))
+
+def view_quiz_reponses(request, quiz_id):
+    if request.method == 'GET':
+        conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
+        quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
+        question_wise_result = QuestionWiseResult.objects.filter(quiz_result__conduct_quiz__id=quiz_id).values('question').annotate(total=Count('question'))
+        print(question_wise_result)
+
+        # all_ques = []
+        # for q in question_wise_result:
+        #     all_ques.append
+        return render(request, 'Professor/quiz-question-responses.html', {"conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics})
