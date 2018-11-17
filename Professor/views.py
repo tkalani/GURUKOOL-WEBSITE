@@ -388,14 +388,22 @@ def quiz_result(request, quiz_id):
             messages.warning(request, "There was an error displaying Quizzes. Please Try Again.")
             return HttpResponseRedirect(reverse('Professor:all-quiz'))
 
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
 def view_quiz_reponses(request, quiz_id):
     if request.method == 'GET':
         conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
         quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
-        question_wise_result = QuestionWiseResult.objects.filter(quiz_result__conduct_quiz__id=quiz_id).values('question').annotate(total=Count('question'))
+        question_wise_result = QuestionWiseResult.objects.filter(quiz_result__conduct_quiz__id=quiz_id).values('answer').annotate(total=Count('answer'))
         print(question_wise_result)
 
         # all_ques = []
         # for q in question_wise_result:
         #     all_ques.append
         return render(request, 'Professor/quiz-question-responses.html', {"conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics})
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def question_wise_result(request, question_id):
+    print(' in here', question_id)
+    return render(request, 'Professor/question-wise-responses.html')

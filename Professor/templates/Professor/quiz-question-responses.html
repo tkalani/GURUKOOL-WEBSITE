@@ -17,9 +17,9 @@
                   <div class="card active-quiz-card border-primary">
                     <div class="card-header">
                       <div class="row">
-                          <div class="col-md-7 col-xs-12">Quiz Detail ({{ conducted_quiz.unique_quiz_id }})</div>
+                          <div class="col-md-9 col-xs-12">Quiz Detail ({{ conducted_quiz.unique_quiz_id }})</div>
                           <div class="col-md-3 col-xs-12">{{ conducted_quiz.conduction_date }}</div>
-                          <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:view-quiz-responses' conducted_quiz.id %}"><button class="btn btn-info btn-sm"> <i class="fa fa-eye"></i> &nbsp; &nbsp;View Responses</button></a></div>
+                          <!-- <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:view-quiz-responses' conducted_quiz.id %}"><button class="btn btn-info btn-sm"> <i class="fa fa-eye"></i> &nbsp; &nbsp;View Responses</button></a></div> -->
                         </div>
                     </div>
                     <div class="card-body">
@@ -82,7 +82,7 @@
                 <tbody>
                   <tr>
                     <td>Description</td>
-                    <td>10</td>
+                    <td onclick="show_question_wise_result()">10</td>
                     <td>20</td>
                     <td>30</td>
                   </tr>
@@ -97,7 +97,6 @@
                     <td>10</td>
                     <td>20</td>
                     <td>30</td>
-                    <td>40</td>
                   </tr>
                   <tr>
                     <td>Description</td>
@@ -113,12 +112,12 @@
             <br>
             <br>
             <div id="question-wise-result">
-              <div class="row">
+              <!-- <div class="row">
                 <div class="col-md-12 col-xs-12">
                   <div class="card active-quiz-card border-primary">
                   <div class="card-header">
                       <div class="row">
-                          <div class="col-md-12 col-xs-12"><strong>Q: Waht does DFA stand for?</strong></div>                        
+                          <div class="col-md-12 col-xs-12"><strong>Q: What does DFA stand for?</strong></div>                        
                       </div>
                     </div>
                 <table class="table table-striped">
@@ -159,7 +158,7 @@
                 </table>
               </div>
                 </div>
-              </div>
+              </div> -->
             </div>
             </div>
   </section>
@@ -177,5 +176,11 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
     crossorigin="anonymous"></script>
 
-
+    <script>
+    function show_question_wise_result()
+    {
+      console.log('here');
+      $('#question-wise-result').html('Loading').load('{% url 'Professor:question-wise-result' 54 %}');
+    }
+  </script>
 {% endblock %}
