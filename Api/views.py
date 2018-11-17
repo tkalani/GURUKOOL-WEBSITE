@@ -335,7 +335,7 @@ class QuizComplete(APIView):
                 '''
                 import random
                 quiz_options = QuizOptions.objects.filter(question__id=que.id)
-                qo = quiz_options[random.randint(0,quiz_options.count())]
+                qo = quiz_options[random.randint(0,quiz_options.count()-1)]
                 print ("done")
                 QuestionWiseResult(quiz_result=qr, question=que, answer=question[0], answer_obtained=qo.option, answer_id=qo.id).save()
             return JsonResponse(True, status=200, safe=False)
