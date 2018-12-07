@@ -1,47 +1,52 @@
               <div class="row">
                 <div class="col-md-12 col-xs-12">
+                  {% if results %}
                   <div class="card active-quiz-card border-primary">
                   <div class="card-header">
                       <div class="row">
-                          <div class="col-md-12 col-xs-12"><strong>Q: What does DFA stand for?</strong></div>                        
+                          <div class="col-md-12 col-xs-12"><strong>Q: </strong>{% if results %}{{ results.0.question.question }}{% endif %}</div>                        
                       </div>
                     </div>
                 <table class="table table-striped">
+                  {% if results %}
                   <thead class="card-header">
                   <tr>
                     <th>Student ID</th>
                     <th>Name</th>
-                    <th>Option Chosen</th>
-                    <th>Correct</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>S20160010096</td>
-                    <td>Tanmay Kalani</td>
-                    <td>Determinstic Finite Automata</td>
-                    <td>Yes</td>
-                  </tr>
-                  <tr>
-                    <td>S2016001001</td>
-                    <td>Bhavi Chawala</td>
-                    <td>Determinstic Finite Automata</td>
-                    <td>Yes</td>
-                  </tr>
-                  <tr>
-                    <td>S20160010006</td>
-                    <td>Anurag Gupta</td>
-                    <td>Non-Determinstic Finite Automata</td>
-                    <td>No</td>
-                  </tr>
-                  <tr>
-                    <td>S20160010082</td>
-                    <td>Sanyem Gupta</td>
-                    <td>Determinstic Finite Automata</td>
-                    <td>Yes</td>
-                  </tr>
+                  {% for result in results %}
+                    <tr>
+                      <td>{{ result.quiz_result.student.user.user.id }}</td>
+                      <td>{{ result.quiz_result.student.user.user.first_name }} {{ result.quiz_result.student.user.user.last_name }}</td>
+                      <td>
+                        {% if result.answer == 'correct' %}<i class="fa fa-check" aria-hidden="true" style="color: green;"></i>{% endif %}
+                        {% if result.answer == 'wrong' %}<i class="fa fa-times" aria-hidden="true" style="color: red;"></i>{% endif %}
+                        {% if result.answer == 'left' %}<i class="fa fa-exclamation" aria-hidden="true" style="color: blue;"></i>{% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
                 </tbody>
+                {% endif %}
                 </table>
+                {% else %}
+                <div class="card active-quiz-card border-primary">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12">
+                              <strong>
+                                No student 
+                                {% if answer == 'correct' %}got this question correct.{% endif %}
+                                {% if answer == 'wrong' %}got this question wrong.{% endif %}
+                                {% if answer == 'left' %}left this question.{% endif %}
+                              </strong>
+                            </div>                        
+                        </div>
+                      </div>
+                </div>
+                {% endif %}
               </div>
                 </div>
               </div>

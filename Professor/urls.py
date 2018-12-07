@@ -19,5 +19,5 @@ urlpatterns = [
 		url(r'^conducted-quiz/(?P<quiz_id>\d+)/$', views.conducted_quiz, name='conducted-quiz'),
 		url(r'^quiz-result/(?P<quiz_id>\d+)/$', views.quiz_result, name='quiz-result'),
 		url(r'^view-quiz-responses/(?P<quiz_id>\d+)/$', views.view_quiz_reponses, name='view-quiz-responses'),
-		url(r'^question-wise-result/(?P<question_id>\d+)/$', views.question_wise_result, name='question-wise-result'),
+		url(r'^question-wise-result/$', views.question_wise_result, name='question-wise-result'),
 	]

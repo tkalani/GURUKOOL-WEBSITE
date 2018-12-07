@@ -12,6 +12,19 @@
 
     <section class="body-section">
         <div class="container">
+          <div class="row">
+              <div class="col-md-12 col-xs-12">
+                  <a href="{% url 'Professor:dashboard' %}" class="question-response-count">Dashboard</a>
+                  /
+                  <a href="{% url 'Professor:all-quiz' %}" class="question-response-count">Quiz</a>
+                  / 
+                  <a href="{% url 'Professor:conducted-quiz' conducted_quiz.id %}" class="question-response-count">Quiz <strong>{{ conducted_quiz.unique_quiz_id }}</strong></a>
+                  /
+                  <a href="{% url 'Professor:quiz-result' conducted_quiz.id %}" class="question-response-count">Quiz Results</a>
+                  /
+                  Quiz Responses
+              </div>
+            </div>
             <div class="row">
                 <div class="col-md-12 col-xs-12">
                   <div class="card active-quiz-card border-primary">
@@ -76,16 +89,31 @@
                     <th>Question</th>
                     <th>Correct</th>
                     <th>Wrong</th>
-                    <th>Left</th>
+                    <th>Not Attempted</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for qu, qwr in question_wise_result %}
                   <tr>
-                    <td>{{ qu.question }}</td>
-                    <td>{% if qwr.0.total %} {{ qwr.0.total }} {% else %} 0 {% endif %}</td>
-                    <td>{% if qwr.1.total %} {{ qwr.1.total }} {% else %} 0 {% endif %}</td>
-                    <td>{% if qwr.2.total %} {{ qwr.2.total }} {% else %} 0 {% endif %}</td>
+                    <td>{{ qu.question }} {{ qu.id }}</td>
+                    <td class="question-response-count" onclick="show_question_wise_result({{qu.id}}, 1)">
+                    {% if qwr.0.answer == 'correct' %} {{ qwr.0.total }} {% endif %}
+                    {% if qwr.1.answer == 'correct' %} {{ qwr.1.total }} {% endif %}
+                    {% if qwr.2.answer == 'correct' %} {{ qwr.2.total }} {% endif %}
+                    {% if qwr.0.answer != 'correct' and qwr.1.answer != 'correct' and qwr.2.answer != 'correct' %}0{% endif %}
+                    </td>
+                    <td class="question-response-count" onclick="show_question_wise_result({{qu.id}}, -1)">
+                      {% if qwr.0.answer == 'wrong' %} {{ qwr.0.total }} {% endif %}
+                      {% if qwr.1.answer == 'wrong' %} {{ qwr.1.total }} {% endif %}
+                      {% if qwr.2.answer == 'wrong' %} {{ qwr.2.total }} {% endif %}
+                      {% if qwr.0.answer != 'wrong' and qwr.1.answer != 'wrong' and qwr.2.answer != 'wrong' %}0{% endif %}
+                    </td>
+                    <td class="question-response-count" onclick="show_question_wise_result({{qu.id}}, 0)">
+                      {% if qwr.0.answer == 'left' %} {{ qwr.0.total }} {% endif %}
+                      {% if qwr.1.answer == 'left' %} {{ qwr.1.total }} {% endif %}
+                      {% if qwr.2.answer == 'left' %} {{ qwr.2.total }} {% endif %}
+                      {% if qwr.0.answer != 'left' and qwr.1.answer != 'left' and qwr.2.answer != 'left' %}0{% endif %}
+                    </td>
                   </tr>
                   {% endfor %}
                 </tbody>
@@ -151,20 +179,20 @@
 {% endblock %}
 
 {% block scripts %}
-<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
     crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
     crossorigin="anonymous"></script>
 
-    <script>
-    function show_question_wise_result()
+  <script>
+
+    function show_question_wise_result(question_id, val)
     {
-      console.log('here');
-      $('#question-wise-result').html('Loading').load('{% url 'Professor:question-wise-result' 54 %}');
+      $('#question-wise-result').html('Loading...').load("{% url 'Professor:question-wise-result' %}?conducted_quiz_id={{conducted_quiz.id}}&question_id="+question_id+"&val="+val);
     }
   </script>
 {% endblock %}

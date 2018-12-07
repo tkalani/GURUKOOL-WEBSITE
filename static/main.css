@@ -93,3 +93,14 @@
     /* max-height: 80vh; */
     margin-bottom: 20px;
 }
+
+.question-response-count{
+    color: black;
+    text-decoration: underline;
+}
+
+.question-response-count:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    color: black;
+}
