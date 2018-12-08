@@ -108,3 +108,7 @@
     height: 10vh;
     width: 40%;
 }
+
+.tooltiptext{
+    transition: 1s;
+}

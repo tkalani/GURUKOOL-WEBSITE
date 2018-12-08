@@ -78,22 +78,32 @@
                             <div class="card col-md-12 col-xs-12 border-warning list-card">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-md-10 col-xs-12">Finished Quizzes - {{ finished_quiz_list.count }}</div>
+                                        <div class="col-md-9 col-xs-12">Finished Quizzes - {{ finished_quiz_list.count }}</div>
                                         <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-quiz' %}"><button type="button" class="btn btn-info btn-sm">Create Quiz</button></a></div>
+                                        <div class="col-md-1 col-xs-12"><i class="fa fa-filter" aria-hidden="true" onclick="filter()"></i></div>
+                                    </div>
+                                    <div class="row" id="tooltip-filter" style="display: none; padding-top: 1%;">
+                                        <div class="col-md-4"><input type="text" id="finished-quiz-filter-search" placeholder="Search..." onkeyup="filter_by_keyword(this.value)";></div>
+                                        <div class="col-md-7">
+                                            <input type="date" id="finished-quiz-filter-start-date"> to 
+                                            <input type="date" id="finished-quiz-filter-end-date">
+                                        </div>
+                                        <div class="col-md-1"><i class="fa fa-search" aria-hidden="true" onclick="filter_by_date()"></i></div>
                                     </div>
                                 </div>
                                 <div class="card-body" style="overflow-y: scroll;">
-                                    <div class="row">
+                                    <div class="row" id="finished-quiz-list">
                                         {% if finished_quiz_list %}
                                         {% for quiz in finished_quiz_list %}
-                                        <div class="col-md-4 col-xs-12" style="margin-bottom: 10px">
+                                        <div class="col-md-4 col-xs-12 finished-quiz-card" style="margin-bottom: 10px">
                                             <div class="card quiz-card">
                                                 <div class="card-header">
                                                     <div class="row">
-                                                        <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:conducted-quiz' quiz.id %}" style="color: black; text-decoration: underline;">{{ quiz.unique_quiz_id }}</a></div>
-                                                        <div class="col-md-4 col-xs-12">{{ quiz.quiz.course.code }}</div>
+                                                        <div class="col-md-8 col-xs-12 finished-quiz-unique-quiz-id"><a href="{% url 'Professor:conducted-quiz' quiz.id %}" style="color: black; text-decoration: underline;">{{ quiz.unique_quiz_id }}</a></div>
+                                                        <div class="col-md-4 col-xs-12 finished-quiz-course-code">{{ quiz.quiz.course.code }}</div>
                                                     </div>
                                                 </div>
+                                                <div class="row finished-quiz-date" style="display: none;">{{ quiz.conduction_date|date:"Y-m-d" }}</div>
                                                 <br>
                                                 <center>
                                                     <div class="div-canvas" id="finished-quiz-pie-chart-{{forloop.counter}}-div" style="height: 80px; width: 80px;">
@@ -101,8 +111,8 @@
                                                     </div>
                                                 </center>
                                                 <div class="card-body quiz-card-body" style="overflow-y: scroll;">
-                                                    <h5 class="card-title">{{ quiz.quiz.title }}</h5>
-                                                    <p class="card-text">{{ quiz.quiz.description }}</p>
+                                                    <h5 class="card-title finished-quiz-title">{{ quiz.quiz.title }}</h5>
+                                                    <p class="card-text finished-quiz-description">{{ quiz.quiz.description }}</p>
                                                 </div>
                                                 <div class="card-footer quiz-card-footer">
                                                     <div class="row">
@@ -112,15 +122,16 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div id="no-finished-quiz-found" style="display: none;">No Quizzes Found</div>
                                         {% endfor %}
                                         {% else %}
                                         <div class="col-md-12 col-xs-12">
-                                                <div class="card quiz-card">
-                                                    <div class="card-body quiz-card-body" style="overflow-y: scroll;">
-                                                        No Quizzes Conducted
-                                                    </div>
+                                            <div class="card quiz-card">
+                                                <div class="card-body quiz-card-body" style="overflow-y: scroll;">
+                                                    No Quizzes Conducted
                                                 </div>
                                             </div>
+                                        </div>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -146,15 +157,9 @@
                                                         </div>
                                                     </div>
                                                     <br>
-                                                    <!-- <center>
-                                                        <div class="div-canvas" id="finished-quiz-pie-chart-{{forloop.counter}}-div" style="height: 80px; width: 80px;">
-                                                            <canvas id="finished-quiz-pie-chart-{{forloop.counter}}"></canvas>
-                                                        </div>
-                                                    </center> -->
                                                     <div class="card-body quiz-draft-card-body" style="overflow-y: scroll;">
                                                         <h5 class="card-title">{{ quiz.title }}</h5>
                                                         <p class="card-text">{{ quiz.description }}</p>
-                                                        <!-- <p class="card-text">{{ quiz.course.name }}</p> -->
                                                         <table>
                                                             <tr><td style="color: red">Max Marks</td><td>{{ quiz.max_marks }}</td></tr>
                                                             <tr><td style="color: green">Pass Marks</td><td>{{ quiz.pass_marks }}</td></tr>
@@ -302,7 +307,96 @@
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
     <script>
+
+        var filter_div_flag = 0;
+        function filter()
+        {
+            if(filter_div_flag == 0)
+                $('#tooltip-filter').show(500);
+            else
+            {
+                remove_filters();
+                $('#tooltip-filter').hide(500);
+            }
+            filter_div_flag = 1 - filter_div_flag;
+        }
+
+        function remove_filters()
+        {
+            var cards = document.getElementById("finished-quiz-list");
+            var c1 = cards.getElementsByClassName("finished-quiz-card");
+            for( i = 0; i<c1.length; i++)
+                c1[i].style.display = "";
+        }
+
+        function filter_by_keyword(filter)
+        {
+            var cards = document.getElementById("finished-quiz-list");
+            var c1 = cards.getElementsByClassName("finished-quiz-card");
+            var count = 0;
+            for( i = 0; i<c1.length; i++)
+            {
+                filter= filter.toUpperCase();
+
+                var unique_quiz_id_div = c1[i].getElementsByClassName("finished-quiz-unique-quiz-id");
+                var unique_quiz_id = unique_quiz_id_div[0].innerHTML;
+
+                var course_code_div = c1[i].getElementsByClassName("finished-quiz-course-code");
+                var course_code = course_code_div[0].innerHTML;
+                
+                var title_div = c1[i].getElementsByClassName("finished-quiz-title");
+                var title = title_div[0].innerHTML;
+                
+                var description_div = c1[i].getElementsByClassName("finished-quiz-description");
+                var description = description_div[0].innerHTML;
+            
+                if(unique_quiz_id.toUpperCase().indexOf(filter) > -1 || course_code.toUpperCase().indexOf(filter) > -1 || title.toUpperCase().indexOf(filter) > -1 || description.toUpperCase().indexOf(filter) > -1)
+                    c1[i].style.display = '';
+                else
+                    c1[i].style.display = 'none';
+            }
+        }
+
+        function filter_by_date()
+        {
+            var start_date = $('#finished-quiz-filter-start-date').val();
+            var end_date = $('#finished-quiz-filter-end-date').val();
+
+            if(start_date == '' || end_date == '')
+            {
+                alert("Can't apply filter. Dated are not properly filled");
+                return;
+            }
+
+            if(end_date < start_date)
+            {
+                alert('End Date must be after Start date');;
+                return
+            }
+
+            var cards = document.getElementById("finished-quiz-list");
+            var c1 = cards.getElementsByClassName("finished-quiz-card");
+            var count = 0;
+            for( i = 0; i<c1.length; i++)
+            {
+                var date_div = c1[i].getElementsByClassName("finished-quiz-date");
+                var d = date_div[0].innerHTML;
+                if (start_date <= d && end_date >= d)
+                {
+                    c1[i].style.display = "";
+                    count++;
+                }
+                else
+                    c1[i].style.display = "none";
+                if(count == 0)
+                    $('#no-finished-quiz-found').show(500);
+                else
+                    $('#no-finished-quiz-found').hide(500);
+            }
+        }
+
         {% if active_quiz_list %}
         {% for quiz in active_quiz_list %}
             var ctx = document.querySelector("#active-quiz-pie-chart-{{forloop.counter}}").getContext('2d');
