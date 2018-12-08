@@ -393,21 +393,20 @@ def quiz_result(request, quiz_id):
 def view_quiz_reponses(request, quiz_id):
     if request.method == 'GET':
         conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
-        quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
+        quiz_statistics = QuizStatistics.objects.get(quiz_id__id=quiz_id)
         question_wise_result = []
         questions = []
         for question in QuizQuestion.objects.filter(quiz__id=conducted_quiz.quiz.id):
             question_wise_result.append(QuestionWiseResult.objects.filter(question=question, quiz_result__conduct_quiz=conducted_quiz).values('answer').annotate(total=Count('answer')))
             questions.append(question)
-        print(question_wise_result)
- 
-        # all_ques = []
-        # for q in question_wise_result:
-        #     all_ques.append
         return render(request, 'Professor/quiz-question-responses.html', {"question_wise_result":zip(questions, question_wise_result), "conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics})
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
-def question_wise_result(request, question_id):
-    print(' in here', question_id)
-    return render(request, 'Professor/question-wise-responses.html')
+def question_wise_result(request):
+    conducted_quiz_id = request.GET['conducted_quiz_id']
+    question_id = request.GET['question_id']
+    val = request.GET['val']
+    answer_dict = ['left', 'correct', 'wrong']
+    results = QuestionWiseResult.objects.filter(question__id=question_id, quiz_result__conduct_quiz__id=conducted_quiz_id, answer=answer_dict[int(val)])
+    return render(request, 'Professor/question-wise-responses.html', {"results": results, "answer": answer_dict[int(val)]})

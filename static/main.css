@@ -93,3 +93,18 @@
     /* max-height: 80vh; */
     margin-bottom: 20px;
 }
+
+.question-response-count{
+    color: black;
+}
+
+.question-response-count:hover{
+    text-decoration: underline;
+    cursor: pointer;
+    color: black;
+}
+
+.student-profile-avatar{
+    height: 10vh;
+    width: 40%;
+}
