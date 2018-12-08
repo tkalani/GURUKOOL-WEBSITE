@@ -20,7 +20,7 @@
                   {% for result in results %}
                     <tr>
                       <td>{{ result.quiz_result.student.user.user.id }}</td>
-                      <td>{{ result.quiz_result.student.user.user.first_name }} {{ result.quiz_result.student.user.user.last_name }}</td>
+                      <td><a target="_blank" href="{% url 'Student:profile' result.quiz_result.student.user.user.id %}" class="question-response-count">{{ result.quiz_result.student.user.user.first_name }} {{ result.quiz_result.student.user.user.last_name }}</a></td>
                       <td>
                         {% if result.answer == 'correct' %}<i class="fa fa-check" aria-hidden="true" style="color: green;"></i>{% endif %}
                         {% if result.answer == 'wrong' %}<i class="fa fa-times" aria-hidden="true" style="color: red;"></i>{% endif %}

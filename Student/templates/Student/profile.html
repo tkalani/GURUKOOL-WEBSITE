@@ -1,0 +1,254 @@
+{% extends 'Professor/main.html' %}
+{% include 'UserAuth/message.html' %}
+{% load staticfiles %}
+{% block title %}
+Student Profile
+{% endblock %}
+
+{% block body %}
+<section class="body-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card active-quiz-card border-primary">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-12 col-xs-12">Student Profile</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-xs-12">
+                                <img src="{% static 'images/avatar/student.png' %}" class="student-profile-avatar">
+                            </div>
+                            <div class="col-md-9 col-xs-12">
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-12"><strong>Student Id</strong></div>
+                                    <div class="col-md-6 col-xs-12">{{ student_profile.user.user.id }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-12"><strong>Name</strong></div>
+                                    <div class="col-md-6 col-xs-12">{{ student_profile.user.user.first_name }} {{ student_profile.user.user.last_name }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-12"><strong>DOB</strong></div>
+                                    <div class="col-md-6 col-xs-12">{{ student_profile.date_of_birth }}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-xs-12"><strong>Gender</strong></div>
+                                    <div class="col-md-6 col-xs-12">{{ student_profile.gender }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br><br>
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                <div class="card list-card border-danger">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-2 col-xs-12">Results</div>
+                            <div class="col-md-9 col-xs-12"></div>
+                            <div class="col-md-1 col-xs-12" id="quiz-result-type"><i class="fa fa-area-chart" aria-hidden="true" onclick="show_charts()"></i></div>
+                            <!-- <div class="col-md-3 col-xs-12"><input type="text" id="search-box" class="input-group-text"  placeholder="Search..."></div> -->
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-y: scroll">
+                        <div class="row" id="individual-quiz-results-list-type">
+                            {% for result in results %}
+                            <div class="col-md-4 col-xs-12" style="margin-bottom: 10px">
+                                <div class="card quiz-card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:conducted-quiz' result.conduct_quiz.id %}" style="color: black; text-decoration: underline;">{{ result.conduct_quiz.unique_quiz_id }}</a></div>
+                                            <div class="col-md-4 col-xs-12">{{ result.conduct_quiz.quiz.course.code }}</div>
+                                        </div>
+                                    </div>
+                                    <center>
+                                        <div class="div-canvas" id="quiz-pie-chart-{{forloop.counter}}-div"
+                                            style="height: 80px; width: 80px;">
+                                            <canvas id="quiz-pie-chart-{{forloop.counter}}"></canvas>
+                                        </div>
+                                    </center>
+                                    <div class="card-body quiz-card-body" style="overflow-y: scroll;">
+                                        <h5 class="card-title">{{ result.conduct_quiz.quiz.title }}</h5>
+                                        <p class="card-text">{{ result.conduct_quiz.quiz.description }}</p>
+                                    </div>
+                                    <div class="card-footer quiz-card-footer">
+                                        <div class="row">
+                                            <div class="col-md-6 col-xs-12">{{ result.marks_obtained }} / {{ result.conduct_quiz.quiz.max_marks }}</div>
+                                            <div class="col-md-6 col-xs-12">{{ result.conduct_quiz.conduction_date|date:"M d, Y" }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="row" id="individual-quiz-results-chart-type" style="display: none;">
+                            {% for course in courses %}
+                            <div class="col-md-6 col-xs-12">
+                                <center>
+                                    <div class="div-canvas" id="course-graph-{{forloop.counter}}-div" style="height: 400px; width: 400px;">
+                                        <canvas id="course-graph-{{forloop.counter}}"></canvas>
+                                    </div>
+                                </center>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script>
+
+        function show_charts()
+        {
+            $('#individual-quiz-results-list-type').hide();
+            $('#individual-quiz-results-chart-type').show();
+            html = "<i class='fa fa-list' aria-hidden='true' onclick='show_list()'></i>";
+            $('#quiz-result-type').html(html);
+        }
+
+        function show_list()
+        {
+            $('#individual-quiz-results-list-type').show();
+            $('#individual-quiz-results-chart-type').hide();
+            html = "<i class='fa fa-area-chart' aria-hidden='true' onclick='show_charts()'></i>";
+            $('#quiz-result-type').html(html);
+        }
+
+        {% if results %}
+        {% for result in results %}
+            var ctx = document.querySelector("#quiz-pie-chart-{{forloop.counter}}").getContext('2d');
+            var myChart = new Chart(ctx, {
+            type: 'pie',
+            responsive: false,
+            width: 30,
+            height: 30,
+            data: {
+                labels: ['Submitted', 'Not-Submitted'],
+                datasets: [{
+                    label: 'Result',
+                    data: [{{ result.marks_obtained }}, {{ result.conduct_quiz.quiz.max_marks }}-{{ result.marks_obtained }}],
+                    fill: true,
+                    lineTension: 0.1,
+                    backgroundColor: ['#04A1B7', '#144F1E'],
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(242,34,34,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(242,34,34,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        gridLines:{
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks:{
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines:{
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks:{
+                            display: false
+                        }
+                    }]
+                }
+            }
+            });
+        {% endfor %}
+        {% endif %}
+
+        {% if courses %}
+        {% for course in courses %}
+            
+        var color_list = ['red', 'green', 'blue', 'cyan'];
+        var background_color_list = ['#EE6161', '#79EE61', '#61AEEE', '#C0F3F1'];
+
+        var score = [];
+        var labels = [];
+
+        {% for result in results %}
+            {% if result.conduct_quiz.quiz.course.code == course.course.code %}
+                labels.push('{{result.conduct_quiz.conduction_date|date:"d M"}}');
+                var percentage = (parseFloat('{{result.marks_obtained}}')/parseFloat('{{result.conduct_quiz.quiz.max_marks}}'))*100.0;
+                score.push(percentage);
+            {% endif %}
+        {% endfor %}
+
+        score.reverse();
+        labels.reverse();
+
+        var ctx = document.querySelector("#course-graph-{{forloop.counter}}").getContext('2d');
+            var myChart = new Chart(ctx, {
+            type: 'line',
+            responsive: false,
+            width: 30,
+            height: 30,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '{{course.course.code}}',
+                    data: score,
+                    fill: true,
+                    lineTension: 0.1,
+                    backgroundColor: background_color_list[{{forloop.counter}}%4],
+                    borderColor: color_list[{{forloop.counter}}%4],
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(242,34,34,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(242,34,34,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                }]
+            },
+            options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+            });
+        {% endfor %}
+        {% endif %}
+    </script>
+{% endblock %}
