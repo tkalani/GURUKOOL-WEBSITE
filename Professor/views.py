@@ -396,10 +396,34 @@ def view_quiz_reponses(request, quiz_id):
         quiz_statistics = QuizStatistics.objects.get(quiz_id__id=quiz_id)
         question_wise_result = []
         questions = []
+        most_correctly_answered, most_correctly_answered_count = [], 0
+        most_incorrectly_answered, most_incorrectly_answered_count = [], 0
+        most_unattempted_question, most_unattempted_question_count = [], 0
         for question in QuizQuestion.objects.filter(quiz__id=conducted_quiz.quiz.id):
-            question_wise_result.append(QuestionWiseResult.objects.filter(question=question, quiz_result__conduct_quiz=conducted_quiz).values('answer').annotate(total=Count('answer')))
+            q_result = QuestionWiseResult.objects.filter(question=question, quiz_result__conduct_quiz=conducted_quiz).values('answer').annotate(total=Count('answer'))
+            question_wise_result.append(q_result)
+            for r in q_result:
+                if r['answer'] == 'correct':
+                    if r['total'] > most_correctly_answered_count:
+                        most_correctly_answered_count = r['total']
+                        most_correctly_answered = [question]
+                    elif r['total'] == most_correctly_answered_count:
+                        most_correctly_answered.append(question)
+                elif r['answer'] == 'wrong':
+                    if r['total'] > most_incorrectly_answered_count:
+                        most_incorrectly_answered_count = r['total']
+                        most_incorrectly_answered = [question]
+                    elif r['total'] == most_incorrectly_answered_count:
+                        most_incorrectly_answered.append(question)
+                elif r['answer'] == 'left':
+                    if r['total'] > most_unattempted_question_count:
+                        most_unattempted_question_count = r['total']
+                        most_unattempted_question = [question]
+                    elif r['total'] == most_unattempted_question_count:
+                        most_unattempted_question.append(question)
             questions.append(question)
-        return render(request, 'Professor/quiz-question-responses.html', {"question_wise_result":zip(questions, question_wise_result), "conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics})
+        data = {"question_wise_result":zip(questions, question_wise_result), "conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics, "most_correctly_answered": most_correctly_answered, "most_incorrectly_answered": most_incorrectly_answered, "most_unattempted": most_unattempted_question}
+        return render(request, 'Professor/quiz-question-responses.html', data)
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)

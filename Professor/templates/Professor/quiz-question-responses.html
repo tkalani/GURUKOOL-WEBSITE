@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block title %}
-    Quiz Detail ({{ conducted_quiz.unique_quiz_id }})
+    Quiz Responses ({{ conducted_quiz.unique_quiz_id }})
 {% endblock %}
 
 {% block body %}
@@ -90,12 +90,13 @@
                     <th>Correct</th>
                     <th>Wrong</th>
                     <th>Not Attempted</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for qu, qwr in question_wise_result %}
                   <tr>
-                    <td>{{ qu.question }} {{ qu.id }}</td>
+                    <td>{{ qu.question }} {{qu.id}}</td>
                     <td class="question-response-count" onclick="show_question_wise_result({{qu.id}}, 1)">
                     {% if qwr.0.answer == 'correct' %} {{ qwr.0.total }} {% endif %}
                     {% if qwr.1.answer == 'correct' %} {{ qwr.1.total }} {% endif %}
@@ -113,6 +114,17 @@
                       {% if qwr.1.answer == 'left' %} {{ qwr.1.total }} {% endif %}
                       {% if qwr.2.answer == 'left' %} {{ qwr.2.total }} {% endif %}
                       {% if qwr.0.answer != 'left' and qwr.1.answer != 'left' and qwr.2.answer != 'left' %}0{% endif %}
+                    </td>
+                    <td>
+                      {% for q in most_correctly_answered %}
+                        {% if q.id == qu.id %}<button disabled type="button" class="btn btn-outline-success btn-sm">Most Correctly Answered</button>{% endif %}
+                      {% endfor %}
+                      {% for q in most_incorrectly_answered %}
+                        {% if q.id == qu.id %}<button disabled type="button" class="btn btn-outline-danger btn-sm">Most Incorrectly Answered</button>{% endif %}
+                      {% endfor %}
+                      {% for q in most_unattempted %}
+                        {% if q.id == qu.id %}<button disabled type="button" class="btn btn-outline-primary btn-sm">Most Unattempted</button>{% endif %}
+                      {% endfor %}
                     </td>
                   </tr>
                   {% endfor %}

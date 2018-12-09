@@ -83,7 +83,7 @@
                                         <div class="col-md-1 col-xs-12"><i class="fa fa-filter" aria-hidden="true" onclick="filter()"></i></div>
                                     </div>
                                     <div class="row" id="tooltip-filter" style="display: none; padding-top: 1%;">
-                                        <div class="col-md-4"><input type="text" id="finished-quiz-filter-search" placeholder="Search..." onkeyup="filter_by_keyword(this.value)";></div>
+                                        <div class="col-md-4"><input type="text" id="finished-quiz-filter-search" placeholder="Search..." onkeyup="filter_by_keyword(this.value)"></div>
                                         <div class="col-md-7">
                                             <input type="date" id="finished-quiz-filter-start-date"> to 
                                             <input type="date" id="finished-quiz-filter-end-date">
@@ -96,10 +96,10 @@
                                         {% if finished_quiz_list %}
                                         {% for quiz in finished_quiz_list %}
                                         <div class="col-md-4 col-xs-12 finished-quiz-card" style="margin-bottom: 10px">
-                                            <div class="card quiz-card">
+                                            <div class="card quiz-card border-secondary">
                                                 <div class="card-header">
                                                     <div class="row">
-                                                        <div class="col-md-8 col-xs-12 finished-quiz-unique-quiz-id"><a href="{% url 'Professor:conducted-quiz' quiz.id %}" style="color: black; text-decoration: underline;">{{ quiz.unique_quiz_id }}</a></div>
+                                                        <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:conducted-quiz' quiz.id %}" style="color: black; text-decoration: underline;" class="finished-quiz-unique-quiz-id">{{ quiz.unique_quiz_id }}</a></div>
                                                         <div class="col-md-4 col-xs-12 finished-quiz-course-code">{{ quiz.quiz.course.code }}</div>
                                                     </div>
                                                 </div>
@@ -149,7 +149,7 @@
                                             {% if all_quiz_list %}
                                             {% for quiz in all_quiz_list %}
                                             <div class="col-md-4 col-xs-12" style="margin-bottom: 10px">
-                                                <div class="card quiz-card">
+                                                <div class="card quiz-card border-secondary">
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:quiz' quiz.id %}" style="color: black; text-decoration: underline;">{{ quiz.title }}</a></div>
@@ -342,6 +342,7 @@
 
                 var unique_quiz_id_div = c1[i].getElementsByClassName("finished-quiz-unique-quiz-id");
                 var unique_quiz_id = unique_quiz_id_div[0].innerHTML;
+                
 
                 var course_code_div = c1[i].getElementsByClassName("finished-quiz-course-code");
                 var course_code = course_code_div[0].innerHTML;
