@@ -22,4 +22,7 @@ urlpatterns = [
 		url(r'^question-wise-result/$', views.question_wise_result, name='question-wise-result'),
 		url(r'^quiz-result-pdf/(?P<quiz_id>\d+)/$', views.quiz_result_pdf, name='quiz-result-pdf'),
 		url(r'^quiz-result-csv/(?P<quiz_id>\d+)/$', views.quiz_result_csv, name='quiz-result-csv'),
+
+		url(r'^test/$', views.test, name='test'),
+
 	]

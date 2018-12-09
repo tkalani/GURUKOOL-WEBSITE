@@ -52,9 +52,9 @@ class landingPage(View):
 		return HttpResponseRedirect(reverse('Professor:dashboard'))
 
 class Login(View):
-	# get_login_template = 'UserAuth/loginPage.html'
+	get_login_template = 'UserAuth/loginPage.html'
 	# get_login_template = 'UserAuth/login.html'
-	get_login_template = 'UserAuth/signupPage.html'
+	# get_login_template = 'UserAuth/signupPage.html'
 
 	def get(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
@@ -314,6 +314,7 @@ class signupUser(View):
 
 @login_required(login_url=LOGIN_URL)
 def send_verification_data(request, user_group, send_to):
+	print('here')
 	# if request.user.groups.filter(name=user_group).exists():
 	# 	try:
 	# 		verification_link = ProfessorAuthProfile.objects.get(user__username=request.user).email_verification_link
@@ -336,4 +337,4 @@ def send_verification_data(request, user_group, send_to):
 	# 		return HttpResponseRedirect(reverse('Professor:dashboard'))
 	# 	elif user_group == 'Student':
 	# 		return HttpResponseRedirect(reverse('Student:dashboard'))
-	sendEmail(request, 'tanmay.k16@iiits.in', 'sbdcnsbcmsc', 'asbcnsc nsdc ', None)
+	# sendEmail(request, 'tanmay.k16@iiits.in', 'sbdcnsbcmsc', 'asbcnsc nsdc ', None)

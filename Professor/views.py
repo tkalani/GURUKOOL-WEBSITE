@@ -483,3 +483,28 @@ def quiz_result_csv(request, quiz_id):
         response = StreamingHttpResponse((writer.writerow(row) for row in rows), content_type="text/csv")
         response['Content-Disposition'] = 'attachment; filename= Quiz-Results-'+str(conducted_quiz.unique_quiz_id)+'.csv'
         return response
+
+def test(request):
+    # course_list = Course.objects.all()
+    # all_students = StudentProfile.objects.all()
+
+    # email_list = ['bhavi.c16@iiits.in', 'paarkhi.m16@iiits.in', 'prashant.d16@iiits.in', 'garvit.k16@iiits.in', 'sanyem.g16@iiits.in']
+
+    # for c in course_list:
+    #     for st in all_students:
+    #         # print(st.user.user.email)
+    #         if st.user.user.email not in email_list:
+    #             inst = CourseStudent()
+    #             inst.course = c
+    #             inst.student = st
+    #             inst.save()
+
+    # instances = CourseStudent.objects.all()
+    # for inst in instances:
+    #     if inst.id > 15:
+    #         inst.delete()
+
+    all_users = User.objects.all()
+    for user in all_users:
+        user.set_password('qwerty')
+        user.save()

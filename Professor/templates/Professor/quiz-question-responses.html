@@ -96,7 +96,7 @@
                 <tbody>
                   {% for qu, qwr in question_wise_result %}
                   <tr>
-                    <td>{{ qu.question }} {{qu.id}}</td>
+                    <td>{{ qu.question }}</td>
                     <td class="question-response-count" onclick="show_question_wise_result({{qu.id}}, 1)">
                     {% if qwr.0.answer == 'correct' %} {{ qwr.0.total }} {% endif %}
                     {% if qwr.1.answer == 'correct' %} {{ qwr.1.total }} {% endif %}
