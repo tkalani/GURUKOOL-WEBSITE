@@ -52,4 +52,4 @@ class QuestionWiseResult(models.Model):
 	answer_id = models.IntegerField(null=True, blank=True)
 
 	def __str__(self):
-		return str(self.quiz_result.student.user.user.username) + '-->' +str(self.question.question)
+		return str(self.quiz_result.student.user.user.username) + '-->' +str(self.quiz_result.conduct_quiz.id)
