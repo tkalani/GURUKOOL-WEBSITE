@@ -300,7 +300,7 @@ class QuizDetails(APIView):
             value = []
             for question in questions:
                 options = question.quizoptions_set.all()
-                answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False} for opt in options]
+                answers = [{"answer":opt.option, "correct":opt.is_correct, "selected":False, "option_id":opt.id} for opt in options]
                 value.append({"questionText":question.question, "question_id":question.id, "questionTime":question.time,"questionMarks":question.marks, "answers":answers})
             fullQuiz["questions"] = value
             # print (fullQuiz)
@@ -329,7 +329,9 @@ class QuizComplete(APIView):
                 print (question)
                 qr = get_object_or_404(QuizResult, student=stud, conduct_quiz=quiz)
                 que = get_object_or_404(QuizQuestion, id=question[1])
-                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0]).save()
+                if(question[2]!=0):
+                    opt = get_object_or_404(QuizOptions, id=question[2])
+                QuestionWiseResult(quiz_result=qr, question=que, answer=question[0], option_selected = opt ).save()
             return JsonResponse(True, status=200, safe=False)
         except Exception as e:
             print (e)

@@ -55,8 +55,9 @@ class landingPage(View):
 		return render(request, self.get_login_page)
 
 class Login(View):
-	get_login_template = 'UserAuth/loginPage.html'
+	# get_login_template = 'UserAuth/loginPage.html'
 	# get_login_template = 'UserAuth/login.html'
+	get_login_template = 'UserAuth/signupPage.html'
 
 	def get(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
@@ -64,7 +65,8 @@ class Login(View):
 				return HttpResponseRedirect(reverse('Professor:dashboard'))
 			elif request.user.groups.filter(name='Student').exists():
 				return HttpResponseRedirect(reverse('Student:dashboard'))
-		return render(request, self.get_login_template)
+		gender_choices = GenderChoice.objects.all()
+		return render(request, self.get_login_template, {"gender_choices": gender_choices})
 
 	def post(self, request, *args, **kwargs):
 		messages.error(request, 'BAD REQUEST')
