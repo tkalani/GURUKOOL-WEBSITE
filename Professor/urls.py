@@ -20,4 +20,6 @@ urlpatterns = [
 		url(r'^quiz-result/(?P<quiz_id>\d+)/$', views.quiz_result, name='quiz-result'),
 		url(r'^view-quiz-responses/(?P<quiz_id>\d+)/$', views.view_quiz_reponses, name='view-quiz-responses'),
 		url(r'^question-wise-result/$', views.question_wise_result, name='question-wise-result'),
+		url(r'^quiz-result-pdf/(?P<quiz_id>\d+)/$', views.quiz_result_pdf, name='quiz-result-pdf'),
+		url(r'^quiz-result-csv/(?P<quiz_id>\d+)/$', views.quiz_result_csv, name='quiz-result-csv'),
 	]
