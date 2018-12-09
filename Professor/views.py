@@ -11,12 +11,22 @@ from Doubt.models import *
 from Student.models import *
 from Meeting.models import *
 import hashlib
-import time
+import time, csv
 import datetime
 from django.db.models import Count
+from .utils import *
+from django.http import StreamingHttpResponse
 
 group_name = 'Professor'
 login_url = 'UserAuth:login'
+
+class Echo:
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
 
 def group_required(*group_names, login_url=None):
     ''' checks group requirement whwther the user is student or professor
@@ -434,3 +444,42 @@ def question_wise_result(request):
     answer_dict = ['left', 'correct', 'wrong']
     results = QuestionWiseResult.objects.filter(question__id=question_id, quiz_result__conduct_quiz__id=conducted_quiz_id, answer=answer_dict[int(val)])
     return render(request, 'Professor/question-wise-responses.html', {"results": results, "answer": answer_dict[int(val)]})
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def quiz_result_pdf(request, quiz_id):
+    if request.method == 'GET':
+        conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
+        quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
+        quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id).order_by('-marks_obtained')
+        pdf = render_to_pdf('pdf-templates/quiz-rank-list.html', {"conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics, "quiz_results": quiz_results})
+        # return HttpResponse(pdf, content_type='application/pdf')
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Quiz-Results-%s.pdf" %(conducted_quiz.unique_quiz_id)
+            content = "inline; filename='%s'" %(filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" %(filename)
+            response['Content-Disposition'] = content
+            return response
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def quiz_result_csv(request, quiz_id):
+    if request.method == 'GET':
+        conducted_quiz = ConductQuiz.objects.get(id=quiz_id)
+        quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
+        quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id).order_by('-marks_obtained')
+        rows = list()
+        rows.append(['Rank', 'Student ID', 'Name', 'Marks', 'Status'])
+        for i in range(len(quiz_results)):
+            if quiz_results[i].marks_obtained >= conducted_quiz.quiz.pass_marks:
+                rows.append([str(i+1), str(quiz_results[i].student.user.user.id), str(quiz_results[i].student.user.user.first_name)+' '+str(quiz_results[i].student.user.user.last_name), str(quiz_results[i].marks_obtained)+'/'+str(conducted_quiz.quiz.max_marks), 'Pass'])
+            else:
+                rows.append([str(i+1), str(quiz_results[i].student.user.user.id), str(quiz_results[i].student.user.user.first_name)+' '+str(quiz_results[i].student.user.user.last_name), str(quiz_results[i].marks_obtained)+'/'+str(conducted_quiz.quiz.max_marks), 'Fail'])
+        pseudo_buffer = Echo()
+        writer = csv.writer(pseudo_buffer)
+        response = StreamingHttpResponse((writer.writerow(row) for row in rows), content_type="text/csv")
+        response['Content-Disposition'] = 'attachment; filename= Quiz-Results-'+str(conducted_quiz.unique_quiz_id)+'.csv'
+        return response

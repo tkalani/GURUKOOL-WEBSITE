@@ -39,6 +39,7 @@ def profile(request, student_id):
                         all_doubt_list.append(y)
         all_doubt_list = sorted(all_doubt_list, key=lambda k: k.last_updated)
         all_doubt_list = all_doubt_list[::-1]
+        
         return render(request, 'Student/profile.html', {"meetings": meetings, "doubts": all_doubt_list, "results": results, "student_profile": student_profile, "courses": courses})
     except Exception as e:
         print(e)
