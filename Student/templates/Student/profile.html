@@ -53,14 +53,13 @@ Student Profile
                             <div class="col-md-2 col-xs-12">Results</div>
                             <div class="col-md-9 col-xs-12"></div>
                             <div class="col-md-1 col-xs-12" id="quiz-result-type"><i class="fa fa-area-chart" aria-hidden="true" onclick="show_charts()"></i></div>
-                            <!-- <div class="col-md-3 col-xs-12"><input type="text" id="search-box" class="input-group-text"  placeholder="Search..."></div> -->
                         </div>
                     </div>
                     <div class="card-body" style="overflow-y: scroll">
                         <div class="row" id="individual-quiz-results-list-type">
                             {% for result in results %}
-                            <div class="col-md-4 col-xs-12" style="margin-bottom: 10px">
-                                <div class="card quiz-card">
+                            <div class="col-md-3 col-xs-12" style="margin-bottom: 10px">
+                                <div class="card quiz-card border-secondary">
                                     <div class="card-header">
                                         <div class="row">
                                             <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:conducted-quiz' result.conduct_quiz.id %}" style="color: black; text-decoration: underline;">{{ result.conduct_quiz.unique_quiz_id }}</a></div>
@@ -79,8 +78,8 @@ Student Profile
                                     </div>
                                     <div class="card-footer quiz-card-footer">
                                         <div class="row">
-                                            <div class="col-md-6 col-xs-12">{{ result.marks_obtained }} / {{ result.conduct_quiz.quiz.max_marks }}</div>
-                                            <div class="col-md-6 col-xs-12">{{ result.conduct_quiz.conduction_date|date:"M d, Y" }}</div>
+                                            <div class="col-md-5 col-xs-12">{{ result.marks_obtained }} / {{ result.conduct_quiz.quiz.max_marks }}</div>
+                                            <div class="col-md-7 col-xs-12">{{ result.conduct_quiz.conduction_date|date:"M d, Y" }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -95,6 +94,87 @@ Student Profile
                                         <canvas id="course-graph-{{forloop.counter}}"></canvas>
                                     </div>
                                 </center>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="card list-card border-warning">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-7 col-xs-12">Meetings</div>
+                            <div class="col-md-5 col-xs-12"><input type="text" id="search-box" placeholder="Search..." onkeyup="filter_meeting_by_keyword(this.value)"></div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-y: scroll">
+                        <div class="row" id="meeting-list">
+                            {% for meeting in meetings %}
+                            <div class="col-md-6 col-xs-12 meeting-card">
+                                    <a href="{% url 'Meeting:meeting-detail' meeting.meeting.id %}" style="text-decoration: none; color: black">
+                                    <div class="card border-secondary" style="margin-bottom: 20px;">
+                                            <div class="card-header">
+                                                <div class="row">
+                                                    <div class="col-md-12 col-xs-12 meeting-title">{{ meeting.meeting.title }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body meeting-card-body" style="overflow-y: scroll">
+                                                <p class="card-text meeting-body">{{ meeting.meeting.body }}</p>
+                                                {% if meeting.discussed %}
+                                                    <textarea class="form-control meeting-body" class="2" placeholder="What was discussed"
+                                                        max="50" readonly>{{ meeting.discussed }}</textarea>
+                                                {% endif %}
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="row">
+                                                    <div class="col-md-12 col-xs-12"><small class="text-muted">{{ meeting.meeting_date }} {{ meeting.meeting_time }}</small></div>
+                                                    <!-- <div class="col-md-4 col-xs-12">Info</a></div> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </a>
+                                    </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+                <div class="card list-card border-info">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-7 col-xs-12">Doubts</div>
+                            <div class="col-md-5 col-xs-12"><input type="text" id="search-box" placeholder="Search..." onkeyup="filter_doubt_by_keyword(this.value)"></div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="overflow-y: scroll">
+                        <div class="row" id="doubt-list">
+                            {% for doubt in doubts %}
+                            <div class="col-md-6 col-xs-12 doubt-card">
+                                <div class="card border-secondary">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-8 col-xs-12 doubt-course-code">{{ doubt.course.code }}</div>
+                                            <div class="col-md-4 col-xs-12">
+                                                <a href="{% url 'Doubt:doubt' doubt.id %}" style="text-decoration: underline; color: black">Info</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body doubt-card-body" style="overflow-y: scroll">
+                                        <p class="card-text meeting-title">{{ doubt.title }}</p>
+                                        <p class="card-text meeting-body">{{ doubt.description }}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col-md-12 col-xs-12"><small class="text-muted">{{ doubt.last_updated }}</small></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             {% endfor %}
                         </div>
@@ -125,6 +205,50 @@ Student Profile
             $('#individual-quiz-results-chart-type').hide();
             html = "<i class='fa fa-area-chart' aria-hidden='true' onclick='show_charts()'></i>";
             $('#quiz-result-type').html(html);
+        }
+
+        function filter_meeting_by_keyword(filter)
+        {
+            var cards = document.getElementById("meeting-list");
+            var c1 = cards.getElementsByClassName("meeting-card");
+            var count = 0;
+            for( i = 0; i<c1.length; i++)
+            {
+                filter= filter.toUpperCase();
+
+                var meeting_title_div = c1[i].getElementsByClassName("meeting-title");
+                var meeting_title = meeting_title_div[0].innerHTML;
+                
+                var meeting_body_div = c1[i].getElementsByClassName("meeting-body");
+                var meeting_body = meeting_body_div[0].innerHTML;
+            
+                if(meeting_title.toUpperCase().indexOf(filter) > -1 || meeting_body.toUpperCase().indexOf(filter) > -1)
+                    c1[i].style.display = '';
+                else
+                    c1[i].style.display = 'none';
+            }
+        }
+
+        function filter_doubt_by_keyword(filter)
+        {
+            var cards = document.getElementById("doubt-list");
+            var c1 = cards.getElementsByClassName("doubt-card");
+            var count = 0;
+            for( i = 0; i<c1.length; i++)
+            {
+                filter= filter.toUpperCase();
+
+                var meeting_title_div = c1[i].getElementsByClassName("meeting-title");
+                var meeting_title = meeting_title_div[0].innerHTML;
+                
+                var meeting_body_div = c1[i].getElementsByClassName("meeting-body");
+                var meeting_body = meeting_body_div[0].innerHTML;
+            
+                if(meeting_title.toUpperCase().indexOf(filter) > -1 || meeting_body.toUpperCase().indexOf(filter) > -1)
+                    c1[i].style.display = '';
+                else
+                    c1[i].style.display = 'none';
+            }
         }
 
         {% if results %}
