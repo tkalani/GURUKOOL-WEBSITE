@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from UserAuth.models import *
 
-from Professor.models import Course, ConductQuiz, QuizQuestion
+from Professor.models import Course, ConductQuiz, QuizQuestion, QuizOptions
 
 def get_student_profile_pic_path(instance, filename):
 	ext = filename.split('.')[-1]
@@ -50,6 +50,7 @@ class QuestionWiseResult(models.Model):
 	answer = models.CharField(max_length=100, null=True, blank=True)
 	answer_obtained = models.TextField(null=True, blank=True)
 	answer_id = models.IntegerField(null=True, blank=True)
+	option_selected = models.ForeignKey(QuizOptions, null=True, blank=True)
 
 	def __str__(self):
 		return str(self.quiz_result.student.user.user.username) + '-->' +str(self.quiz_result.conduct_quiz.id)
