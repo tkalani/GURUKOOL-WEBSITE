@@ -77,14 +77,14 @@
                 </div>
               </div>
               <br>
-              <div class="card active-quiz-card border-dark">
+              <div class="card active-quiz-card border-dark" style="overflow-y: scroll;">
                 <div class="card-header">
                     <div class="row">
                       <div class="col-md-9 col-xs-12">Rank List</div>
                       <div class="col-md-3 col-xs-12">
                         <input type="text" id="rank-filter-search" placeholder="Search..." onkeyup="filter_by_keyword(this.value)">&nbsp;
-                        <a target="_blank" href="{% url 'Professor:quiz-result-pdf' conducted_quiz.id %}"><i class="fa fa-download" aria-hidden="true" title="Download as PDF" style="color: black;"></i></a>
-                        <a target="_blank" href="{% url 'Professor:quiz-result-csv' conducted_quiz.id %}"><i class="fa fa-table" aria-hidden="true" title="Download as CSV" style="color: black;"></i></a>
+                        <!-- <a target="_blank" href="{% url 'Professor:quiz-result-pdf' conducted_quiz.id %}"><i class="fa fa-download" aria-hidden="true" title="Download as PDF" style="color: black;"></i></a>
+                        <a target="_blank" href="{% url 'Professor:quiz-result-csv' conducted_quiz.id %}"><i class="fa fa-table" aria-hidden="true" title="Download as CSV" style="color: black;"></i></a> -->
                       </div>
                     </div>
                 </div>
