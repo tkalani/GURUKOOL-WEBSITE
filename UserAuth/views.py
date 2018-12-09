@@ -17,7 +17,9 @@ from .utils import *
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import requests
-import simplejson as json
+# import simplejson as json
+import json
+
 SHOW_MESSAGE_URL = 'UserAuth:show-message'
 EMAIL_VERIFICATION_LINK_LENGTH = 50
 LOGIN_URL = 'UserAuth:landingPage'
@@ -33,8 +35,9 @@ def redirectPage(request, user_token):
 	print(user_token)
 
 	r=requests.post('https://serene-wildwood-35121.herokuapp.com/oauth/getDetails/', data=payload)
-
-	return HttpResponse(r.text)
+# json.dumps(response_data), content_type="application/json"
+	# print("R = ", r.json())
+	return HttpResponse(json.dumps(r.json()), content_type="application/json")
 	# return HttpResponseRedirect(reverse('Student:dashboard'))
 
 class landingPage(View):
@@ -49,7 +52,7 @@ class landingPage(View):
 				return HttpResponseRedirect(reverse('Professor:dashboard'))
 			elif request.user.groups.filter(name='Student').exists():
 				return HttpResponseRedirect(reverse('Student:dashboard'))
-		return HttpResponseRedirect(reverse('Professor:dashboard'))
+		return render(request, self.get_login_page)
 
 class Login(View):
 	get_login_template = 'UserAuth/loginPage.html'

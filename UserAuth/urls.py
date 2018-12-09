@@ -15,7 +15,7 @@ urlpatterns = [
 
 		url(r'^show-message/$', utils.show_message, name='show-message'),
 
-		url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
+		url(r'^logout/$', logout, {'next_page': '/login/'}, name='logout'),
 		url(r'^auth/callback/(?P<user_token>.+)$', views.redirectPage, name='redirection'),
 	]
 
