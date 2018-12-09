@@ -106,13 +106,13 @@
                       <div class="card active-quiz-card border-primary">
                         <div class="card-header">
                           <div class="row">
-                              <div class="col-md-8 col-xs-12">Quiz Detail {% if is_quiz_active %}({{ is_quiz_active.0.unique_quiz_id }}) {% endif %}</div>
+                              <div class="col-md-10 col-xs-12">Quiz Detail {% if is_quiz_active %}({{ is_quiz_active.0.unique_quiz_id }}) {% endif %}</div>
                               {% if is_quiz_active %}
                               <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:stop-quiz' is_quiz_active.0.id %}"><button class="btn btn-danger btn-block"><i class="fa fa-stop"></i> &nbsp; &nbsp;End</button></a></div>
                               {% else %}
                               <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:conduct-quiz' quiz_data.0.quiz.id %}"><button class="btn btn-success btn-block"> <i class="fa fa-play"></i> &nbsp; &nbsp;Start</button></a></div>
                               {% endif %}
-                              <div class="col-md-2 col-xs-12"><a><button class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Edit</button></a></div>
+                              <!-- <div class="col-md-2 col-xs-12"><a><button class="btn btn-success btn-block" style="background-color: #555555;"> <i class="fa fa-pencil"></i> &nbsp; &nbsp;Edit</button></a></div> -->
                             </div>
                         </div>
                         <div class="card-body">

@@ -77,7 +77,7 @@ class Quiz(models.Model):
 
 class QuizQuestion(models.Model):
 	quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, null=True, blank=True)
-	question = models.CharField(max_length=100, null=False, blank=False)
+	question = models.CharField(max_length=200, null=False, blank=False)
 	question_file = models.ImageField(null=True, blank=True)
 	marks = models.IntegerField(default=0)
 	time = models.IntegerField(default=0)
