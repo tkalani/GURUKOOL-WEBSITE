@@ -130,9 +130,9 @@ DATABASES = {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'gurukool_db',
 #         'USER': 'root',
-#         'PASSWORD': 'qazwsxedc',
+#         'PASSWORD': 'letmepass',
 #         'HOST': '127.0.0.1',
-#         'PORT': '6603'
+#         'PORT': '3306'
 #     }
 # }
 # Password validation

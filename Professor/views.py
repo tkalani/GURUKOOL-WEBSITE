@@ -453,7 +453,6 @@ def quiz_result_pdf(request, quiz_id):
         quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
         quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id).order_by('-marks_obtained')
         pdf = render_to_pdf('pdf-templates/quiz-rank-list.html', {"conducted_quiz": conducted_quiz,"quiz_statistics":quiz_statistics, "quiz_results": quiz_results})
-        # return HttpResponse(pdf, content_type='application/pdf')
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
             filename = "Quiz-Results-%s.pdf" %(conducted_quiz.unique_quiz_id)
@@ -463,6 +462,7 @@ def quiz_result_pdf(request, quiz_id):
                 content = "attachment; filename='%s'" %(filename)
             response['Content-Disposition'] = content
             return response
+        
 
 @login_required(login_url=login_url)
 @group_required(group_name, login_url=login_url)
