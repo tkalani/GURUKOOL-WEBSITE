@@ -69,6 +69,11 @@ def dashboard(request):
             quiz.submissions = QuizResult.objects.filter(conduct_quiz=quiz).count()
             quiz.total = CourseStudent.objects.filter(course=quiz.quiz.course).count()
 
+        all_conducted_quiz_stats = QuizStatistics.objects.filter(quiz_id__quiz__professor__user__user__username=request.user.username)
+        print(all_conducted_quiz_stats)
+
+
+
         # all_meetings = []
         # meeting_list = (MeetingPlace.objects.filter(meeting__professor__user__user__id=request.user.id, is_ticked=False, meeting_date=time.strftime('%Y-%m-%d'), meeting__status='APPROVED').order_by('meeting_time'))
         # for m in meeting_list:
@@ -79,7 +84,7 @@ def dashboard(request):
         #         all_meetings.append(m)
         # print(all_meetings)
 
-        return render(request, 'Professor/dashboard.html', {"all_doubt_list": all_doubt_list, "poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
+        return render(request, 'Professor/dashboard.html', {"quiz_stats": all_conducted_quiz_stats, "all_doubt_list": all_doubt_list, "poll_list": poll_list, "quiz_list": quiz_list, "course_list":course_list, "meeting_list":meeting_list, "active_quiz_list": active_quiz_list, "active_poll_list": active_poll_list})
 
 ''' Login Required
 '''

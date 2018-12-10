@@ -172,38 +172,22 @@ Dashboard
                     <!-- <div class="card col-md-12 col-xs-12 border-secondary poll-card  list-card">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-md-8 col-xs-12">Active Polls - {{ active_poll_list.count }}</div>
+                                <div class="col-md-8 col-xs-12">Stats</div>
                                 <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-poll' %}"><button type="button" class="btn btn-info btn-sm">Add Poll</button></a></div>
                                 <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:all-poll' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
                             </div>
-                        </div> -->
-                        <!-- <div class="card-body" style="overflow-y: scroll">
+                        </div>
+                        <div class="card-body" style="overflow-y: scroll">
                             <div class="row">
-                                    {% if active_poll_list %}
-                                    {% for poll in active_poll_list %}
-                                    <div class="col-md-4 col-xs-12" style="margin-bottom: 10px">
+                                    {% if course_list %}
+                                    {% for course in course_list %}
+                                    <div class="col-md-12 col-xs-12" style="margin-bottom: 10px">
                                         <div class="card quiz-card">
-                                            <div class="card-header">
-                                                <div class="row">
-                                                    <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:poll' poll.poll.id %}" style="color: black; text-decoration: underline">{{ poll.unique_poll_id }}</a></div>
-                                                    <div class="col-md-4 col-xs-12">{{ poll.poll.course.code }}</div>
-                                                </div>
-                                            </div>
-                                            <br>
                                             <center>
-                                                <div class="div-canvas" id="poll-pie-chart-{{forloop.counter}}-div" style="height: 80px; width: 80px;">
-                                                    <canvas id="poll-pie-chart-{{forloop.counter}}"></canvas>
+                                                <div class="div-canvas" id="course-graph-stats-{{forloop.counter}}-div" style="height: 400px; width: 400px;">
+                                                    <canvas id="course-graph-stats-{{forloop.counter}}"></canvas>
                                                 </div>
                                             </center>
-                                            <div class="card-body quiz-card-body" style="overflow-y: scroll;">
-                                                <h5 class="card-title">{{ poll.poll.title }}</h5>
-                                            </div>
-                                            <div class="card-footer quiz-card-footer">
-                                                <div class="row">
-                                                <div class="col-md-6 col-xs-12">{{ forloop.counter }} / 10</div>
-                                                <div class="col-md-6 col-xs-12"><a href="{% url 'Professor:stop-poll' poll.id %}" style="color: red; text-decoration: underline;">End Poll</a></div>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     {% endfor %}
@@ -219,7 +203,7 @@ Dashboard
                                 </div>
                         </div>
                     </div> -->
-                <!-- </div> -->
+                </div>
             </div>
         </div>
     </div>
@@ -326,6 +310,70 @@ Dashboard
                 }
             }
             });
+        {% endfor %}
+        {% endif %}
+            
+        {% if course_list %}
+        {% for course in course_list %}
+            
+        var color_list = ['red', 'green', 'blue', 'cyan'];
+        var background_color_list = ['#EE6161', '#79EE61', '#61AEEE', '#C0F3F1'];
+
+        var score = [];
+        var labels = [];
+
+        {% for result in quiz_stats %}
+            {% if result.quiz_id.quiz.course.id == course.course.id %}
+                labels.push('{{result.quiz_id.conduction_date|date:"d M"}}');
+                var percentage = (parseFloat('{{result.avg}}'));
+                score.push(percentage);
+            {% endif %}
+        {% endfor %}
+
+        score.reverse();
+        labels.reverse();
+
+        var ctx = document.querySelector("#course-graph-stats-{{forloop.counter}}").getContext('2d');
+            var myChart = new Chart(ctx, {
+            type: 'line',
+            responsive: false,
+            width: 30,
+            height: 30,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '{{course.course.code}}',
+                    data: score,
+                    fill: true,
+                    lineTension: 0.1,
+                    backgroundColor: background_color_list[{{forloop.counter}}%4],
+                    borderColor: color_list[{{forloop.counter}}%4],
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(242,34,34,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(242,34,34,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+
+                }]
+            },
+            options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+            });
+
         {% endfor %}
         {% endif %}
 
