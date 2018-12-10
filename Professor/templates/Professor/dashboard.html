@@ -117,7 +117,7 @@ Dashboard
 
             <div class="col-md-8 col-xs-12">
                 <div class="row">
-                    <div class="card col-md-12 col-xs-12 border-warning list-card">
+                    <div class="card col-md-12 col-xs-12 border-warning" style="max-height: 800px;">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-8 col-xs-12">Active Quizzes - {{ active_quiz_list.count }}</div>
@@ -176,8 +176,8 @@ Dashboard
                                 <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:create-poll' %}"><button type="button" class="btn btn-info btn-sm">Add Poll</button></a></div>
                                 <div class="col-md-2 col-xs-12"><a href="{% url 'Professor:all-poll' %}"><button type="button" class="btn btn-info btn-sm">View All</button></a></div>
                             </div>
-                        </div>
-                        <div class="card-body" style="overflow-y: scroll">
+                        </div> -->
+                        <!-- <div class="card-body" style="overflow-y: scroll">
                             <div class="row">
                                     {% if active_poll_list %}
                                     {% for poll in active_poll_list %}
@@ -185,7 +185,6 @@ Dashboard
                                         <div class="card quiz-card">
                                             <div class="card-header">
                                                 <div class="row">
-                                                    <!-- <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:poll' poll.poll.id %}" style="color: black;"></a>{{ poll.unique_poll_id }}</a></div> -->
                                                     <div class="col-md-8 col-xs-12"><a href="{% url 'Professor:poll' poll.poll.id %}" style="color: black; text-decoration: underline">{{ poll.unique_poll_id }}</a></div>
                                                     <div class="col-md-4 col-xs-12">{{ poll.poll.course.code }}</div>
                                                 </div>
@@ -220,7 +219,7 @@ Dashboard
                                 </div>
                         </div>
                     </div> -->
-                </div>
+                <!-- </div> -->
             </div>
         </div>
     </div>
@@ -330,65 +329,65 @@ Dashboard
         {% endfor %}
         {% endif %}
 
-        {% if active_poll_list %}
-        {% for poll in active_poll_list %}
-            var ctx = document.querySelector("#poll-pie-chart-{{forloop.counter}}").getContext('2d');
-            var myChart = new Chart(ctx, {
-            type: 'pie',
-            responsive: false,
-            width: 30,
-            height: 30,
-            data: {
-                labels: ['Submitted', 'Not-Submitted'],
-                datasets: [{
-                    label: 'akncakjnck',
-                    data: [{{forloop.counter}}, {{ forloop.counter}}+1],
-                    fill: true,
-                    lineTension: 0.1,
-                    backgroundColor: ['#560846', '#A53606'],
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "rgba(242,34,34,1)",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "rgba(242,34,34,1)",
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
+        // {% if active_poll_list %}
+        // {% for poll in active_poll_list %}
+        //     var ctx = document.querySelector("#poll-pie-chart-{{forloop.counter}}").getContext('2d');
+        //     var myChart = new Chart(ctx, {
+        //     type: 'pie',
+        //     responsive: false,
+        //     width: 30,
+        //     height: 30,
+        //     data: {
+        //         labels: ['Submitted', 'Not-Submitted'],
+        //         datasets: [{
+        //             label: 'akncakjnck',
+        //             data: [{{forloop.counter}}, {{ forloop.counter}}+1],
+        //             fill: true,
+        //             lineTension: 0.1,
+        //             backgroundColor: ['#560846', '#A53606'],
+        //             borderCapStyle: 'butt',
+        //             borderDash: [],
+        //             borderDashOffset: 0.0,
+        //             borderJoinStyle: 'miter',
+        //             pointBorderColor: "rgba(242,34,34,1)",
+        //             pointBackgroundColor: "#fff",
+        //             pointBorderWidth: 1,
+        //             pointHoverRadius: 5,
+        //             pointHoverBackgroundColor: "rgba(242,34,34,1)",
+        //             pointHoverBorderColor: "rgba(220,220,220,1)",
+        //             pointHoverBorderWidth: 2,
+        //             pointRadius: 1,
+        //             pointHitRadius: 10,
 
-                }]
-            },
-            options: {
-                legend: {
-                    display: false
-                },
-                scales: {
-                    yAxes: [{
-                        gridLines:{
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks:{
-                            display: false
-                        }
-                    }],
-                    xAxes: [{
-                        gridLines:{
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks:{
-                            display: false
-                        }
-                    }]
-                }
-            }
-            });
-        {% endfor %}
-        {% endif %}
+        //         }]
+        //     },
+        //     options: {
+        //         legend: {
+        //             display: false
+        //         },
+        //         scales: {
+        //             yAxes: [{
+        //                 gridLines:{
+        //                     display: false,
+        //                     drawBorder: false
+        //                 },
+        //                 ticks:{
+        //                     display: false
+        //                 }
+        //             }],
+        //             xAxes: [{
+        //                 gridLines:{
+        //                     display: false,
+        //                     drawBorder: false
+        //                 },
+        //                 ticks:{
+        //                     display: false
+        //                 }
+        //             }]
+        //         }
+        //     }
+        //     });
+        // {% endfor %}
+        // {% endif %}
     </script>
 {% endblock %}
