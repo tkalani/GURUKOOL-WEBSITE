@@ -109,6 +109,33 @@
                         </div>
                       </div>
                       {% endfor %}
+                      <!-- <table class="table table-striped">
+                          {% if quiz_results %}
+                          <thead class="card-header">
+                          <tr>
+                            <th>Rank</th>
+                            <th>Roll No.</th>
+                            <th>Name</th>
+                            <th>Marks</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for result in quiz_results %}
+                            <tr class="rank-list-card">
+                              <td class="student-rank">{{ forloop.counter }}</td>
+                              <td>{{ result.student.user.user.id }}</td>
+                              <td><a target="_blank" href="{% url 'Student:profile' result.student.user.user.id %}" class="question-response-count student-name">{{ result.student.user.user.first_name }} {{ result.student.user.user.last_name }}</a></td>
+                              <td class="marks-obtained">{{ result.marks_obtained }} / {{ conducted_quiz.quiz.max_marks }}</td>
+                              <td>
+                                {% if result.marks_obtained >= conducted_quiz.quiz.pass_marks %}Pass{% endif %}
+                                {% if result.marks_obtained < conducted_quiz.quiz.pass_marks %}Fail{% endif %}
+                              </td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                        {% endif %}
+                        </table> -->
                   </div>
                 </div>
             </div>
