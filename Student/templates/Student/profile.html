@@ -52,12 +52,13 @@ Student Profile
                         <div class="row">
                             <div class="col-md-2 col-xs-12">Results</div>
                             <div class="col-md-9 col-xs-12"></div>
-                            <div class="col-md-1 col-xs-12" id="quiz-result-type"><i class="fa fa-area-chart" aria-hidden="true" onclick="show_charts()"></i></div>
+                           <!--  <div class="col-md-1 col-xs-12" id="quiz-result-type"><i class="fa fa-area-chart" aria-hidden="true" onclick="show_charts()"></i></div> -->
                         </div>
                     </div>
                     <div class="card-body" style="overflow-y: scroll">
                         <div class="row" id="individual-quiz-results-list-type">
                             {% for result in results %}
+                               
                             <div class="col-md-3 col-xs-12" style="margin-bottom: 10px">
                                 <div class="card quiz-card border-secondary">
                                     <div class="card-header">
@@ -84,10 +85,12 @@ Student Profile
                                     </div>
                                 </div>
                             </div>
+                        
                             {% endfor %}
                         </div>
-                        <div class="row" id="individual-quiz-results-chart-type" style="display: none;">
+                       <!--  <div class="row" id="individual-quiz-results-chart-type" style="display: none;">
                             {% for course in courses %}
+                             
                             <div class="col-md-6 col-xs-12">
                                 <center>
                                     <div class="div-canvas" id="course-graph-{{forloop.counter}}-div" style="height: 400px; width: 400px;">
@@ -95,8 +98,9 @@ Student Profile
                                     </div>
                                 </center>
                             </div>
+                          
                             {% endfor %}
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

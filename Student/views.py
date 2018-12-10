@@ -26,7 +26,7 @@ def dashboard(request):
 @login_required(login_url=login_url)
 def profile(request, student_id):
     try:
-        results = QuizResult.objects.filter(student__user__user__id=student_id).order_by('-conduct_quiz__conduction_date')
+        results = QuizResult.objects.filter(student__user__user__id=student_id,conduct_quiz__quiz__professor__can_view=True).order_by('-conduct_quiz__conduction_date')
         student_profile = StudentProfile.objects.get(user__user__id=student_id)
         courses = CourseStudent.objects.filter(student__user__user__id=student_id)
 

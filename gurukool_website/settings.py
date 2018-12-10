@@ -115,26 +115,26 @@ WSGI_APPLICATION = 'gurukool_website.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gurukool_db',
-        'USER': 'root',
-        'PASSWORD': 'bhavi',
-        'HOST': '139.59.86.57',
-        'PORT': '3306'
-    }
-}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'gurukool_db',
 #         'USER': 'root',
-#         'PASSWORD': 'letmepass',
-#         'HOST': '127.0.0.1',
+#         'PASSWORD': 'bhavi',
+#         'HOST': '139.59.86.57',
 #         'PORT': '3306'
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gurukool_db',
+        'USER': 'root',
+        'PASSWORD': 'iiits@123',
+        'HOST': '127.0.0.1',
+        'PORT': '3306'
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 

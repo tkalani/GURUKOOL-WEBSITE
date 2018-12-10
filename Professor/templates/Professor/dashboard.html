@@ -168,7 +168,14 @@ Dashboard
                             </div>
                         </div>
                     </div>
-
+                    <div>
+                        <form action="{% url 'Professor:can_view' %}" method="POST">
+                            {% csrf_token %}
+                            
+                            Other Professors Can View Results: <input type="checkbox" name="active" value="active">
+                            <input type="submit" name="submit" value="submit">
+                        </form>
+                    </div>
                     <!-- <div class="card col-md-12 col-xs-12 border-secondary poll-card  list-card">
                         <div class="card-header">
                             <div class="row">

@@ -5,6 +5,7 @@ app_name = 'Professor'
 
 urlpatterns = [
 		url(r'^$', views.dashboard, name='dashboard'),
+		url(r'^can_view/$', views.can_view, name='can_view'),
 		url(r'^create-poll/$', views.create_poll, name='create-poll'),
 		url(r'^poll/(?P<poll_id>\d+)/$', views.show_poll, name='poll'),
 		url(r'^poll/$', views.show_all_polls, name='all-poll'),

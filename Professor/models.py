@@ -20,7 +20,7 @@ class ProfessorProfile(models.Model):
 	address_pincode = models.IntegerField(null=True, blank=True)
 	profile_pic = models.ImageField(upload_to=get_professor_profile_pic_path, null=True, blank=True, default='/PROFESSOR-PROFILE-PIC-DIRECTORY/professor_avatar.png')
 	qualification = models.CharField(max_length=100, null=True, blank=True)
-
+	can_view = models.BooleanField(default=True)
 	email_address_verified = models.BooleanField(default=False)
 	mobile_no_address_verified = models.BooleanField(default=False)
 

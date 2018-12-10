@@ -477,17 +477,30 @@ def quiz_result_csv(request, quiz_id):
         quiz_statistics = QuizStatistics.objects.get( quiz_id__id=quiz_id)
         quiz_results = QuizResult.objects.filter(conduct_quiz__id=quiz_id).order_by('-marks_obtained')
         rows = list()
-        rows.append(['Rank', 'Student ID', 'Name', 'Marks', 'Status'])
+        s = "Marks out of "+ str(conducted_quiz.quiz.max_marks)
+        rows.append(['Rank', 'Student ID', 'Name',s, 'Status'])
         for i in range(len(quiz_results)):
             if quiz_results[i].marks_obtained >= conducted_quiz.quiz.pass_marks:
-                rows.append([str(i+1), str(quiz_results[i].student.user.user.id), str(quiz_results[i].student.user.user.first_name)+' '+str(quiz_results[i].student.user.user.last_name), str(quiz_results[i].marks_obtained)+'/'+str(conducted_quiz.quiz.max_marks), 'Pass'])
+                rows.append([str(i+1), str(quiz_results[i].student.user.user.id), str(quiz_results[i].student.user.user.first_name)+' '+str(quiz_results[i].student.user.user.last_name), str(quiz_results[i].marks_obtained), 'Pass'])
             else:
-                rows.append([str(i+1), str(quiz_results[i].student.user.user.id), str(quiz_results[i].student.user.user.first_name)+' '+str(quiz_results[i].student.user.user.last_name), str(quiz_results[i].marks_obtained)+'/'+str(conducted_quiz.quiz.max_marks), 'Fail'])
+                rows.append([str(i+1), str(quiz_results[i].student.user.user.id), str(quiz_results[i].student.user.user.first_name)+' '+str(quiz_results[i].student.user.user.last_name), str(quiz_results[i].marks_obtained), 'Fail'])
         pseudo_buffer = Echo()
         writer = csv.writer(pseudo_buffer)
         response = StreamingHttpResponse((writer.writerow(row) for row in rows), content_type="text/csv")
         response['Content-Disposition'] = 'attachment; filename= Quiz-Results-'+str(conducted_quiz.unique_quiz_id)+'.csv'
         return response
+
+@login_required(login_url=login_url)
+@group_required(group_name, login_url=login_url)
+def can_view(request):
+    if request.method == 'POST':
+        c = ProfessorProfile.objects.get(user__user__username=request.user.username)
+        if request.POST.get("active") == "active":
+            c.can_view = True
+        else:
+            c.can_view = False
+        c.save()
+        return HttpResponseRedirect(reverse('Professor:dashboard'))
 
 def test(request):
     # course_list = Course.objects.all()
